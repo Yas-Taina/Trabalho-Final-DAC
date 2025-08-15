@@ -170,7 +170,9 @@ dist
 .svelte-kit
 
 ### VisualStudioCode ###
+.vscode
 .vscode/*
+.editorconfig
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
