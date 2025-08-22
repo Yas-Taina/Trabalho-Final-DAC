@@ -1,0 +1,11 @@
+export * from './clientes.service';
+import { ClientesService } from './clientes.service';
+export * from './contas.service';
+import { ContasService } from './contas.service';
+export * from './gerentes.service';
+import { GerentesService } from './gerentes.service';
+export * from './inicializao.service';
+import { InicializacaoService } from './inicializao.service';
+export * from './login.service';
+import { LoginService } from './login.service';
+export const APIS = [ClientesService, ContasService, GerentesService, InicializacaoService, LoginService];
