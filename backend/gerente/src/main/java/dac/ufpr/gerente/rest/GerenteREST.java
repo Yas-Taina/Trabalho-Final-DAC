@@ -21,10 +21,8 @@ import dac.ufpr.gerente.model.Gerente;
 @RestController
 public class GerenteREST {
 
-    // A lista continua sendo estática para manter os dados em memória.
     public static List<Gerente> lista = new ArrayList<>();
 
-    // Bloco estático para popular a lista inicial.
     static {
         lista.add(new Gerente("11111111111", "Carlos Silva", "carlos@empresa.com", "123", "ADMINISTRADOR"));
         lista.add(new Gerente("22222222222", "Maria Souza", "maria@empresa.com", "456", "ADMINISTRADOR"));
