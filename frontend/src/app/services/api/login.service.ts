@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
-import { HttpHeaders } from '@angular/common/http';
+import { catchError, Observable, tap } from 'rxjs';
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { BaseService } from '../api.base.service';
-import { LoginInfo, LogoutResponse } from '../model';
+import { LoginInfo, LoginResponse, LogoutResponse } from '../model';
+import { error } from 'console';
 
 @Injectable({
   providedIn: 'root',
@@ -11,13 +12,16 @@ export class LoginService extends BaseService {
   private tokenKey = 'token';
 
   // POST /login
-  login(credentials: LoginInfo): Observable<any> {
-    return this.post<any>('/login', credentials).pipe(
-      tap((res: any) => {
-        if (res?.token) {
-          localStorage.setItem(this.tokenKey, res.token);
-        }
-      })
+  login(credentials: LoginInfo): Observable<LoginResponse> {
+    return this.post<LoginResponse>('/login', credentials)
+      .pipe(
+        tap((res) => {
+          console.log('Login response:', res);
+          if (res?.token) {
+            localStorage.setItem(this.tokenKey, res.token);
+          }
+        },
+      )
     );
   }
 
