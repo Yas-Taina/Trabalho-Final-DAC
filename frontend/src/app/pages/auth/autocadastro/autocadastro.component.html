@@ -1,92 +1,79 @@
 <div class="row justify-content-center">
   <div class="col-4">
-
-    <form action="">
-
-        <div class="row">
-          <label for="nome" class="form-label">Nome</label>
-          <input type="text" class="form-control" id="nome" name="nome" minlength="2" maxlength="100" required />
-        </div>
-
-        <div class="row">
-          <div class="col-7">
-            <label for="email" class="form-label">E-mail</label>
-            <input type="email" class="form-control" id="email" name="email" maxlength="100" required email />
-          </div>
-          <div class="col-5">
-            <label for="cpf" class="form-label">CPF</label>
-            <input type="text" class="form-control" id="cpf" name="cpf" required placeholder="000.000.000-00"
-              mask="000.000.000-00" />
-          </div>        
-        </div>
-
-      
-
-        <div class="row">
-          <div class="col-6">
-            <label for="telefone" class="form-label">Telefone</label>
-            <input type="text" class="form-control" id="telefone" name="telefone" required placeholder="(00) 00000-0000"
-              mask="(00) 00000-0000" />
-          </div>
-          <div class="col-6">
-            <label for="salario" class="form-label">Salário</label>
-            <input type="number" class="form-control" id="salario" name="salario" required placeholder="R$" />
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-4">
-            <label for="cep" class="form-label">CEP</label>
-            <input type="text" class="form-control" id="cep" name="cep" required placeholder="00000-000"
-              mask="00000-000" />
-          </div>
-          <div class="col-6">
-          <label for="cidade" class="form-label">Cidade</label>
-          <input type="text" class="form-control" id="cidade" name="cidade" required placeholder="Cidade" />
-        </div>
-        <div class="col-2">
-          <label for="estado" class="form-label">UF</label>
-          <input type="text" class="form-control" id="estado" name="estado" required maxlength="2" placeholder="--" />
-        </div>
-        </div>
-
+  <form [formGroup]="clienteForm" (ngSubmit)="onSubmit()">
       <div class="row">
-        <div class="col-4">
-          <label for="tipo" class="form-label">Tipo</label>
-          <input type="text" class="form-control" id="tipo" name="tipo" required maxlength="2" placeholder="Rua, Avenida..." />
-        </div>
-        <div class="col-8">
-        <label for="logradouro" class="form-label">Logradouro</label>
-        <input type="text" class="form-control" id="logradouro" name="logradouro" required placeholder="Logradouro" />
-      </div>
+        <label for="nome" class="form-label">Nome</label>
+        <input type="text" class="form-control" id="nome" formControlName="nome" minlength="2" maxlength="100" required />
       </div>
 
       <div class="row">
-        <div class="col-3">
-          <label for="numero" class="form-label">Nº</label>
-          <input type="number" class="form-control" id="numero" name="numero" required placeholder="00" />
-        </div>
-        <div class="col-4">
-          <label for="bairro" class="form-label">Bairro</label>
-          <input type="text" class="form-control" id="bairro" name="bairro" required placeholder="Bairro" />
+        <div class="col-7">
+          <label for="email" class="form-label">E-mail</label>
+          <input type="email" class="form-control" id="email" formControlName="email" maxlength="100" required email />
         </div>
         <div class="col-5">
-          <label for="complemento" class="form-label">Complemento</label>
-          <input type="text" class="form-control" id="complemento" name="complemento" placeholder="Bloco, AP..." />
+          <label for="cpf" class="form-label">CPF</label>
+          <input type="text" class="form-control" id="cpf" formControlName="cpf" required placeholder="000.000.000-00"
+            mask="000.000.000-00" />
+        </div>        
+      </div>
+
+      <div class="row">
+        <!-- Telefone removido pois não está no modelo -->
+        <div class="col-6">
+          <label for="salario" class="form-label">Salário</label>
+          <input type="number" class="form-control" id="salario" formControlName="salario" required placeholder="R$" />
+        </div>
+      </div>
+
+      <div formGroupName="endereco">
+        <div class="row">
+          <div class="col-4">
+            <label for="tipo" class="form-label">Tipo</label>
+            <input type="text" class="form-control" id="tipo" formControlName="tipo" required placeholder="Rua, Avenida..." />
+          </div>
+          <div class="col-8">
+            <label for="logradouro" class="form-label">Logradouro</label>
+            <input type="text" class="form-control" id="logradouro" formControlName="logradouro" required placeholder="Logradouro" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-3">
+            <label for="numero" class="form-label">Nº</label>
+            <input type="text" class="form-control" id="numero" formControlName="numero" required placeholder="00" />
+          </div>
+          <div class="col-4">
+            <label for="complemento" class="form-label">Complemento</label>
+            <input type="text" class="form-control" id="complemento" formControlName="complemento" placeholder="Bloco, AP..." />
+          </div>
+          <div class="col-5">
+            <label for="cep" class="form-label">CEP</label>
+            <input type="text" class="form-control" id="cep" formControlName="cep" required placeholder="00000-000" mask="00000-000" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <label for="cidade" class="form-label">Cidade</label>
+            <input type="text" class="form-control" id="cidade" formControlName="cidade" required placeholder="Cidade" />
+          </div>
+          <div class="col-2">
+            <label for="estado" class="form-label">UF</label>
+            <input type="text" class="form-control" id="estado" formControlName="estado" required maxlength="2" placeholder="--" />
+          </div>
         </div>
       </div>
       <div>
-        <button type="button">Cadastre-se</button>
+        <button type="submit" [disabled]="clienteForm.invalid">Cadastre-se</button>
       </div>
     </form>
-    </div>
-    <div class="col-6">
-      <hr>
-      <h1>Realize Seu Cadastro</h1>
-      <hr>
-      <p>Sua solicitação será enviada para um gerente para análise</p>
-      <p>Já tem uma conta? Realize seu login <a routerLink="/login"
-                class="textLink"
-                routerLinkActive="active">aqui</a></p>
-    </div>
+  </div>
+  <div class="col-6">
+    <hr>
+    <h1>Realize Seu Cadastro</h1>
+    <hr>
+    <p>Sua solicitação será enviada para um gerente para análise</p>
+    <p>Já tem uma conta? Realize seu login <a routerLink="/login"
+              class="textLink"
+              routerLinkActive="active">aqui</a></p>
+  </div>
 </div>
