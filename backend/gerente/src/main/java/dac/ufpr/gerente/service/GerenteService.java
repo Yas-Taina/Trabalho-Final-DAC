@@ -62,7 +62,6 @@ public class GerenteService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Gerente não encontrado: " + cpf));
 
-        // se for trocar email, garanta unicidade
         if (!g.getEmail().equals(dto.email()) && repository.existsByEmail(dto.email())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Já existe um gerente com o e-mail " + dto.email());
@@ -79,7 +78,6 @@ public class GerenteService {
 
     @Transactional
     public void remover(String cpf) {
-        // opcionalmente busque primeiro para retornar 404 correto
         if (!repository.existsByCpf(cpf)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Gerente não encontrado: " + cpf);
@@ -87,7 +85,7 @@ public class GerenteService {
         repository.deleteByCpf(cpf);
     }
 
-    // --- validação simples ---
+    //  validação simples 
     private void validar(GerenteDto dto) {
         if (!StringUtils.hasText(dto.nome())
                 || !StringUtils.hasText(dto.senha())

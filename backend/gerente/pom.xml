@@ -79,8 +79,6 @@
             <path>
               <groupId>org.projectlombok</groupId>
               <artifactId>lombok</artifactId>
-              <!-- deixe sem versão; o BOM do Boot já define.
-                   Se quiser fixar, use a mesma do seu IDE -->
             </path>
           </annotationProcessorPaths>
         </configuration>
