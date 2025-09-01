@@ -1,62 +1,42 @@
 package dac.ufpr.gerente.model;
 
-import java.io.Serializable;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-public class Gerente implements Serializable {
+@Entity
+// @Table(
+//     name = "gerente",
+//     uniqueConstraints = {
+//         @UniqueConstraint(name = "uk_gerente_cpf", columnNames = "cpf"),
+//         @UniqueConstraint(name = "uk_gerente_email", columnNames = "email")
+//     }
+// )
+@Table(name = "gerente") // sem schema
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class Gerente {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 11)
     private String cpf;
+
+    @Column(nullable = false)
     private String nome;
+
+    @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String senha;
+
+    @Column(nullable = false)
     private String tipo;
-
-    public Gerente() {
-    }
-
-    public Gerente(String cpf, String nome, String email, String senha, String tipo) {
-        this.cpf = cpf;
-        this.nome = nome;
-        this.email = email;
-        this.senha = senha;
-        this.tipo = tipo;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-    
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
 }
