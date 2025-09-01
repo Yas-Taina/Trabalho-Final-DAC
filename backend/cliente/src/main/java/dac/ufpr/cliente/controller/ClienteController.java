@@ -14,6 +14,11 @@ public class ClienteController {
 
     private final ClienteService service;
 
+    @GetMapping
+    public ResponseEntity<String> listar(@RequestParam(required = true) String filtro) {
+        return ResponseEntity.ok().build(service.listar(filtro));
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) //201
     public void criar(@RequestBody ClienteDto clienteDto) {
