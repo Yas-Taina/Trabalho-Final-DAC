@@ -8,6 +8,6 @@ import { RouterModule, Router } from '@angular/router';
   templateUrl: './inicio.component.html',
   styleUrl: './inicio.component.css'
 })
-export class InicioComponent {
+export class InicioClientComponent {
   constructor(private router: Router){}
 }

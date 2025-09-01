@@ -3,8 +3,19 @@ import { AutocadastroComponent } from './pages/auth/autocadastro/autocadastro.co
 import { HomeComponent } from './pages/auth/home/home.component'; 
 import { LoginComponent } from './pages/auth/login/login.component';
 import { DepositarComponent } from './pages/client/depositar/depositar.component';
-import { InicioComponent } from './pages/client/inicio/inicio.component';
+import { SaqueComponent } from './pages/client/saque/saque.component';
+import { InicioClientComponent } from './pages/client/inicio/inicio.component';
 import { PerfilComponent } from './pages/client/perfil/perfil.component';
+import { ExtratoComponent } from './pages/client/extrato/extrato.component';
+import { TransferenciaComponent } from './pages/client/transferencia/transferencia.component';
+import { InicioManagerComponent } from './pages/gerente/inicio/inicio.component';
+import { InicioAdmComponent } from './pages/adm/inicio/inicio.component';
+import { ClientesManagerComponent } from './pages/gerente/clientes/clientes.component';
+import { ClientesAdmComponent } from './pages/adm/clientes/clientes.component';
+import { ConsultaComponent } from './pages/gerente/consulta/consulta.component';
+import { MelhoresClientesComponent } from './pages/gerente/melhores-clientes/melhores-clientes.component';
+import { GerentesComponent } from './pages/adm/gerentes/gerentes.component';
+import { EditarGerentesComponent } from './pages/adm/editar-gerentes/editar-gerentes.component';
 
 export const routes: Routes = [
     //public routes
@@ -24,7 +35,7 @@ export const routes: Routes = [
     //client routes
     {
         path: 'client/home',
-        component: InicioComponent
+        component: InicioClientComponent
     },
     {
         path: 'perfil',
@@ -34,6 +45,55 @@ export const routes: Routes = [
         path: 'depositar',
         component: DepositarComponent
     },
+    {
+        path: 'sacar',
+        component: SaqueComponent
+    },
+    {
+        path: 'extrato',
+        component: ExtratoComponent
+    },
+    {
+        path: 'transferir',
+        component: TransferenciaComponent
+    },
 
+    //manager routes
+    {
+        path: 'gerente/home',
+        component: InicioManagerComponent
+    },
+    {
+        path: 'gerente/clients',
+        component: ClientesManagerComponent
+    },
+    {
+        path: 'clients/consulta',
+        component: ConsultaComponent
+    },
+    {
+        path: 'clients/melhores',
+        component: MelhoresClientesComponent
+    },
+
+    //adm routes
+    {
+        path: 'adm/home',
+        component: InicioAdmComponent
+    },
+    {
+        path: 'adm/clients',
+        component: ClientesAdmComponent
+    },
+    {
+        path: 'gerentes',
+        component: GerentesComponent
+    },
+    {
+        path: 'gerentes/edit',
+        component: EditarGerentesComponent
+    },
+
+    //default
     { path: "", redirectTo: "home", pathMatch: "full"},
 ];

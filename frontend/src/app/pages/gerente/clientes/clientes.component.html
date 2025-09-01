@@ -1,0 +1,55 @@
+<div class="row">
+  <div class="col-4">
+    <hr>    
+    <h1>
+      Clientes
+    </h1>
+    <hr>>
+  </div>
+
+  <div class="col-6">
+    <div>
+      <label for="searchtype">Pesquisar por:</label>
+      
+      <div>
+        <select name="searchtype" id="searchtype">
+          <option value="">Selecionar</option>
+          <option value="nome">Nome</option>
+          <option value="cpf">CPF</option>
+          <option value="salario">Salario</option>
+        </select>
+        
+        <input 
+          type="text" 
+          name="search"
+          id="search"
+          placeholder="Digite sua pesquisa..."
+        />
+        
+        <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
+      </div>
+    </div>
+    <div>    
+      <table>
+        <thead>
+          <tr>
+            <th>CPF</th>
+            <th>Nome</th>
+            <th>Cidade</th>
+            <th>Estado</th>
+            <th>Saldo</th>
+            <th>Limite</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+        </tbody>
+      </table>
+    </div>
+    <a routerLink="/gerente/home"
+        class="button"
+        routerLinkActive="active"><i class="fa-solid fa-location-arrow btnVoltar"></i>
+    </a>
+  </div>
+</div>
