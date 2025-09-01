@@ -1,6 +1,7 @@
 package dac.ufpr.cliente.service;
 
 import dac.ufpr.cliente.dto.ClienteDto;
+import dac.ufpr.cliente.enums.EnClienteFiltro;
 import dac.ufpr.cliente.exception.custom.BadRequestException;
 import dac.ufpr.cliente.exception.custom.ResourceAlreadyExistsException;
 import dac.ufpr.cliente.mapper.ClienteMapper;
@@ -29,15 +30,34 @@ public class ClienteService {
 
     private ClienteRepository repository;
 
+    public String listar(String filtro) {
+        log.info("Listando clientes com filtro: {}", filtro);
+
+        switch (EnClienteFiltro.findBy(filtro)) {
+            case PARA_APROVAR:
+                break;
+            case ADM_RELATORIO_CLIENTES:
+                break;
+            case MELHORES_CLIENTES:
+                break;
+            default:
+                return null;
+        }
+
+
+
+        return "Lista de clientes com filtro: " + filtro;
+    }
+
     public void criar(ClienteDto clienteDto) {
         log.info("Criando cliente: {}", clienteDto);
 
         if (validarDados(clienteDto)) {
-            throw new BadRequestException();
+            throw new BadRequestException("Dados inválidos.");
         }
 
         if (repository.existsByCpf(clienteDto.cpf())) {
-            throw new ResourceAlreadyExistsException();
+            throw new ResourceAlreadyExistsException("Cliente já existe ou aguardando aprovação.");
         }
 
         repository.save(ClienteMapper.toEntity(clienteDto));
