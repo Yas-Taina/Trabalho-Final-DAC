@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [RouterModule],
+  imports: [],
   templateUrl: './inicio.component.html',
   styleUrl: './inicio.component.css'
 })
-export class InicioManagerComponent {
+export class InicioAdmComponent {
 
 }

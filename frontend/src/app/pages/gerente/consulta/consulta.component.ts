@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-inicio',
+  selector: 'app-consulta',
   standalone: true,
   imports: [RouterModule],
-  templateUrl: './inicio.component.html',
-  styleUrl: './inicio.component.css'
+  templateUrl: './consulta.component.html',
+  styleUrl: './consulta.component.css'
 })
-export class InicioManagerComponent {
+export class ConsultaComponent {
 
 }
