@@ -11,8 +11,9 @@ public class GerenteMapper {
                 dto.nome(),
                 dto.email(),
                 dto.senha(),
-                dto.tipo());
-    };
+                dto.tipo()
+        );
+    }
 
     public static GerenteDto toDto(Gerente entity) {
         return new GerenteDto(
@@ -21,6 +22,7 @@ public class GerenteMapper {
                 entity.getNome(),
                 entity.getEmail(),
                 entity.getSenha(),
-                entity.getTipo());
-    };
+                entity.getTipo()
+        );
+    }
 }

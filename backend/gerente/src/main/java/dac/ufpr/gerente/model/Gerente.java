@@ -1,13 +1,20 @@
 package dac.ufpr.gerente.model;
 
-import jakarta.persistence.*;         // JPA (Jakarta Persistence)
-import lombok.AllArgsConstructor;     // Lombok
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "gerente")
+// @Table(
+//     name = "gerente",
+//     uniqueConstraints = {
+//         @UniqueConstraint(name = "uk_gerente_cpf", columnNames = "cpf"),
+//         @UniqueConstraint(name = "uk_gerente_email", columnNames = "email")
+//     }
+// )
+@Table(name = "gerente") // sem schema
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -17,9 +24,19 @@ public class Gerente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, length = 11)
     private String cpf;
+
+    @Column(nullable = false)
     private String nome;
+
+    @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String senha;
+
+    @Column(nullable = false)
     private String tipo;
 }

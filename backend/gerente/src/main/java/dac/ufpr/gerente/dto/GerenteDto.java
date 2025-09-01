@@ -7,5 +7,4 @@ public record GerenteDto(
         String email,
         String senha,
         String tipo
-) {
-}
+) {}
