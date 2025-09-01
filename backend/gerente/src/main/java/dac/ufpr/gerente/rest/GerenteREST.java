@@ -21,69 +21,69 @@ import dac.ufpr.gerente.model.Gerente;
 @RestController
 public class GerenteREST {
 
-    public static List<Gerente> lista = new ArrayList<>();
+    // public static List<Gerente> lista = new ArrayList<>();
 
-    static {
-        lista.add(new Gerente("11111111111", "Carlos Silva", "carlos@empresa.com", "123", "ADMINISTRADOR"));
-        lista.add(new Gerente("22222222222", "Maria Souza", "maria@empresa.com", "456", "ADMINISTRADOR"));
-        lista.add(new Gerente("33333333333", "João Lima", "joao@empresa.com", "789", "ADMINISTRADOR"));
-    }
+    // // static {
+    // //     lista.add(new Gerente("11111111111", "Carlos Silva", "carlos@empresa.com", "123", "ADMINISTRADOR"));
+    // //     lista.add(new Gerente("22222222222", "Maria Souza", "maria@empresa.com", "456", "ADMINISTRADOR"));
+    // //     lista.add(new Gerente("33333333333", "João Lima", "joao@empresa.com", "789", "ADMINISTRADOR"));
+    // // }
 
-    @GetMapping("/gerentes")
-    public ResponseEntity<List<Gerente>> getTodosGerentes() {
-        return ResponseEntity.ok(lista);
-    }
+    // @GetMapping("/gerentes")
+    // public ResponseEntity<List<Gerente>> getTodosGerentes() {
+    //     return ResponseEntity.ok(lista);
+    // }
 
-    @GetMapping("/gerentes/{cpf}")
-    public ResponseEntity<Gerente> obterGerenteByCpf(@PathVariable("cpf") String cpf) {
-        return lista.stream()
-                .filter(ger -> cpf.equals(ger.getCpf()))
-                .findFirst()
-                .map(gerenteEncontrado -> ResponseEntity.ok(gerenteEncontrado))
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
+    // @GetMapping("/gerentes/{cpf}")
+    // public ResponseEntity<Gerente> obterGerenteByCpf(@PathVariable("cpf") String cpf) {
+    //     return lista.stream()
+    //             .filter(ger -> cpf.equals(ger.getCpf()))
+    //             .findFirst()
+    //             .map(gerenteEncontrado -> ResponseEntity.ok(gerenteEncontrado))
+    //             .orElseGet(() -> ResponseEntity.notFound().build());
+    // }
 
-    @PostMapping("/gerentes")
-    public ResponseEntity<?> inserirGerente(@RequestBody Gerente gerente) {
-        boolean cpfJaExiste = lista.stream().anyMatch(g -> g.getCpf().equals(gerente.getCpf()));
+    // @PostMapping("/gerentes")
+    // public ResponseEntity<?> inserirGerente(@RequestBody Gerente gerente) {
+    //     boolean cpfJaExiste = lista.stream().anyMatch(g -> g.getCpf().equals(gerente.getCpf()));
 
-        if (cpfJaExiste) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body("Erro: Já existe um gerente com o CPF " + gerente.getCpf());
-        }
-        lista.add(gerente);
-        return new ResponseEntity<>(gerente, HttpStatus.CREATED);
-    }
+    //     if (cpfJaExiste) {
+    //         return ResponseEntity
+    //                 .status(HttpStatus.CONFLICT)
+    //                 .body("Erro: Já existe um gerente com o CPF " + gerente.getCpf());
+    //     }
+    //     lista.add(gerente);
+    //     return new ResponseEntity<>(gerente, HttpStatus.CREATED);
+    // }
 
-    @PutMapping("/gerentes/{cpf}")
-    public ResponseEntity<Gerente> alterarGerente(@PathVariable("cpf") String cpf,
-            @RequestBody Gerente gerenteAtualizado) {
-        Optional<Gerente> gerenteExistenteOpt = lista.stream()
-                .filter(ger -> ger.getCpf().equals(cpf))
-                .findFirst();
+    // @PutMapping("/gerentes/{cpf}")
+    // public ResponseEntity<Gerente> alterarGerente(@PathVariable("cpf") String cpf,
+    //         @RequestBody Gerente gerenteAtualizado) {
+    //     Optional<Gerente> gerenteExistenteOpt = lista.stream()
+    //             .filter(ger -> ger.getCpf().equals(cpf))
+    //             .findFirst();
 
-        if (gerenteExistenteOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+    //     if (gerenteExistenteOpt.isEmpty()) {
+    //         return ResponseEntity.notFound().build();
+    //     }
 
-        Gerente gExistente = gerenteExistenteOpt.get();
-        gExistente.setNome(gerenteAtualizado.getNome());
-        gExistente.setEmail(gerenteAtualizado.getEmail());
-        gExistente.setSenha(gerenteAtualizado.getSenha());
-        gExistente.setTipo(gerenteAtualizado.getTipo());
+    //     Gerente gExistente = gerenteExistenteOpt.get();
+    //     gExistente.setNome(gerenteAtualizado.getNome());
+    //     gExistente.setEmail(gerenteAtualizado.getEmail());
+    //     gExistente.setSenha(gerenteAtualizado.getSenha());
+    //     gExistente.setTipo(gerenteAtualizado.getTipo());
 
-        return ResponseEntity.ok(gExistente);
-    }
+    //     return ResponseEntity.ok(gExistente);
+    // }
 
-    @DeleteMapping("/gerentes/{cpf}")
-    public ResponseEntity<Void> removerGerente(@PathVariable("cpf") String cpf) {
-        boolean foiRemovido = lista.removeIf(g -> g.getCpf().equals(cpf));
+    // @DeleteMapping("/gerentes/{cpf}")
+    // public ResponseEntity<Void> removerGerente(@PathVariable("cpf") String cpf) {
+    //     boolean foiRemovido = lista.removeIf(g -> g.getCpf().equals(cpf));
 
-        if (foiRemovido) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+    //     if (foiRemovido) {
+    //         return ResponseEntity.noContent().build();
+    //     } else {
+    //         return ResponseEntity.notFound().build();
+    //     }
+    // }
 }
