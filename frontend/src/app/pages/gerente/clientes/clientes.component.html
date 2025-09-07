@@ -4,7 +4,7 @@
     <h1>
       Clientes
     </h1>
-    <hr>>
+    <hr>
   </div>
 
   <div class="col-6">
@@ -16,7 +16,6 @@
           <option value="">Selecionar</option>
           <option value="nome">Nome</option>
           <option value="cpf">CPF</option>
-          <option value="salario">Salario</option>
         </select>
         
         <input 
@@ -39,11 +38,19 @@
             <th>Estado</th>
             <th>Saldo</th>
             <th>Limite</th>
-            <th>Ações</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
-          
+          <tr *ngFor="let cliente of clientes">
+            <td>{{cliente.cpf}}</td>
+            <td>{{cliente.nome}}</td>
+            <td>{{cliente.endereco?.cidade}}</td>
+            <td>{{cliente.endereco?.estado}}</td>
+            <td>{{cliente.saldo}}</td>
+            <td>{{cliente.limite}}</td>
+            <td><a href="#"><i class="fa-solid fa-magnifying-glass"></i></a></td>
+          </tr>          
         </tbody>
       </table>
     </div>

@@ -1,10 +1,10 @@
+import { Endereco } from "./endereco";
+
 export interface DadosClienteResponse { 
     cpf?: string;
     nome?: string;
     email?: string;
-    endereco?: string;
-    cidade?: string;
-    estado?: string;
+    endereco?: Endereco;
     salario?: number;
     conta?: string;
     saldo?: string;

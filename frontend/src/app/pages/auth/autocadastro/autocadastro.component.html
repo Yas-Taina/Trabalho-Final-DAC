@@ -19,7 +19,10 @@
       </div>
 
       <div class="row">
-        <!-- Telefone removido pois não está no modelo -->
+        <div class="col-6">
+          <label for="telefone" class="form-label">Telefone</label>
+          <input type="text" class="form-control" id="telefone" formControlName="telefone" required placeholder="(00)00000-0000" mask="(00)00000-0000" />
+        </div>
         <div class="col-6">
           <label for="salario" class="form-label">Salário</label>
           <input type="number" class="form-control" id="salario" formControlName="salario" required placeholder="R$" />

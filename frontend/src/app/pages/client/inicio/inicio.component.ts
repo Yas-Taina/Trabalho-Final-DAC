@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
+import { ContaResponse } from '../../../services';
 
 @Component({
   selector: 'app-inicio',
@@ -10,4 +11,7 @@ import { RouterModule, Router } from '@angular/router';
 })
 export class InicioClientComponent {
   constructor(private router: Router){}
+  conta: ContaResponse = {
+    saldo: 9999.99,
+  }
 }

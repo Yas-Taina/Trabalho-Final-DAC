@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ClientesService, AutocadastroInfo } from '../../../services';
+import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-autocadastro',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgxMaskDirective],
   templateUrl: './autocadastro.component.html',
   styleUrl: './autocadastro.component.css'
 })
@@ -37,6 +38,7 @@ export class AutocadastroComponent {
     email: [this.clienteModel.email, [Validators.required, Validators.email]],
     nome: [this.clienteModel.nome, [Validators.required, Validators.minLength(3)]],
     salario: [this.clienteModel.salario, [Validators.required]],
+    telefone: [this.clienteModel.telefone, [Validators.required]],
     endereco: this.builder.group({
       tipo: [this.clienteModel.endereco?.tipo ?? '', [Validators.required]],
       logradouro: [this.clienteModel.endereco?.logradouro ?? '', [Validators.required]],

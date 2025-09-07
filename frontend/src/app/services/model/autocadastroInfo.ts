@@ -6,6 +6,7 @@ export interface AutocadastroInfo {
     email?: string;
     nome?: string;
     salario?: number;
+    telefone?: string;
     endereco?: Endereco;
 }
 

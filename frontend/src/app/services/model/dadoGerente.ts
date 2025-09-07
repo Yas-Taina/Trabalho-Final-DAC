@@ -11,6 +11,8 @@ export interface DadoGerente {
      * Email do gerente
      */
     email?: string;
+
+    telefone?: string;
     /**
      * Tipo do gerente
      */

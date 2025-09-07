@@ -3,8 +3,8 @@ import { DadoGerente } from './dadoGerente';
 
 
 export interface ItemDashboardResponse { 
-    gerente?: DadoGerente;
-    clientes?: Array<DadoConta>;
+    gerente?: String;
+    clientes?: number;
     /**
      * Saldo positivo das suas contas
      */

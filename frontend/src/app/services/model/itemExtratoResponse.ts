@@ -2,7 +2,7 @@ export interface ItemExtratoResponse {
     /**
      * Data da movimentação
      */
-    data?: string;
+    data: string;
     /**
      * Tipo da movimentação
      */
