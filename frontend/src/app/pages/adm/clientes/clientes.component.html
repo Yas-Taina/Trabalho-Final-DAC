@@ -1,1 +1,46 @@
-<p>clientes works!</p>
+<div class="row">
+  <div class="col-4">
+    <hr>    
+    <h1>
+      Clientes
+    </h1>
+    <hr>
+  </div>
+
+  <div class="col-6">
+    <div>    
+      <table>
+        <thead>
+          <tr>
+            <th>CPF</th>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>Salário</th>
+            <th>Conta</th>
+            <th>Saldo</th>
+            <th>Limite</th>
+            <th>Gerente</th>
+            <th>Nome do Gerente</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cliente of clientes">
+            <td>{{cliente.cpf}}</td>
+            <td>{{cliente.nome}}</td>
+            <td>{{cliente.email}}</td>
+            <td>{{cliente.salario}}</td>
+            <td>{{cliente.limite}}</td>
+            <td>{{cliente.saldo}}</td>
+            <td>{{cliente.limite}}</td>
+            <td>{{cliente.gerente}}</td>
+            <td>{{cliente.gerente_nome}}</td>
+          </tr>          
+        </tbody>
+      </table>
+    </div>
+    <a routerLink="/adm/home"
+        class="button"
+        routerLinkActive="active"><i class="fa-solid fa-location-arrow btnVoltar"></i>
+    </a>
+  </div>
+</div>

@@ -1,1 +1,41 @@
-<p>gerentes works!</p>
+<div class="row">
+  <div class="col-4">
+    <hr>    
+    <h1>
+      Gerentes
+    </h1>
+    <hr>
+  </div>
+
+  <div class="col-6">
+    <div>    
+      <table>
+        <thead>
+          <tr>
+            <th>CPF</th>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>telefone</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let gerente of gerentes">
+            <td>{{gerente.cpf}}</td>
+            <td>{{gerente.nome}}</td>
+            <td>{{gerente.email}}</td>
+            <td>{{gerente.telefone}}</td>
+            <td>
+                <a><i class="fa-solid fa-magnifying-glass"></i></a>
+                <a><i class="fa-solid fa-trash"></i></a>
+            </td>
+          </tr>          
+        </tbody>
+      </table>
+    </div>
+    <a routerLink="/adm/home"
+        class="button"
+        routerLinkActive="active"><i class="fa-solid fa-location-arrow btnVoltar"></i>
+    </a>
+  </div>
+</div>

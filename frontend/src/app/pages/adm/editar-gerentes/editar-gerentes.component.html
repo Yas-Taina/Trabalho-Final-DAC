@@ -1,1 +1,41 @@
-<p>editar-gerentes works!</p>
+<div class="row">
+    <div class="col-5">
+        <hr>
+        <h1>
+            Gerente
+        </h1>
+        <hr>
+    </div>
+    <div class="col-5">
+
+    <form action="">
+
+        <div class="row">
+            <div class="col-7">
+          <label for="nome" class="form-label">Nome</label>
+          <input type="text" class="form-control" id="nome" name="nome" minlength="2" maxlength="100" required />
+          </div>
+          <div class="col-5">
+            <label for="cpf" class="form-label">CPF</label>
+            <input type="text" class="form-control" id="cpf" name="cpf" required placeholder="000.000.000-00"
+              mask="000.000.000-00" />
+          </div>    
+        </div>
+
+        <div class="row">
+          <div class="col-7">
+            <label for="email" class="form-label">E-mail</label>
+            <input type="email" class="form-control" id="email" name="email" maxlength="100" required email />
+          </div>
+          <div class="col-5">
+            <label for="telefone" class="form-label">Telefone</label>
+            <input type="string" class="form-control" id="telefone" name="telefone" required placeholder="(00)00000-0000" mask="(00)00000-0000" />
+          </div>        
+        </div>
+      <a><i class="fa-solid fa-floppy-disk"></i></a>
+      <a routerLink="/adm/home"
+                routerLinkActive="active"><i class="fa-solid fa-location-arrow btnVoltar"></i></a>
+    </form>
+    </div>
+</div>
+

@@ -3,17 +3,26 @@
     <h1>Extrato</h1>
     <hr>
     <div class="d-flex flex-row-reverse">
-        <a href="#"><i class="fa-solid fa-filter"></i></a>
+        <a (click)="toggleFiltro()"><i class="fa-solid fa-filter"></i></a>
         <a routerLink="/client/home"
                 class="button"
                 routerLinkActive="active"><i class="fa-solid fa-location-arrow btnVoltar"></i>
         </a>
     </div>
-    <div class="d-flex">
-        <table>
+    <div *ngIf="mostrarFiltro">
+        <label for="inicio">Data de Início:</label>
+        <input type="date" id="inicio" [(ngModel)]="dataInicio">
+
+        <label for="fim">Data de Fim:</label>
+        <input type="date" id="fim" [(ngModel)]="dataFim">
+
+        <button (click)="aplicarFiltro()">Aplicar</button>
+    </div>
+    <div class="d-flex flex-column" *ngFor="let dia of (extratosPorDia | keyvalue)">
+        <div><h3>{{ dia.key }}</h3></div>
+        <div><table>
             <thead>
                 <tr>
-                    <th>Data</th>
                     <th>Hora</th>
                     <th>Operação</th>
                     <th>Origem</th>
@@ -21,6 +30,17 @@
                     <th>Valor</th>
                 </tr>
             </thead>
-        </table>
+            <tbody>
+                <tr *ngFor="let t of dia.value">
+                    <td>{{ t.data }}</td>
+                    <td>{{ t.tipo }}</td>
+                    <td>{{ t.origem }}</td>
+                    <td>{{ t.destino }}</td>
+                    <td>{{ t.valor }}</td>
+                    </tr>
+            </tbody>
+        </table></div>
+        <hr>
     </div>
+
 </div>

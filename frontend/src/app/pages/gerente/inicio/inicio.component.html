@@ -8,43 +8,33 @@
   </div>
 
   <div class="col-6">
-    <!-- Tabela -->
-    <div>     
+    <div *ngIf="clientes.length !== 0">     
       <table>
         <thead>
           <tr>
             <th>Nome</th>
             <th>CPF</th>
             <th>Salario</th>
-            <th>Ações</th>
+            <th></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody *ngFor="let cliente of clientes">
           <tr> 
-            <td>Joao</td>
-            <td>
-              <span>123.456.789-00</span>
-            </td>
-            <td>
-              <span>duas bala juquinha</span>
-            </td>
+            <td>{{cliente.nome}}</td>
+            <td>{{cliente.cpf}}</td>
+            <td>{{cliente.salario}}</td>
             <td>
               <button>
                 Aprovar
               </button>
-                <button>
+              <button>
                 Recusar
               </button>
             </td>
-          </tr>
-          
-          <tr>
-            <td colspan="5">
-              Nenhum resultado encontrado
-            </td>
-          </tr>
+          </tr>          
         </tbody>
       </table>
     </div>
+    <p *ngIf="clientes.length === 0">Nenhum Cliente Aguardando Aprovação</p>
   </div>
 </div>

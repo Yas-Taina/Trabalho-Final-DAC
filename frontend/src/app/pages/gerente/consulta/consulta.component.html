@@ -19,65 +19,61 @@
         <div>
         <div class="row">
           <h5>Nome</h5>
-          <p>Placeholder</p>
+          <p>{{cliente.nome}}</p>
         </div>
         <div class="row">
           <div class="col-7">
             <h5>E-mail</h5>
-            <p>Placeholder</p>
+            <p>{{cliente.email}}</p>
           </div>
           <div class="col-5">
             <h5>CPF</h5>
-            <p>Placeholder</p>
+            <p>{{cliente.cpf}}</p>
           </div>        
         </div>
         <div class="row">
           <div class="col-6">
             <h5>Salário</h5>
-            <p>Placeholder</p>
+            <p>{{cliente.salario}}</p>
           </div>
           <div class="col-6">
             <h5>Limite</h5>
-            <p>Placeholder</p>
+            <p>{{cliente.limite}}</p>
           </div>
         </div>
         <div class="row">
-          <div class="col-4">
+          <div class="col-3">
             <h5>CEP</h5>
-            <p>Placeholder</p>
+            <p>{{cliente.endereco?.cep}}</p>
           </div>
-          <div class="col-6">
+          <div class="col-7">
             <h5>Cidade</h5>
-            <p>Placeholder</p>
+            <p>{{cliente.endereco?.cidade}}</p>
           </div>
           <div class="col-2">
             <h5>UF</h5>
-            <p>Placeholder</p>
+            <p>{{cliente.endereco?.estado}}</p>
           </div>
         </div>
         <div class="row">
             <div class="col-4">
                 <h5>Tipo</h5>
-                <p>Placeholder</p>
+                <p>{{cliente.endereco?.tipo}}</p>
             </div>
             <div class="col-8">
                 <h5>Logradouro</h5>
-                <p>Placeholder</p>
+                <p>{{cliente.endereco?.logradouro}}</p>
             </div>
         </div>
 
         <div class="row">
             <div class="col-3">
                 <h5>Nº</h5>
-                <p>Placeholder</p>
+                <p>{{cliente.endereco?.numero}}</p>
             </div>
-            <div class="col-4">
-                <h5>Bairro</h5>
-                <p>Placeholder</p>
-            </div>
-            <div class="col-5">
+            <div class="col-9">
                 <h5>Complemento</h5>
-                <p>Placeholder</p>
+                <p>{{cliente.endereco?.complemento}}</p>
             </div>
         </div>
         </div>
