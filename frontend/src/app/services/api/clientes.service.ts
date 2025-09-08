@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BaseService } from '../api.base.service';
-import { AutocadastroInfo, PerfilInfo, ContaResponse, DadosClienteResponse } from '../model';
+import { AutocadastroInfo, PerfilInfo, ContaResponse, DadosClienteResponse, LoginResponse } from '../model';
 
 
 @Injectable({
@@ -11,16 +11,17 @@ import { AutocadastroInfo, PerfilInfo, ContaResponse, DadosClienteResponse } fro
 })
 export class ClientesService extends BaseService {
   private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token'); // ou outro storage
+    const stored = localStorage.getItem('token');
+    const dados: LoginResponse = stored ? JSON.parse(stored) : "" // ou outro storage
     return new HttpHeaders({
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${dados.token}`,
     });
   }
 
   // GET /clientes?filtro=...
   getClientes(filtro?: 'para_aprovar' | 'adm_relatorio_clientes' | 'melhores_clientes'): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.get<any>('/clientes', filtro ? { filtro } : {}, headers);
+    return this.get<DadosClienteResponse[]>('/clientes', filtro ? { filtro } : {}, headers);
   }
 
   // POST /clientes (autocadastro)

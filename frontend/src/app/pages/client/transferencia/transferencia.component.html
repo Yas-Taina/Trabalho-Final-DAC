@@ -1,28 +1,27 @@
 <div class="row">
-    <div class="col-5">
-        <hr>
-        <h1>
-            Transferir
-        </h1>
-        <hr>
-    </div>
-    <div class="col-5">
-        <a routerLink="/client/home"
-                class="button"
-                routerLinkActive="active"><i class="fa-solid fa-location-arrow btnVoltar"></i>
-        </a>
-        <form>
-        <div>
-            <label for="saldo" class="form-label">Saldo a ser transferido</label>
-            <input type="number" class="form-control" id="saldo" name="saldo" required placeholder="R$" />
-          </div>
-          <div>
-            <label for="conta" class="form-label">Conta de Destino</label>
-            <input type="number" class="form-control" id="conta" name="conta" required/>
-          </div>
-        <div>
-        <button type="button">Confirmar</button>
-        </div>
-        </form>
-    </div>
+  <div class="col-5">
+    <hr>
+    <h1>
+      Transferir
+    </h1>
+    <hr>
+  </div>
+  <div class="col-5">
+    <a routerLink="/client/home" class="button" routerLinkActive="active"><i
+        class="fa-solid fa-location-arrow btnVoltar"></i>
+    </a>
+    <form [formGroup]="transferenciaForm" (ngSubmit)="onSubmit()">
+      <div>
+        <label for="saldo" class="form-label">Saldo a ser transferido</label>
+        <input type="number" class="form-control" id="saldo" name="saldo" formControlName="valor" required placeholder="R$" />
+      </div>
+      <div>
+        <label for="conta" class="form-label">Conta de Destino</label>
+        <input type="number" class="form-control" id="conta" name="conta" formControlName="numeroContaDestino" required />
+      </div>
+      <div>
+        <button type="submit">Confirmar</button>
+      </div>
+    </form>
+  </div>
 </div>

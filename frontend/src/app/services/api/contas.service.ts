@@ -2,16 +2,17 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
 import { BaseService } from '../api.base.service';
-import { SaldoResponse, OperacaoResponse, TransferenciaResponse, ExtratoResponse } from '../model';
+import { SaldoResponse, OperacaoResponse, TransferenciaResponse, ExtratoResponse, LoginResponse } from '../model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ContasService extends BaseService {
   private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token');
+    const stored = localStorage.getItem('token');
+    const dados: LoginResponse = stored ? JSON.parse(stored) : "" // ou outro storage
     return new HttpHeaders({
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${dados.token}`,
     });
   }
 

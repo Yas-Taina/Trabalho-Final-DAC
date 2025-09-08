@@ -17,8 +17,8 @@ export class LoginService extends BaseService {
       .pipe(
         tap((res) => {
           console.log('Login response:', res);
-          if (res?.token) {
-            localStorage.setItem(this.tokenKey, res.token);
+          if (res) {
+            localStorage.setItem(this.tokenKey, JSON.stringify(res));
           }
         },
       )
@@ -27,9 +27,10 @@ export class LoginService extends BaseService {
 
   // POST /logout
   logout(): Observable<LogoutResponse> {
-    const token = localStorage.getItem(this.tokenKey);
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
+    const stored = localStorage.getItem('token');
+    const dados: LoginResponse = stored ? JSON.parse(stored) : "" // ou outro storage
+    const headers =  new HttpHeaders({
+      Authorization: `Bearer ${dados.token}`,
     });
 
     return this.post<LogoutResponse>('/logout', {}, headers).pipe(
@@ -42,5 +43,10 @@ export class LoginService extends BaseService {
   // helper: verifica se está logado
   isLoggedIn(): boolean {
     return !!localStorage.getItem(this.tokenKey);
+  }
+
+  sessionInfo(): LoginResponse | null {
+    const sessionData = localStorage.getItem(this.tokenKey);
+    return sessionData ? JSON.parse(sessionData) as LoginResponse : null;
   }
 }

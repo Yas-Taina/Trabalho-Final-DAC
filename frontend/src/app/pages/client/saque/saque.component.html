@@ -1,24 +1,23 @@
 <div class="row">
-    <div class="col-5">
-        <hr>
-        <h1>
-            Saque
-        </h1>
-        <hr>
-    </div>
-    <div class="col-5">
-        <a routerLink="/client/home"
-                class="button"
-                routerLinkActive="active"><i class="fa-solid fa-location-arrow btnVoltar"></i>
-        </a>
-        <form>
-        <div>
-            <label for="saldo" class="form-label">Saldo a ser sacado</label>
-            <input type="number" class="form-control" id="saldo" name="saldo" required placeholder="R$" />
-          </div>
-        <div>
-        <button type="button">Confirmar</button>
-        </div>
-        </form>
-    </div>
+  <div class="col-5">
+    <hr>
+    <h1>
+      Saque
+    </h1>
+    <hr>
+  </div>
+  <div class="col-5">
+    <a routerLink="/client/home" class="button" routerLinkActive="active"><i
+        class="fa-solid fa-location-arrow btnVoltar"></i>
+    </a>
+    <form [formGroup]="saqueForm" (ngSubmit)="onSubmit()">
+      <div>
+        <label for="valor" class="form-label">Saldo a ser sacado</label>
+        <input type="number" class="form-control" id="valor" name="valor" formControlName="valor" required placeholder="R$" />
+      </div>
+      <div>
+        <button type="submit" [disabled]="saqueForm.invalid">Confirmar</button>
+      </div>
+    </form>
+  </div>
 </div>
