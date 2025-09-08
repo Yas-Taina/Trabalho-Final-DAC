@@ -1,7 +1,6 @@
 package dac.ufpr.cliente.config;
 
 import org.springframework.amqp.core.Declarable;
-import org.springframework.amqp.core.Declarables;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
