@@ -3,8 +3,9 @@ package dac.ufpr.cliente.mapper;
 import dac.ufpr.cliente.dto.ClienteDto;
 import dac.ufpr.cliente.entity.Cliente;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
+@Component
 public class ClienteMapper {
 
     public static Cliente toEntity(ClienteDto dto) {
@@ -35,6 +36,18 @@ public class ClienteMapper {
                 entity.getCidade(),
                 entity.getEstado()
         );
+    }
+
+    public static void updateEntityFromDto(ClienteDto dto, Cliente entity) {
+        entity.setNome(dto.nome());
+        entity.setEmail(dto.email());
+        entity.setCpf(dto.cpf());
+        entity.setTelefone(dto.telefone());
+        entity.setSalario(dto.salario());
+        entity.setEndereco(dto.endereco());
+        entity.setCEP(dto.CEP());
+        entity.setCidade(dto.cidade());
+        entity.setEstado(dto.estado());
     }
 
 }

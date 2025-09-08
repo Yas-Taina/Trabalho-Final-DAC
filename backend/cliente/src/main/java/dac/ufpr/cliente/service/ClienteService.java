@@ -1,9 +1,10 @@
 package dac.ufpr.cliente.service;
 
 import dac.ufpr.cliente.dto.ClienteDto;
-import dac.ufpr.cliente.enums.EnClienteFiltro;
+import dac.ufpr.cliente.entity.Cliente;
 import dac.ufpr.cliente.exception.custom.BadRequestException;
 import dac.ufpr.cliente.exception.custom.ResourceAlreadyExistsException;
+import dac.ufpr.cliente.exception.custom.ResourceNotFoundException;
 import dac.ufpr.cliente.mapper.ClienteMapper;
 import dac.ufpr.cliente.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class ClienteService {
 
@@ -30,38 +31,53 @@ public class ClienteService {
 
     private ClienteRepository repository;
 
-    public String listar(String filtro) {
-        log.info("Listando clientes com filtro: {}", filtro);
-
-        switch (EnClienteFiltro.findBy(filtro)) {
-            case PARA_APROVAR:
-                break;
-            case ADM_RELATORIO_CLIENTES:
-                break;
-            case MELHORES_CLIENTES:
-                break;
-            default:
-                return null;
-        }
-
-
-
-        return "Lista de clientes com filtro: " + filtro;
+    public List<ClienteDto> listar() {
+        return repository.findAll().stream()
+                .map(ClienteMapper::toDto)
+                .toList();
     }
 
-    public void criar(ClienteDto clienteDto) {
+    public ClienteDto consultarPorCpf(String cpf) {
+        return repository.findByCpf(cpf)
+                .map(ClienteMapper::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário"));
+    }
+
+    public ClienteDto criar(ClienteDto clienteDto) {
         log.info("Criando cliente: {}", clienteDto);
 
+        validarCliente(clienteDto, -1L);
+
+        Cliente cliente = repository.save(ClienteMapper.toEntity(clienteDto));
+        log.info("Cliente criado com sucesso: {}", cliente);
+
+        return ClienteMapper.toDto(cliente);
+    }
+
+    public ClienteDto atualizar(String cpf, ClienteDto clienteDto) {
+        log.info("Atualizando cliente com cpf: {}. Dados do cliente: {}", cpf, clienteDto);
+
+        Cliente clienteExistente = repository.findByCpf(cpf)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário"));
+
+        validarCliente(clienteDto, clienteExistente.getId());
+
+        ClienteMapper.updateEntityFromDto(clienteDto, clienteExistente);
+
+        Cliente clienteAtualizado = repository.save(clienteExistente);
+        log.info("Cliente atualizado com sucesso: {}", clienteAtualizado);
+
+        return ClienteMapper.toDto(clienteAtualizado);
+    }
+
+    private void validarCliente(ClienteDto clienteDto, long id) {
         if (validarDados(clienteDto)) {
             throw new BadRequestException("Dados inválidos.");
         }
 
-        if (repository.existsByCpf(clienteDto.cpf())) {
+        if (repository.existsByCpfAndIdNot(clienteDto.cpf(), id)) {
             throw new ResourceAlreadyExistsException("Cliente já existe ou aguardando aprovação.");
         }
-
-        repository.save(ClienteMapper.toEntity(clienteDto));
-        log.info("Cliente criado com sucesso: {}", clienteDto);
     }
 
     private boolean validarDados(ClienteDto clienteDto) {
