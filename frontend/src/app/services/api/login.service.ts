@@ -17,8 +17,8 @@ export class LoginService extends BaseService {
       .pipe(
         tap((res) => {
           console.log('Login response:', res);
-          if (res?.token) {
-            localStorage.setItem(this.tokenKey, res.token);
+          if (res) {
+            localStorage.setItem(this.tokenKey, JSON.stringify(res));
           }
         },
       )
@@ -42,5 +42,10 @@ export class LoginService extends BaseService {
   // helper: verifica se está logado
   isLoggedIn(): boolean {
     return !!localStorage.getItem(this.tokenKey);
+  }
+
+  sessionInfo(): LoginResponse | null {
+    const sessionData = localStorage.getItem(this.tokenKey);
+    return sessionData ? JSON.parse(sessionData) as LoginResponse : null;
   }
 }

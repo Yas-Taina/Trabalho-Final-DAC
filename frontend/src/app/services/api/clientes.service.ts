@@ -20,7 +20,7 @@ export class ClientesService extends BaseService {
   // GET /clientes?filtro=...
   getClientes(filtro?: 'para_aprovar' | 'adm_relatorio_clientes' | 'melhores_clientes'): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.get<any>('/clientes', filtro ? { filtro } : {}, headers);
+    return this.get<DadosClienteResponse[]>('/clientes', filtro ? { filtro } : {}, headers);
   }
 
   // POST /clientes (autocadastro)
