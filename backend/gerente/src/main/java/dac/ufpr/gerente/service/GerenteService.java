@@ -1,6 +1,9 @@
 package dac.ufpr.gerente.service;
 
 import dac.ufpr.gerente.dto.GerenteDto;
+import dac.ufpr.gerente.exception.custom.BadRequestException;
+import dac.ufpr.gerente.exception.custom.ResourceAlreadyExistsException;
+import dac.ufpr.gerente.exception.custom.ResourceNotFoundException;
 import dac.ufpr.gerente.mapper.GerenteMapper;
 import dac.ufpr.gerente.model.Gerente;
 import dac.ufpr.gerente.repository.GerenteRepository;
@@ -21,59 +24,46 @@ import java.util.regex.Pattern;
 public class GerenteService {
 
     private static final Pattern CPF_PATTERN = Pattern.compile("\\d{11}");
-    private static final Pattern EMAIL_PATTERN =
-            Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
 
     private final GerenteRepository repository;
 
     public List<GerenteDto> listar() {
-        return repository.findAll().stream().map(GerenteMapper::toDto).toList();
+        return repository.findAll().stream()
+                .map(GerenteMapper::toDto)
+                .toList();
     }
 
     public GerenteDto buscarPorCpf(String cpf) {
-        Gerente g = repository.findByCpf(cpf)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Gerente não encontrado: " + cpf));
-        return GerenteMapper.toDto(g);
+        return repository.findByCpf(cpf)
+                .map(GerenteMapper::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Gerente"));
     }
 
     @Transactional
-    public GerenteDto criar(GerenteDto dto) {
-        validar(dto);
+    public GerenteDto criar(GerenteDto gerentedto) {
+        log.info("Criando gerente: {}", gerentedto);
+        validarGerente(gerentedto,-1L);
 
-        if (repository.existsByCpf(dto.cpf())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Já existe um gerente com o CPF " + dto.cpf());
-        }
-        if (repository.existsByEmail(dto.email())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Já existe um gerente com o e-mail " + dto.email());
-        }
-
-        Gerente salvo = repository.save(GerenteMapper.toEntity(dto));
-        return GerenteMapper.toDto(salvo);
+        Gerente gerente = repository.save(GerenteMapper.toEntity(gerentedto));
+        log.info("Gerente criado com sucesso: {}", gerente);
+        return GerenteMapper.toDto(gerente);
     }
 
     @Transactional
-    public GerenteDto atualizar(String cpf, GerenteDto dto) {
-        validar(dto);
+    public GerenteDto atualizar(String cpf, GerenteDto gerentedto) {
+        log.info("Atualizando gerente com CPF :{}. Dados do cliente:{}", cpf, gerentedto);
 
-        Gerente g = repository.findByCpf(cpf)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Gerente não encontrado: " + cpf));
+        Gerente gerenteExistente = repository.findByCpf(cpf)
+                .orElseThrow(() -> new ResourceNotFoundException("Gerente"));
 
-        if (!g.getEmail().equals(dto.email()) && repository.existsByEmail(dto.email())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Já existe um gerente com o e-mail " + dto.email());
-        }
+        validarGerente(gerentedto,-1L);
 
-        g.setNome(dto.nome());
-        g.setEmail(dto.email());
-        g.setSenha(dto.senha());
-        g.setTipo(dto.tipo());
+        Gerente gerenteAtualizado = repository.save(gerenteExistente);
+        log.info("Gerente atualizado com sucesso: {}", gerenteAtualizado);
 
-        // como está dentro de @Transactional, o flush acontece automático
-        return GerenteMapper.toDto(g);
+        return GerenteMapper.toDto(gerenteAtualizado);
+
     }
 
     @Transactional
@@ -85,16 +75,24 @@ public class GerenteService {
         repository.deleteByCpf(cpf);
     }
 
-    //  validação simples 
-    private void validar(GerenteDto dto) {
-        if (!StringUtils.hasText(dto.nome())
+    // validação simples
+    private boolean validarDados(GerenteDto dto) {
+        return !StringUtils.hasText(dto.nome())
                 || !StringUtils.hasText(dto.senha())
                 || !StringUtils.hasText(dto.tipo())
                 || !StringUtils.hasText(dto.cpf())
                 || !StringUtils.hasText(dto.email())
                 || !CPF_PATTERN.matcher(dto.cpf()).matches()
-                || !EMAIL_PATTERN.matcher(dto.email()).matches()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dados inválidos");
+                || !EMAIL_PATTERN.matcher(dto.email()).matches();
+    }
+
+    private void validarGerente(GerenteDto gerenteDto, long id) {
+        if (validarDados(gerenteDto)) {
+            throw new BadRequestException("Dados inválidos.");
+        }
+
+        if (repository.existsByCpf(gerenteDto.cpf())) {
+            throw new ResourceAlreadyExistsException("Cliente já existe ou aguardando aprovação.");
         }
     }
 }

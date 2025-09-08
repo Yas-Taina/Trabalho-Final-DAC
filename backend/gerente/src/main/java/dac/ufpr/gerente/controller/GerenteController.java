@@ -35,6 +35,8 @@ public class GerenteController {
         return ResponseEntity.created(location).body(criado);
     }
 
+    
+
     @PutMapping("/{cpf}")
     public ResponseEntity<GerenteDto> alterarGerente(@PathVariable String cpf,
                                                      @RequestBody @Valid GerenteDto dto) {
