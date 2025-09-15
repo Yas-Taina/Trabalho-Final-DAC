@@ -1,8 +1,4 @@
-import { DadoConta } from './dadoConta';
-import { DadoGerente } from './dadoGerente';
-
-
-export interface ItemDashboardResponse { 
+export interface ItemDashboardResponse {
     gerente?: String;
     clientes?: number;
     /**

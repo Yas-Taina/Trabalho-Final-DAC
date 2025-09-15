@@ -1,12 +1,13 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ClienteResponse, ContasService, LoginService } from '../../../services';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-depositar',
   standalone: true,
-  imports: [RouterModule, ReactiveFormsModule],
+  imports: [RouterModule, ReactiveFormsModule, CommonModule],
   templateUrl: './depositar.component.html',
   styleUrl: './depositar.component.css'
 })
