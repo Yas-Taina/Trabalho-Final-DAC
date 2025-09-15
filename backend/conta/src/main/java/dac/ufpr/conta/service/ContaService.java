@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import dac.ufpr.conta.entity.Conta;
-import dac.ufpr.conta.entity.Movimento;
+import dac.ufpr.conta.entity.Monivemntacao;
 import dac.ufpr.conta.exception.BusinessException;
 import dac.ufpr.conta.exception.ForbiddenException;
 import dac.ufpr.conta.exception.NotFoundException;
@@ -36,7 +36,7 @@ public class ContaService {
         c.setSaldo(c.getSaldo().add(v));
         contaRepo.save(c);
 
-        Movimento m = movRepo.save(novoMov(c, "DEPOSITO", numeroConta, null, v));
+        Monivemntacao m = movRepo.save(novoMov(c, "DEPOSITO", numeroConta, null, v));
         publisher.publicarMovimentoRegistrado(m, '+');
         publisher.publicarSaldoAtualizado(c);
     }
@@ -56,7 +56,7 @@ public class ContaService {
         c.setSaldo(c.getSaldo().subtract(v));
         contaRepo.save(c);
 
-        Movimento m = movRepo.save(novoMov(c, "SAQUE", numeroConta, null, v));
+        Monivemntacao m = movRepo.save(novoMov(c, "SAQUE", numeroConta, null, v));
         publisher.publicarMovimentoRegistrado(m, '-');
         publisher.publicarSaldoAtualizado(c);
     }
@@ -80,8 +80,8 @@ public class ContaService {
         cDest.setSaldo(cDest.getSaldo().add(v));
         contaRepo.saveAll(List.of(cOrig, cDest));
 
-        Movimento mOrig = movRepo.save(novoMov(cOrig, "TRANSFERENCIA", origem, destino, v));
-        Movimento mDest = movRepo.save(novoMov(cDest, "TRANSFERENCIA", origem, destino, v));
+        Monivemntacao mOrig = movRepo.save(novoMov(cOrig, "TRANSFERENCIA", origem, destino, v));
+        Monivemntacao mDest = movRepo.save(novoMov(cDest, "TRANSFERENCIA", origem, destino, v));
         publisher.publicarMovimentoRegistrado(mOrig, '-');
         publisher.publicarMovimentoRegistrado(mDest, '+');
         publisher.publicarSaldoAtualizado(cOrig);
@@ -93,8 +93,8 @@ public class ContaService {
             throw new ForbiddenException("Não é o dono da conta");
     }
 
-    private Movimento novoMov(Conta c, String tipo, String origem, String destino, BigDecimal v) {
-        Movimento m = new Movimento();
+    private Monivemntacao novoMov(Conta c, String tipo, String origem, String destino, BigDecimal v) {
+        Monivemntacao m = new Monivemntacao();
         m.setConta(c);
         m.setDataHora(Instant.now());
         m.setTipo(tipo);

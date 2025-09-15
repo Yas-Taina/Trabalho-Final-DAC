@@ -7,7 +7,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
 import dac.ufpr.conta.entity.Conta;
-import dac.ufpr.conta.entity.Movimento;
+import dac.ufpr.conta.entity.Monivemntacao;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -18,7 +18,7 @@ public class EventPublisher {
 
     public static final String EXCHANGE = "bantads.conta.events";
 
-    public void publicarMovimentoRegistrado(Movimento m, char sinal) {
+    public void publicarMovimentoRegistrado(Monivemntacao m, char sinal) {
         var evt = new MovimentoRegistradoEvent(
                 m.getId(),
                 m.getConta().getNumeroConta(),
