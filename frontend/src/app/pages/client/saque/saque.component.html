@@ -17,6 +17,7 @@
         <label for="valor" class="form-label">Saldo a ser sacado</label>
         <input type="number" class="form-control" id="valor" name="valor" formControlName="valor" required placeholder="R$" />
       </div>
+      <div *ngIf="this.saqueForm.get('valor')?.errors">Por favor insira um valor válido</div>
       <div class="d-flex justify-content-center">
         <button type="submit" [disabled]="saqueForm.invalid" class="btn btnAzulRosa">Confirmar</button>
       </div>

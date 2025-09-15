@@ -2,11 +2,12 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ContasService, LoginService, ClienteResponse } from '../../../services';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-saque',
   standalone: true,
-  imports: [RouterModule, ReactiveFormsModule],
+  imports: [RouterModule, ReactiveFormsModule, CommonModule],
   templateUrl: './saque.component.html',
   styleUrl: './saque.component.css'
 })
@@ -42,7 +43,7 @@ export class SaqueComponent {
 
     const { numeroConta, valor } = this.saqueForm.value;
     this.contaService.sacar(numeroConta!, valor!).subscribe({
-      next: (res) => {
+      next: () => {
         alert(`Saque de R$${valor?.toFixed(2)} realizado com sucesso.`);
         this.router.navigate(['/client/home']);
       },

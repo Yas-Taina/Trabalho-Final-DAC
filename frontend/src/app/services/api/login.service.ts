@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { catchError, Observable, tap } from 'rxjs';
-import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+import { HttpHeaders } from '@angular/common/http';
 import { BaseService } from '../api.base.service';
 import { LoginInfo, LoginResponse, LogoutResponse } from '../model';
-import { error } from 'console';
 
 @Injectable({
   providedIn: 'root',

@@ -14,6 +14,7 @@
           email
         />
       </div>
+      <div *ngIf="this.loginForm.get('email')?.errors">Por favor insira um e-mail válido</div>
       <div>
         <label for="senha" class="form-label">Senha</label>
         <input
@@ -26,6 +27,7 @@
           required
         />
       </div>
+      <div *ngIf="this.loginForm.get('senha')?.errors">Por favor insira uma senha</div>
       <div class="d-flex justify-content-center">
         <button type="submit" [disabled]="loginForm.invalid" class="btn btnCreme" style="margin-top: 1rem;">Login</button>
       </div>
