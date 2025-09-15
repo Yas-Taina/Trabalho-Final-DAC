@@ -1,0 +1,29 @@
+.btnIco {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.grade{
+    grid-template-columns: repeat(2, 1fr); 
+    width: 100%;
+}
+
+.btnIco i {
+  margin-bottom: 0.5rem;
+}
+
+.btnText {
+  text-align: center;
+}
+
+.mainCreme{
+    padding: 5rem;
+}
+
+h3 {
+    font-size: 4rem;
+}

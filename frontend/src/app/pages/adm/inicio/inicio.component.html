@@ -1,19 +1,17 @@
-<div class="container">
+<div class="mainCreme">
     <div class="row">
-        <div class="col-6">
             <hr>    
-            <h1>
+            <h1 class="tituloGrande">
                 Inicio
             </h1>
             <hr>
-        </div>
     </div>
     <div class="dashboard">
-        <div *ngFor="let dashboard of dashboards">
-            <div><h6>{{dashboard.gerente}}</h6></div>
-            <div><p>{{dashboard.clientes}}</p></div>
-            <div><p>{{dashboard.saldo_positivo}}</p></div>
-            <div><p>{{dashboard.saldo_negativo}}</p></div>
+        <div class="dashitem" *ngFor="let dashboard of dashboards">
+            <div><h5>{{dashboard.gerente}}</h5></div>
+            <div><h6>Clientes: </h6><p>{{dashboard.clientes}}</p></div>
+            <div><h6>Saldos Positivos: </h6><p>{{dashboard.saldo_positivo}}</p></div>
+            <div><h6>Saldos Negativos: </h6><p>{{dashboard.saldo_negativo}}</p></div>
         </div>
     </div>
 </div>

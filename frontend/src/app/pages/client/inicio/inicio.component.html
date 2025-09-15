@@ -1,41 +1,39 @@
-<div class="row">
-    <div class="col-4">
-    <div class="container"> 
-        <div class="row">
-            <div class="col-6">
-                <a routerLink="/extrato"
-                class="btn btn-primary btn-sm"
-                routerLinkActive="active"><i class="fa-solid fa-file-invoice-dollar"></i><br>Consultar<br>Extrato</a>
-            </div>
-            <div class="col-6">
-                <a routerLink="/transferir"
-                class="btn btn-primary"
-                routerLinkActive="active"><i class="fa-solid fa-money-bill-transfer"></i><br>Transferir</a>                
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <a routerLink="/depositar"
-                class="btn btn-primary"
-                routerLinkActive="active"><i class="fa-solid fa-piggy-bank"></i><br>Depositar</a>
-            </div>
-            <div class="col-6">
-                <a routerLink="/sacar"
-                class="btn btn-primary"
-                routerLinkActive="active"><i class="fa-solid fa-money-bills"></i><br>Sacar</a>
-            </div>
-        </div>
-        <div class="row">
-            <a routerLink="/perfil"
-                class="btn btn-primary"
-                routerLinkActive="active">Alterar Dados Cadastrados</a>
-        </div>
+<div class="row mainCreme justify-content-evenly">
+  <div class="col-4">
+    <div class="container d-flex flex-column align-items-center">
+      <div class="d-grid gap-2 grade">
+        <a routerLink="/extrato" class="btn btnAzul btnIco d-flex flex-column justify-content-center align-items-center"
+           routerLinkActive="active">
+          <i class="fa-solid fa-file-invoice-dollar fa-2x"></i>
+          <span>Consultar<br>Extrato</span>
+        </a>
+        <a routerLink="/transferir" class="btn btnAzul btnIco d-flex flex-column justify-content-center align-items-center"
+           routerLinkActive="active">
+          <i class="fa-solid fa-money-bill-transfer fa-2x"></i>
+          <span>Transferir</span>
+        </a>
+        <a routerLink="/depositar" class="btn btnAzul btnIco d-flex flex-column justify-content-center align-items-center"
+           routerLinkActive="active">
+          <i class="fa-solid fa-piggy-bank fa-2x"></i>
+          <span>Depositar</span>
+        </a>
+        <a routerLink="/sacar" class="btn btnAzul btnIco d-flex flex-column justify-content-center align-items-center"
+           routerLinkActive="active">
+          <i class="fa-solid fa-money-bills fa-2x"></i>
+          <span>Sacar</span>
+        </a>
+      </div>
+      <a routerLink="/perfil" class="btn btnAzul btnText mt-2 w-100" routerLinkActive="active">
+        Alterar Dados Cadastrados
+      </a>
+
     </div>
-    </div>
-    <div class="col-8">
-        <hr>
-        <h1>Saldo</h1>
-        <h3>R${{conta.saldo}}</h3>
-        <hr>
-    </div>
+  </div>
+
+  <div class="col-8 d-flex flex-column justify-content-center">
+    <hr>
+    <h1 class="tituloGrande">Saldo</h1>
+    <h3 class="tituloGrande">R${{conta.saldo}}</h3>
+    <hr>
+  </div>
 </div>
