@@ -1,15 +1,17 @@
-<div class="row">
-  <div class="col-5">
+<div class="row mainRosa justify-content-evenly">
+  <div class="col-5 d-flex flex-column justify-content-center">
     <hr>
-    <h1>
+    <h1 class="tituloGrande">
       Transferir
     </h1>
     <hr>
   </div>
-  <div class="col-5">
-    <a routerLink="/client/home" class="button" routerLinkActive="active"><i
+  <div class="col-4 d-flex flex-column justify-content-center">
+    <div class="d-flex flex-row justify-content-end">
+    <a routerLink="/client/home" class="btnIcon" routerLinkActive="active"><i
         class="fa-solid fa-location-arrow btnVoltar"></i>
     </a>
+    </div>
     <form [formGroup]="transferenciaForm" (ngSubmit)="onSubmit()">
       <div>
         <label for="saldo" class="form-label">Saldo a ser transferido</label>
@@ -21,8 +23,8 @@
         <input type="number" class="form-control" id="conta" name="conta" formControlName="numeroContaDestino" required />
       </div>
       <div *ngIf="this.transferenciaForm.get('numeroContaDestino')?.errors">Por favor insira um número de conta válido</div>
-      <div>
-        <button type="submit">Confirmar</button>
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btnAzulRosa">Confirmar</button>
       </div>
     </form>
   </div>

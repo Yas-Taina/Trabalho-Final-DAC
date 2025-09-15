@@ -1,0 +1,6 @@
+.mainRosa {
+    border: 3rem solid var(--azul);
+    margin: 0px;
+    min-width: 100vw;
+    min-height: 100vh;
+}

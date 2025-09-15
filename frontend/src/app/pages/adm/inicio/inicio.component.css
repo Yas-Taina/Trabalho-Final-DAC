@@ -3,3 +3,18 @@
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
   gap: 1rem; 
 }
+
+.dashitem{
+  background-color: var(--azul);
+  color: var(--creme);
+  padding: 0.85rem;
+}
+
+h5 {
+  font-family: "Allura";
+  font-size: 2rem;
+}
+
+.mainCreme{
+  margin-top: 20rem;
+}

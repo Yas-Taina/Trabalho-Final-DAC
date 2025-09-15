@@ -1,23 +1,25 @@
-<div class="row">
-  <div class="col-5">
+<div class="row mainRosa justify-content-evenly">
+  <div class="col-5 d-flex flex-column justify-content-center">
     <hr>
-    <h1>
+    <h1 class="tituloGrande">
       Saque
     </h1>
     <hr>
   </div>
-  <div class="col-5">
-    <a routerLink="/client/home" class="button" routerLinkActive="active"><i
+  <div class="col-4 d-flex flex-column justify-content-center">
+    <div class="d-flex flex-row justify-content-end">
+    <a routerLink="/client/home" class="btnIcon" routerLinkActive="active"><i
         class="fa-solid fa-location-arrow btnVoltar"></i>
     </a>
+    </div>
     <form [formGroup]="saqueForm" (ngSubmit)="onSubmit()">
       <div>
         <label for="valor" class="form-label">Saldo a ser sacado</label>
         <input type="number" class="form-control" id="valor" name="valor" formControlName="valor" required placeholder="R$" />
       </div>
       <div *ngIf="this.saqueForm.get('valor')?.errors">Por favor insira um valor válido</div>
-      <div>
-        <button type="submit" [disabled]="saqueForm.invalid">Confirmar</button>
+      <div class="d-flex justify-content-center">
+        <button type="submit" [disabled]="saqueForm.invalid" class="btn btnAzulRosa">Confirmar</button>
       </div>
     </form>
   </div>

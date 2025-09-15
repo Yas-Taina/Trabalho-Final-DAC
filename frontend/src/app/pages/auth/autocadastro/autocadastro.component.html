@@ -1,10 +1,13 @@
+<div class="mainAzul">
 <div class="row justify-content-center">
-  <div class="col-4">
+  <div class="col-md-4">
   <form [formGroup]="clienteForm" (ngSubmit)="onSubmit()">
       <div class="row">
+        <div class="col-12">
         <label for="nome" class="form-label">Nome</label>
         <input type="text" class="form-control" id="nome" formControlName="nome" minlength="2" maxlength="100" required />
         <div *ngIf="this.clienteForm.get('nome')?.errors">Por favor insira um nome</div>
+      </div>
       </div>
 
       <div class="row">
@@ -53,17 +56,17 @@
             <input type="text" class="form-control" id="numero" formControlName="numero" required placeholder="00" />
           </div>
           <div *ngIf="this.clienteForm.get('endereco.numero')?.errors">Por favor insira um numero</div>
-          <div class="col-4">
+          <div class="col-9">
             <label for="complemento" class="form-label">Complemento</label>
             <input type="text" class="form-control" id="complemento" formControlName="complemento" placeholder="Bloco, AP..." />
           </div>
-          <div class="col-5">
+        </div>
+        <div class="row">
+          <div class="col-4">
             <label for="cep" class="form-label">CEP</label>
             <input type="text" class="form-control" id="cep" formControlName="cep" required placeholder="00000-000" mask="00000-000" />
           </div>
           <div *ngIf="this.clienteForm.get('endereco.cep')?.errors">Por favor insira um cep válido</div>
-        </div>
-        <div class="row">
           <div class="col-6">
             <label for="cidade" class="form-label">Cidade</label>
             <input type="text" class="form-control" id="cidade" formControlName="cidade" required placeholder="Cidade" />
@@ -76,18 +79,18 @@
           <div *ngIf="this.clienteForm.get('endereco.cidade')?.errors">Por favor insira uma UF</div>
         </div>
       </div>
-      <div>
-        <button type="submit" [disabled]="clienteForm.invalid">Cadastre-se</button>
+      <div class="d-flex justify-content-center">
+        <button type="submit" [disabled]="clienteForm.invalid" class="btn btnCreme" style="margin-top: 1rem;">CADASTRE-SE</button>
       </div>
     </form>
   </div>
-  <div class="col-6">
+  <div class="col-md-6 d-flex flex-column justify-content-center">
     <hr>
-    <h1>Realize Seu Cadastro</h1>
+    <h1 class="tituloGrande">Realize Seu Cadastro</h1>
     <hr>
-    <p>Sua solicitação será enviada para um gerente para análise</p>
-    <p>Já tem uma conta? Realize seu login <a routerLink="/login"
+    <p>SUA SOLICITAÇÃO SERÁ ENVIADA PARA UM GERENTE PARA ANÁLISE<br>JÁ TEM UMA CONTA? REALIZE SEU LOGIN <a routerLink="/login"
               class="textLink"
-              routerLinkActive="active">aqui</a></p>
+              routerLinkActive="active">AQUI</a></p>
   </div>
+</div>
 </div>

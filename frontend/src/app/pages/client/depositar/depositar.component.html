@@ -1,23 +1,25 @@
-<div class="row">
-  <div class="col-5">
+<div class="row mainRosa justify-content-evenly">
+  <div class="col-md-5 d-flex flex-column justify-content-center">
     <hr>
-    <h1>
+    <h1 class="tituloGrande">
       Depositar
     </h1>
     <hr>
   </div>
-  <div class="col-5">
-    <a routerLink="/client/home" class="button" routerLinkActive="active"><i
+  <div class="col-md-4 d-flex flex-column justify-content-center">
+    <div class="d-flex justify-content-end">
+    <a routerLink="/client/home" class="btnIcon" routerLinkActive="active"><i
         class="fa-solid fa-location-arrow btnVoltar"></i>
     </a>
+    </div>
     <form [formGroup]="depositoForm" (ngSubmit)="onSubmit()">
       <div>
         <label for="valor" class="form-label">Saldo a ser depositado</label>
         <input type="number" class="form-control" id="valor" name="valor" formControlName="valor" required placeholder="R$" />
       </div>
       <div *ngIf="this.depositoForm.get('valor')?.errors">Por favor insira um valor válido</div>
-      <div>
-        <button type="submit" [disabled]="depositoForm.invalid">Confirmar</button>
+      <div class="d-flex justify-content-center">
+        <button type="submit" [disabled]="depositoForm.invalid" class="btn btnAzulRosa">Confirmar</button>
       </div>
     </form>
   </div>
