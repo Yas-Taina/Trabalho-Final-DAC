@@ -76,7 +76,7 @@ public class ClienteService {
         }
 
         if (repository.existsByCpfAndIdNot(clienteDto.cpf(), id)) {
-            throw new ResourceAlreadyExistsException("Cliente já existe ou aguardando aprovação.");
+            throw new ResourceAlreadyExistsException("Cliente já cadastrado ou aguardando aprovação, CPF duplicado.");
         }
     }
 

@@ -2,6 +2,7 @@ package dac.ufpr.cliente.exception;
 
 import dac.ufpr.cliente.exception.custom.BadRequestException;
 import dac.ufpr.cliente.exception.custom.ResourceAlreadyExistsException;
+import dac.ufpr.cliente.exception.custom.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,8 +20,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
-    public ResponseEntity<String> handleBadRequestException(Exception e) {
+    public ResponseEntity<String> handleBadRequestException(BadRequestException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND) // 404
+    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
 }

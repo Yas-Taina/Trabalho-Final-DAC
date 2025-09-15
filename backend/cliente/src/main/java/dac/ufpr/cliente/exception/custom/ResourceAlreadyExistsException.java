@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT) // 409
 public class ResourceAlreadyExistsException extends CustomException {
-    public ResourceAlreadyExistsException(String entidade) {
-        super(entidade + " já existe", HttpStatus.CONFLICT.value());
+    public ResourceAlreadyExistsException(String message) {
+        super(message, HttpStatus.CONFLICT.value());
     }
 }
