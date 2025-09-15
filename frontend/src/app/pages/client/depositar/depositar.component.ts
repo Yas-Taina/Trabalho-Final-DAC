@@ -43,7 +43,7 @@ export class DepositarComponent {
 
     const { numeroConta, valor } = this.depositoForm.value;
     this.contaService.depositar(numeroConta!, valor!).subscribe({
-      next: (res) => {
+      next: () => {
         alert(`Depósito de R$${valor?.toFixed(2)} realizado com sucesso.`);
         this.router.navigate(['/client/home']);
       },
