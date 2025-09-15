@@ -1,5 +1,6 @@
+<div class="mainAzul">
 <div class="row justify-content-center">
-  <div class="col-4">
+  <div class="col-md-4">
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div>
         <label for="email" class="form-label">E-mail</label>
@@ -25,17 +26,18 @@
           required
         />
       </div>
-      <div>
-        <button type="submit" [disabled]="loginForm.invalid">Login</button>
+      <div class="d-flex justify-content-center">
+        <button type="submit" [disabled]="loginForm.invalid" class="btn btnCreme" style="margin-top: 1rem;">Login</button>
       </div>
     </form>
   </div>
-  <div class="col-6">
+  <div class="col-md-6 d-flex flex-column justify-content-center">
     <hr>
-    <h1>Realize Seu Login</h1>
+    <h1 class="tituloGrande">Realize Seu Login</h1>
     <hr>
-    <p>Ainda não tem uma conta? Realize seu cadastro <a routerLink="/cadastro"
+    <p>AINDA NÃO TEM UMA CONTA? REALIZE SEU CADASTRO <a routerLink="/cadastro"
       class="textLink"
-      routerLinkActive="active">aqui</a></p>
+      routerLinkActive="active">AQUI</a></p>
   </div>
+</div>
 </div>

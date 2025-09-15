@@ -1,3 +1,308 @@
+/*---Declaração de fontes---*/
+@font-face{
+  font-family: "Open Sauce";
+  font-style: normal;
+  font-weight: normal;
+  src: url("./assets/fonts/OpenSauceSans-Regular.ttf");
+}
+
+@font-face{
+  font-family: "Open Sauce";
+  font-style: italic;
+  font-weight: normal;
+  src: url("./assets/fonts/OpenSauceSans-Italic.ttf");
+}
+
+@font-face{
+  font-family: "Open Sauce";
+  font-style: normal;
+  font-weight: bold;
+  src: url("./assets/fonts/OpenSauceSans-SemiBold.ttf");
+}
+
+@font-face{
+  font-family: "Open Sauce";
+  font-style: italic;
+  font-weight: bold;
+  src: url("./assets/fonts/OpenSauceSans-SemiBoldItalic.ttf");
+}
+
+@font-face{
+  font-family: "Metanoia";
+  font-style: normal;
+  font-weight: normal;
+  src: url("./assets/fonts/Metanoia.ttf");
+}
+
+@font-face{
+  font-family: "Allura";
+  font-style: normal;
+  font-weight: normal;
+  src: url("./assets/fonts/Allura-Regular.ttf");
+}
+
+/*---Declaração de cores---*/
+:root {
+  --offwhite: #FEFAF6;
+  --creme: #FDF5E5;
+  --rosa: #FFE1E3;
+  --azul: #2A3D63;
+}
+
+/*---Componenentes do site---*/
+html,
+body {
+  font-family: "Open Sauce";
+  max-width: 100vw;
+  overflow-x: hidden;
+  text-align: center;
+  align-items: center;
+  vertical-align: middle;
+}
+
+header,
+main,
+footer {
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--azul);
+}
+
+.mainAzul {
+  background-color: var(--azul);
+  color: var(--creme);
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.mainCreme {
+  background-color: var(--creme);
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.mainRosa {
+  background-color: var(--rosa);
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+hr{
+  border-top: 3px solid;
+}
+
+/*---Titulos, Subtitulos, Textos Especiais---*/
+
+.tituloGrande {
+  font-family: "Metanoia";
+  font-size: 5rem;
+}
+
+.subtitulo {
+  font-family: "Allura";
+  font-size: 2rem;
+}
+
+.textLink,
+.textLink a {
+  color: var(--creme);
+}
+
+/*---Botões---*/
+.btn{
+  padding: 5px 20px 5px;
+  border-radius: 3px;
+  cursor: pointer;
+  margin: 0.2rem;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+.btn:active,
+.btnIcon:active {
+  transform: scale(0.95);
+}
+
+.btnAzulRosa{
+  background-color: var(--azul);
+  color: var(--rosa);
+}
+
+.btnAzul:hover,
+.btnAzulRosa:hover{
+  background-color: transparent;
+  color: var(--azul);
+  border: 2px solid var(--azul);
+}
+
+.btnCreme {
+  background-color: var(--creme);
+  color: var(--azul);
+}
+
+.btnCreme:hover{
+  background-color: transparent;
+  color: var(--creme);
+  border: 1px solid var(--creme);
+}
+
+.btnAzul{
+  background-color: var(--azul);
+  color: var(--creme);
+}
+
+.btnIcon{
+  background-color: transparent;
+  border: none;
+  padding: 10px;
+  font-size: 1.5rem;
+  color: var(--azul);
+  transition:
+    font-size 0.3 ease,
+    transform 0.2 ease;
+}
+
+.mainAzul .btnIcon{
+  color: var(--creme);
+}
+
+.btnIcon:hover {
+  font-size: 1.55rem;
+  text-shadow: 0 0 0.2rem var(--azul);
+}
+
+.mainAzul .btnIcon:hover{
+  text-shadow: 0 0 0.2rem var(--creme);
+}
+
+.btnIcon:active {
+  font-size: 1.45rem;
+}
+
 .btnVoltar {
   rotate: -135deg;
+}
+
+.tabela .btnIcon {
+  font-size: inherit;
+  padding: inherit;
+}
+
+/*---Formulários---*/
+.form-control {
+  margin-bottom: 0.5rem;
+}
+
+.form-control:focus {
+  border: 1px solid var(--rosa);
+  box-shadow: 0px opx 3px 1px var(--rosa);
+}
+
+.form-control:invalid{
+  border: 1px solid #a10320;
+}
+
+.form-controlinvalid{
+  border: 1px solid #204f2c;
+}
+
+.campoVazio {
+  opacity: 0.7;
+}
+
+label{
+  font-family: "Allura";
+  font-size: 1.5rem;
+}
+
+form{
+  text-align: left;
+
+}
+
+.mainAzul .form-control {
+  background-color: var(--azul);
+  color: var(--creme);
+}
+
+.mainAzul input::placeholder{
+  color: inherit;
+  opacity: 0.8;
+}
+
+.mainAzul input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--azul) inset !important;
+  -webkit-text-fill-color: var(--creme);
+}
+
+.mainRosa .form-control {
+  background-color: var(--rosa);
+  color: var(--azul);
+  border: 1px solid var(--azul);
+}
+
+.mainRosa input::placeholder{
+  color: inherit;
+  opacity: 0.8;
+}
+
+.mainRosa input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--rosa) inset !important;
+  -webkit-text-fill-color: var(--azul);
+}
+
+/*---Tabelas---*/
+
+th {
+  font-family: "Allura";
+  font-size: 1.5rem;
+  padding: 0.5rem;
+}
+
+td {
+  padding: 0.5rem;
+}
+
+.tabelaListagem table{
+ min-width: fit-content;
+ width: 80vw;
+ overflow-x: auto;
+}
+
+.containerTabela{
+  width: 100%;
+  overflow-x: auto;
+}
+
+.tabela {
+  min-width: 100%;
+  display: inline-table;
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+
+.tabela table {
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  min-width: fit-content;
+  width: 100%;
+}
+
+.tabela table thead  {
+  background-color: var(--creme);
+  vertical-align: middle;
+  border: 1px solid lightgray;
+}
+
+.tabela table tbody td{
+  background-color: var(--offwhite);
+  border: 1px solid lightgray;
+  vertical-align: middle;
 }
