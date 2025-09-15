@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor 
 @AllArgsConstructor 
 @Getter 
-@Setter public class Monivemntacao { 
+@Setter public class Movimentacao { 
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long id; 
