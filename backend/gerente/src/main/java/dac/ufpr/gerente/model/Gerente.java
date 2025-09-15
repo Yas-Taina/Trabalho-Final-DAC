@@ -7,13 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-// @Table(
-//     name = "gerente",
-//     uniqueConstraints = {
-//         @UniqueConstraint(name = "uk_gerente_cpf", columnNames = "cpf"),
-//         @UniqueConstraint(name = "uk_gerente_email", columnNames = "email")
-//     }
-// )
 @Table(name = "gerente") // sem schema
 @AllArgsConstructor
 @NoArgsConstructor
