@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
-import { LoginInfo, LoginService } from '../../../services';
+import { LoginInfo, LocalLoginService } from '../../../services';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  readonly loginService: LoginService = inject(LoginService);
+  readonly loginService: LocalLoginService = inject(LocalLoginService);
   readonly router: Router = inject(Router);
   readonly builder: FormBuilder = inject(FormBuilder);
 

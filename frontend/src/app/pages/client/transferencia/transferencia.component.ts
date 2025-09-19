@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { ContasService, LoginService, ClienteResponse } from '../../../services';
+import { LocalContasService, LocalLoginService, ClienteResponse } from '../../../services';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -12,8 +12,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './transferencia.component.css'
 })
 export class TransferenciaComponent {
-  readonly contaService: ContasService = inject(ContasService);
-  readonly loginService: LoginService = inject(LoginService);
+  readonly contaService: LocalContasService = inject(LocalContasService);
+  readonly loginService: LocalLoginService = inject(LocalLoginService);
   readonly router: Router = inject(Router);
   readonly builder: FormBuilder = inject(FormBuilder);
 

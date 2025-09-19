@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { ClienteResponse, ContasService, LoginService } from '../../../services';
+import { ClienteResponse, LocalContasService, LocalLoginService } from '../../../services';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -12,8 +12,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './depositar.component.css'
 })
 export class DepositarComponent {
-  readonly contaService: ContasService = inject(ContasService);
-  readonly loginService: LoginService = inject(LoginService);
+  readonly contaService: LocalContasService = inject(LocalContasService);
+  readonly loginService: LocalLoginService = inject(LocalLoginService);
   readonly router: Router = inject(Router);
   readonly builder: FormBuilder = inject(FormBuilder);
 
