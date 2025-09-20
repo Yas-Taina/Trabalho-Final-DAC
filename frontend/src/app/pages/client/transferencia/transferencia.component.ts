@@ -44,14 +44,14 @@ export class TransferenciaComponent {
     }
 
     const { numeroConta, numeroContaDestino, valor } = this.transferenciaForm.value;
-    this.contaService.transferir(numeroConta!, numeroContaDestino!, valor!).subscribe({
-      next: () => {
-        alert(`Transferência de R$${valor?.toFixed(2)} para a conta ${numeroContaDestino} realizado com sucesso.`);
-        this.router.navigate(['/client/home']);
-      },
-      error: (err) => {
-        alert('Erro na transferência: ' + (err.error?.message || err.message || 'Erro desconhecido'));
-      }
-    });
+    // this.contaService.transferir(numeroConta!, numeroContaDestino!, valor!).subscribe({
+    //   next: () => {
+    //     alert(`Transferência de R$${valor?.toFixed(2)} para a conta ${numeroContaDestino} realizado com sucesso.`);
+    //     this.router.navigate(['/client/home']);
+    //   },
+    //   error: (err) => {
+    //     alert('Erro na transferência: ' + (err.error?.message || err.message || 'Erro desconhecido'));
+    //   }
+    // });
   } 
 }

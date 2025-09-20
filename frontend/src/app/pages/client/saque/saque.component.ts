@@ -42,14 +42,14 @@ export class SaqueComponent {
     }
 
     const { numeroConta, valor } = this.saqueForm.value;
-    this.contaService.sacar(numeroConta!, valor!).subscribe({
-      next: () => {
-        alert(`Saque de R$${valor?.toFixed(2)} realizado com sucesso.`);
-        this.router.navigate(['/client/home']);
-      },
-      error: (err) => {
-        alert('Erro no saque: ' + (err.error?.message || err.message || 'Erro desconhecido'));
-      }
-    });
+    // this.contaService.sacar(numeroConta!, valor!).subscribe({
+    //   next: () => {
+    //     alert(`Saque de R$${valor?.toFixed(2)} realizado com sucesso.`);
+    //     this.router.navigate(['/client/home']);
+    //   },
+    //   error: (err) => {
+    //     alert('Erro no saque: ' + (err.error?.message || err.message || 'Erro desconhecido'));
+    //   }
+    // });
   }
 }

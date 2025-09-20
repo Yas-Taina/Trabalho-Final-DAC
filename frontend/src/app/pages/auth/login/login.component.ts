@@ -34,13 +34,13 @@ export class LoginComponent {
       return;
     }
 
-    this.loginService.login(this.loginForm.value as LoginInfo).subscribe({
-      next: () => {
-        this.router.navigate(['/client/home']);
-      },
-      error: (err) => {
-        alert('Erro no login: ' + (err.error?.message || err.message || 'Unknown error'));
-      }
-    });
+    // this.loginService.login(this.loginForm.value as LoginInfo).subscribe({
+    //   next: () => {
+    //     this.router.navigate(['/client/home']);
+    //   },
+    //   error: (err) => {
+    //     alert('Erro no login: ' + (err.error?.message || err.message || 'Unknown error'));
+    //   }
+    // });
   }
 }

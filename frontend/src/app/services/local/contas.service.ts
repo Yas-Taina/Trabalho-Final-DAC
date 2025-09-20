@@ -17,28 +17,28 @@ export class LocalContasService extends LocalBaseService {
     this.writeLocalArray<any>(this.storageKey, list);
   }
 
-  // POST /contas/{numero}/saldo
-  getSaldo(numero: string): Observable<SaldoResponse> {
+  // // POST /contas/{numero}/saldo
+  // getSaldo(numero: string): Observable<SaldoResponse> {
     
-  }
+  // }
 
-  // POST /contas/{numero}/depositar
-  depositar(numero: string, valor: number): Observable<OperacaoResponse> {
+  // // POST /contas/{numero}/depositar
+  // depositar(numero: string, valor: number): Observable<OperacaoResponse> {
     
-  }
+  // }
 
-  // POST /contas/{numero}/sacar
-  sacar(numero: string, valor: number): Observable<OperacaoResponse> {
+  // // POST /contas/{numero}/sacar
+  // sacar(numero: string, valor: number): Observable<OperacaoResponse> {
     
-  }
+  // }
 
-  // POST /contas/{numero}/transferir
-  transferir(numero: string, destino: string, valor: number): Observable<TransferenciaResponse> {
+  // // POST /contas/{numero}/transferir
+  // transferir(numero: string, destino: string, valor: number): Observable<TransferenciaResponse> {
     
-  }
+  // }
 
-  // POST /contas/{numero}/extrato
-  getExtrato(numero: string): Observable<ExtratoResponse> {
+  // // POST /contas/{numero}/extrato
+  // getExtrato(numero: string): Observable<ExtratoResponse> {
     
-  }
+  // }
 }

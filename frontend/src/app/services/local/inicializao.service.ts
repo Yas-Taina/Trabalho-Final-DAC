@@ -6,7 +6,7 @@ import { LocalBaseService } from '../local.base.service';
   providedIn: 'root',
 })
 export class LocalInicializacaoService extends LocalBaseService {
-  // GET /reboot
-  inicializarBanco(): Observable<any> {
-  }
+  // // GET /reboot
+  // inicializarBanco(): Observable<any> {
+  // }
 }

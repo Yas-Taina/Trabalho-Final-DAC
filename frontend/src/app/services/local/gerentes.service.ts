@@ -17,28 +17,28 @@ export class LocalGerentesService extends LocalBaseService {
     this.writeLocalArray<DadoGerente>(this.storageKey, list);
   }
 
-  // GET /gerentes?numero=dashboard
-  getGerentes(numero?: 'dashboard'): Observable<any> {
+  // // GET /gerentes?numero=dashboard
+  // getGerentes(numero?: 'dashboard'): Observable<any> {
     
-  }
+  // }
 
-  // POST /gerentes
-  inserirGerente(data: DadoGerenteInsercao): Observable<DadoGerente> {
+  // // POST /gerentes
+  // inserirGerente(data: DadoGerenteInsercao): Observable<DadoGerente> {
     
-  }
+  // }
 
-  // GET /gerentes/{cpf}
-  getGerente(cpf: string): Observable<DadoGerente> {
+  // // GET /gerentes/{cpf}
+  // getGerente(cpf: string): Observable<DadoGerente> {
     
-  }
+  // }
 
-  // DELETE /gerentes/{cpf}
-  removerGerente(cpf: string): Observable<DadoGerente> {
+  // // DELETE /gerentes/{cpf}
+  // removerGerente(cpf: string): Observable<DadoGerente> {
     
-  }
+  // }
 
-  // PUT /gerentes/{cpf}
-  atualizarGerente(cpf: string, data: DadoGerenteAtualizacao): Observable<DadoGerente> {
+  // // PUT /gerentes/{cpf}
+  // atualizarGerente(cpf: string, data: DadoGerenteAtualizacao): Observable<DadoGerente> {
     
-  }
+  // }
 }
