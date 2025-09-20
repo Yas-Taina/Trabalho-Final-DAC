@@ -22,8 +22,14 @@ export class LocalClientesService extends LocalBaseService {
   getClientes(filtro?: 'para_aprovar' | 'adm_relatorio_clientes' | 'melhores_clientes'): Observable<DadosClienteResponse[]> {
     const clientesStorage = localStorage.getItem(this.storageKey);
     // prefer local storage when available
-    if (clientesStorage) {
-      const clientes = JSON.parse(clientesStorage) as Cliente[];
+    if (!clientesStorage) {
+      return new Observable<DadosClienteResponse[]>((observer) => {
+        observer.next([]);
+        observer.complete();
+      });
+    }
+
+    const clientes = JSON.parse(clientesStorage) as Cliente[];
       return new Observable<DadosClienteResponse[]>((observer) => {
         if (filtro === 'para_aprovar') {
           observer.next(clientes.filter(c => c.status === 'PENDENTE'));
@@ -36,12 +42,6 @@ export class LocalClientesService extends LocalBaseService {
         }
         observer.complete();
       });
-    }
-
-    return new Observable<DadosClienteResponse[]>((observer) => {
-      observer.next([]);
-      observer.complete();
-    });
   }
 
   // POST /clientes (autocadastro)
@@ -56,7 +56,7 @@ export class LocalClientesService extends LocalBaseService {
       }
 
       const novo: Cliente = {
-        ...(data as any),
+        ...data,
         id: (Math.random() * 1e8).toFixed(0),
         dadosConta: {} as ContaResponse,
         status: 'PENDENTE',
@@ -154,7 +154,7 @@ export class LocalClientesService extends LocalBaseService {
 
       clientes[idx].status = 'REJEITADO';
       // optionally store motivo
-      (clientes[idx] as any).rejeicaoMotivo = motivo;
+      (clientes[idx] as Cliente).rejeicaoMotivo = motivo;
       this.writeStorage(clientes);
 
       observer.next({ ok: true });
