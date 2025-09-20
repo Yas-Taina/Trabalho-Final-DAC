@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { ContasService, LoginService, ClienteResponse } from '../../../services';
+import { LocalContasService, LocalLoginService, ClienteResponse } from '../../../services';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -12,8 +12,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './saque.component.css'
 })
 export class SaqueComponent {
-  readonly contaService: ContasService = inject(ContasService);
-  readonly loginService: LoginService = inject(LoginService);
+  readonly contaService: LocalContasService = inject(LocalContasService);
+  readonly loginService: LocalLoginService = inject(LocalLoginService);
   readonly router: Router = inject(Router);
   readonly builder: FormBuilder = inject(FormBuilder);
 
@@ -42,14 +42,14 @@ export class SaqueComponent {
     }
 
     const { numeroConta, valor } = this.saqueForm.value;
-    this.contaService.sacar(numeroConta!, valor!).subscribe({
-      next: () => {
-        alert(`Saque de R$${valor?.toFixed(2)} realizado com sucesso.`);
-        this.router.navigate(['/client/home']);
-      },
-      error: (err) => {
-        alert('Erro no saque: ' + (err.error?.message || err.message || 'Erro desconhecido'));
-      }
-    });
+    // this.contaService.sacar(numeroConta!, valor!).subscribe({
+    //   next: () => {
+    //     alert(`Saque de R$${valor?.toFixed(2)} realizado com sucesso.`);
+    //     this.router.navigate(['/client/home']);
+    //   },
+    //   error: (err) => {
+    //     alert('Erro no saque: ' + (err.error?.message || err.message || 'Erro desconhecido'));
+    //   }
+    // });
   }
 }

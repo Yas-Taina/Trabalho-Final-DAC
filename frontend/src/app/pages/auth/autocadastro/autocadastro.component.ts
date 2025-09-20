@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ClientesService, AutocadastroInfo } from '../../../services';
+import { LocalClientesService, AutocadastroInfo } from '../../../services';
 import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
@@ -13,7 +13,7 @@ import { NgxMaskDirective } from 'ngx-mask';
   styleUrl: './autocadastro.component.css'
 })
 export class AutocadastroComponent {
-  readonly clienteService: ClientesService = inject(ClientesService);
+  readonly clienteService: LocalClientesService = inject(LocalClientesService);
   readonly router: Router = inject(Router);
   readonly builder: FormBuilder = inject(FormBuilder);
 
