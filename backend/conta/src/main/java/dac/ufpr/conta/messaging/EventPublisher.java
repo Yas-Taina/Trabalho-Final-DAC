@@ -5,6 +5,9 @@ import java.time.Instant;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
 
 import dac.ufpr.conta.entity.Conta;
 import dac.ufpr.conta.entity.Movimentacao;
@@ -29,7 +32,9 @@ public class EventPublisher {
                 m.getValor(),
                 sinal
         );
-        rabbitTemplate.convertAndSend(EXCHANGE, "conta.movimento.registrado", evt);
+        afterCommit(() ->
+        rabbitTemplate.convertAndSend(EXCHANGE, "conta.movimento.registrado", evt)
+        );
     }
 
     public void publicarSaldoAtualizado(Conta c) {
@@ -38,7 +43,21 @@ public class EventPublisher {
                 c.getSaldo(),
                 c.getLimite()
         );
-        rabbitTemplate.convertAndSend(EXCHANGE, "conta.saldo.atualizado", evt);
+        afterCommit(() ->
+        rabbitTemplate.convertAndSend(EXCHANGE, "conta.saldo.atualizado", evt)
+        );
+    }
+
+        private void afterCommit(Runnable r) {
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+                    @Override public void afterCommit() { r.run(); }
+                }
+            );
+        } else {
+            r.run(); // fallback (fora de transação)
+        }
     }
 
     public record MovimentoRegistradoEvent(

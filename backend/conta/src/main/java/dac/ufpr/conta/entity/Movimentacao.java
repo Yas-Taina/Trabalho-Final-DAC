@@ -9,21 +9,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor; 
 import lombok.Setter; 
 @Entity 
-@Table(name="movimento", schema="conta_cmd") 
-@NoArgsConstructor 
-@AllArgsConstructor 
-@Getter 
-@Setter public class Movimentacao { 
+@Table(name = "movimento", schema = "conta_cmd",
+       indexes = {
+           @Index(name = "idx_mov_conta_id", columnList = "conta_id"),
+           @Index(name = "idx_mov_data", columnList = "data_hora")
+       })
+@NoArgsConstructor @AllArgsConstructor 
+@Getter @Setter 
+public class Movimentacao { 
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long id; 
     
     @ManyToOne(fetch=FetchType.LAZY) 
-    @JoinColumn(name="conta_id", nullable=false) 
+    @JoinColumn(name = "conta_id", nullable = false,
+        foreignKey = @ForeignKey(name = "fk_mov_conta"))
     private Conta conta; 
     
     private Instant dataHora; 
     
+    @Enumerated(EnumType.STRING)
     private enTipoMovimento tipo; // DEPOSITO | SAQUE | TRANSFERENCIA 
     
     private String origemConta; 
