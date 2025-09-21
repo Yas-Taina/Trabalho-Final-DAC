@@ -40,7 +40,13 @@
                     <td>{{ t.tipo }}</td>
                     <td>{{ t.origem }}</td>
                     <td>{{ t.destino }}</td>
-                    <td>{{ t.valor }}</td>
+                    <td 
+                    [ngClass]="{
+                        'valor-entrada': t.tipo === 'depósito' || (t.tipo === 'transferência' && t.destino),
+                        'valor-saida': t.tipo === 'saque' || (t.tipo === 'transferência' && t.origem)
+                    }">
+                    {{ t.valor | currency:'BRL':'symbol':'1.2-2' }}
+                    </td>
                     </tr>
             </tbody>
         </table></div>

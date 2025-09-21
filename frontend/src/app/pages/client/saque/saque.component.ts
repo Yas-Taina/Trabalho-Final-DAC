@@ -29,27 +29,26 @@ export class SaqueComponent {
 
   constructor() {
     const session = this.loginService.sessionInfo();
-    if (session?.tipo === 'CLIENTE') { // Guarda de autenticação teoricamente já cuidaria disso
+    if (session?.tipo === 'CLIENTE') { 
       const cliente = session.usuario as ClienteResponse;
       this.saqueForm.patchValue({ numeroConta: cliente.conta ?? "" });
     }
   }
 
   async onSubmit() {
-    console.log(this.saqueForm.value);
-    if (!this.saqueForm.valid) {
-      return;
-    }
+  if (!this.saqueForm.valid) return;
 
-    const { numeroConta, valor } = this.saqueForm.value;
-    // this.contaService.sacar(numeroConta!, valor!).subscribe({
-    //   next: () => {
-    //     alert(`Saque de R$${valor?.toFixed(2)} realizado com sucesso.`);
-    //     this.router.navigate(['/client/home']);
-    //   },
-    //   error: (err) => {
-    //     alert('Erro no saque: ' + (err.error?.message || err.message || 'Erro desconhecido'));
-    //   }
-    // });
-  }
+  const { numeroConta, valor } = this.saqueForm.value;
+
+  this.contaService.sacar(numeroConta!, valor!).subscribe({
+    next: () => {
+      alert(`Saque de R$${valor?.toFixed(2)} realizado com sucesso.`);
+      this.router.navigate(['/client/home']);
+    },
+    error: (err) => {
+      alert('Erro no saque: ' + (err.error?.message || err.message || 'Erro desconhecido'));
+    }
+  });
+}
+
 }

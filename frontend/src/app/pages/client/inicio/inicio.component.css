@@ -27,3 +27,11 @@
 h3 {
     font-size: 4rem;
 }
+
+.saldo-positivo {
+  color: green;
+}
+
+.saldo-negativo {
+  color: red;
+}
