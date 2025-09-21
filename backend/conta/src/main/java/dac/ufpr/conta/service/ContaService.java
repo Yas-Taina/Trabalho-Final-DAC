@@ -17,6 +17,8 @@ import dac.ufpr.conta.repository.ContaRepository;
 import dac.ufpr.conta.repository.MovimentoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import dac.ufpr.conta.enums.enTipoMovimento;
+
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +38,7 @@ public class ContaService {
         c.setSaldo(c.getSaldo().add(v));
         contaRepo.save(c);
 
-        Movimentacao m = movRepo.save(novoMov(c, "DEPOSITO", numeroConta, null, v));
+        Movimentacao m = movRepo.save(novoMov(c, enTipoMovimento.DEPOSITO, numeroConta, null, v));
         publisher.publicarMovimentoRegistrado(m, '+');
         publisher.publicarSaldoAtualizado(c);
     }
@@ -56,7 +58,7 @@ public class ContaService {
         c.setSaldo(c.getSaldo().subtract(v));
         contaRepo.save(c);
 
-        Movimentacao m = movRepo.save(novoMov(c, "SAQUE", numeroConta, null, v));
+        Movimentacao m = movRepo.save(novoMov(c, enTipoMovimento.SAQUE, numeroConta, null, v));
         publisher.publicarMovimentoRegistrado(m, '-');
         publisher.publicarSaldoAtualizado(c);
     }
@@ -80,8 +82,8 @@ public class ContaService {
         cDest.setSaldo(cDest.getSaldo().add(v));
         contaRepo.saveAll(List.of(cOrig, cDest));
 
-        Movimentacao mOrig = movRepo.save(novoMov(cOrig, "TRANSFERENCIA", origem, destino, v));
-        Movimentacao mDest = movRepo.save(novoMov(cDest, "TRANSFERENCIA", origem, destino, v));
+        Movimentacao mOrig = movRepo.save(novoMov(cOrig, enTipoMovimento.TRANSFERENCIA, origem, destino, v));
+        Movimentacao mDest = movRepo.save(novoMov(cDest, enTipoMovimento.TRANSFERENCIA, origem, destino, v));
         publisher.publicarMovimentoRegistrado(mOrig, '-');
         publisher.publicarMovimentoRegistrado(mDest, '+');
         publisher.publicarSaldoAtualizado(cOrig);
@@ -93,7 +95,7 @@ public class ContaService {
             throw new ForbiddenException("Não é o dono da conta");
     }
 
-    private Movimentacao novoMov(Conta c, String tipo, String origem, String destino, BigDecimal v) {
+    private Movimentacao novoMov(Conta c, enTipoMovimento tipo, String origem, String destino, BigDecimal v) {
         Movimentacao m = new Movimentacao();
         m.setConta(c);
         m.setDataHora(Instant.now());

@@ -1,7 +1,5 @@
 package dac.ufpr.gerente.security;
 
-import org.springframework.boot.autoconfigure.integration.IntegrationProperties.RSocket.Server;
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 

@@ -2,7 +2,7 @@ package dac.ufpr.conta.entity;
 import java.math.BigDecimal; 
 import java.time.Instant;
 
-import dac.ufpr.conta.enums.TipoMovimento;
+import dac.ufpr.conta.enums.enTipoMovimento;
 import jakarta.persistence.*; 
 import lombok.AllArgsConstructor; 
 import lombok.Getter; 
@@ -24,7 +24,7 @@ import lombok.Setter;
     
     private Instant dataHora; 
     
-    private TipoMovimento tipo; // DEPOSITO | SAQUE | TRANSFERENCIA 
+    private enTipoMovimento tipo; // DEPOSITO | SAQUE | TRANSFERENCIA 
     
     private String origemConta; 
     
