@@ -36,20 +36,19 @@ export class DepositarComponent {
   }
 
   async onSubmit() {
-    console.log(this.depositoForm.value);
-    if (!this.depositoForm.valid) {
-      return;
-    }
+  if (!this.depositoForm.valid) return;
 
-    const { numeroConta, valor } = this.depositoForm.value;
-    // this.contaService.depositar(numeroConta!, valor!).subscribe({
-    //   next: () => {
-    //     alert(`Depósito de R$${valor?.toFixed(2)} realizado com sucesso.`);
-    //     this.router.navigate(['/client/home']);
-    //   },
-    //   error: (err: any) => {
-    //     alert('Erro no depósito: ' + (err.error?.message || err.message || 'Erro desconhecido'));
-    //   }
-    // });
-  }
+  const { numeroConta, valor } = this.depositoForm.value;
+
+  this.contaService.depositar(numeroConta!, valor!).subscribe({
+    next: () => {
+      alert(`Depósito de R$${valor?.toFixed(2)} realizado com sucesso.`);
+      this.router.navigate(['/client/home']);
+    },
+    error: (err: any) => {
+      alert('Erro no depósito: ' + (err.error?.message || err.message || 'Erro desconhecido'));
+    }
+  });
+}
+
 }

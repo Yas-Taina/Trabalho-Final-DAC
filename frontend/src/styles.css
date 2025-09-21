@@ -90,7 +90,8 @@ footer {
 }
 
 hr{
-  border-top: 3px solid;
+  border-top: 1px solid;
+  opacity: 1 !important;
 }
 
 /*---Titulos, Subtitulos, Textos Especiais---*/

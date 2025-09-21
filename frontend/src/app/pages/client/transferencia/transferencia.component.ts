@@ -38,20 +38,19 @@ export class TransferenciaComponent {
   }
 
   async onSubmit() {
-    console.log(this.transferenciaForm.value);
-    if (!this.transferenciaForm.valid) {
-      return;
-    }
+  if (!this.transferenciaForm.valid) return;
 
-    const { numeroConta, numeroContaDestino, valor } = this.transferenciaForm.value;
-    // this.contaService.transferir(numeroConta!, numeroContaDestino!, valor!).subscribe({
-    //   next: () => {
-    //     alert(`Transferência de R$${valor?.toFixed(2)} para a conta ${numeroContaDestino} realizado com sucesso.`);
-    //     this.router.navigate(['/client/home']);
-    //   },
-    //   error: (err) => {
-    //     alert('Erro na transferência: ' + (err.error?.message || err.message || 'Erro desconhecido'));
-    //   }
-    // });
-  } 
+  const { numeroConta, numeroContaDestino, valor } = this.transferenciaForm.value;
+
+  this.contaService.transferir(numeroConta!, numeroContaDestino!, valor!).subscribe({
+    next: () => {
+      alert(`Transferência de R$${valor?.toFixed(2)} para a conta ${numeroContaDestino} realizada com sucesso.`);
+      this.router.navigate(['/client/home']);
+    },
+    error: (err) => {
+      alert('Erro na transferência: ' + (err.error?.message || err.message || 'Erro desconhecido'));
+    }
+  });
+}
+
 }
