@@ -23,7 +23,7 @@ public class EventPublisher {
                 m.getId(),
                 m.getConta().getNumeroConta(),
                 m.getDataHora(),
-                m.getTipo(),
+                m.getTipo().name(),
                 m.getOrigemConta(),
                 m.getDestinoConta(),
                 m.getValor(),
@@ -41,7 +41,6 @@ public class EventPublisher {
         rabbitTemplate.convertAndSend(EXCHANGE, "conta.saldo.atualizado", evt);
     }
 
-    // DTOs simples para a fila (use records pra serializar fácil com Jackson)
     public record MovimentoRegistradoEvent(
             Long idMovimento,
             String numeroConta,
