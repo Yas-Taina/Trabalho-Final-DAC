@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { ContaResponse } from '../../../services';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './inicio.component.html',
   styleUrl: './inicio.component.css'
 })

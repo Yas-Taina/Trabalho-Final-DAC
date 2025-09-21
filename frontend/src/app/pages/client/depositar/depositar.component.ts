@@ -29,7 +29,7 @@ export class DepositarComponent {
 
   constructor() {
     const session = this.loginService.sessionInfo();
-    if (session?.tipo === 'CLIENTE') { // Guarda de autenticação teoricamente já cuidaria disso
+    if (session?.tipo === 'CLIENTE') { 
       const cliente = session.usuario as ClienteResponse;
       this.depositoForm.patchValue({ numeroConta: cliente.conta ?? "" });
     }

@@ -33,7 +33,12 @@
   <div class="col-8 d-flex flex-column justify-content-center">
     <hr>
     <h1 class="tituloGrande">Saldo</h1>
-    <h3 class="tituloGrande">R${{conta.saldo}}</h3>
+    <h3 class="tituloGrande"
+    [ngClass]="{
+      'saldo-positivo': conta.saldo && conta.saldo > 0,
+      'saldo-negativo': conta.saldo && conta.saldo < 0
+    }">
+    {{ conta.saldo | currency:'BRL':'symbol':'1.2-2' }}</h3>
     <hr>
   </div>
 </div>

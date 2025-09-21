@@ -31,7 +31,7 @@ export class TransferenciaComponent {
 
   constructor() {
     const session = this.loginService.sessionInfo();
-    if (session?.tipo === 'CLIENTE') { // Guarda de autenticação teoricamente já cuidaria disso
+    if (session?.tipo === 'CLIENTE') { 
       const cliente = session.usuario as ClienteResponse;
       this.transferenciaForm.patchValue({ numeroConta: cliente.conta ?? "" });
     }
