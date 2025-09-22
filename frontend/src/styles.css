@@ -198,6 +198,7 @@ hr{
 
 /*---Formulários---*/
 .form-control {
+  border: 1px solid var(--creme);
   margin-bottom: 0.5rem;
 }
 
