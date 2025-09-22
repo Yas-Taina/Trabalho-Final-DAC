@@ -15,5 +15,5 @@ public class SagaMessage<T> {
     private EnStatusIntegracao status;
     private String error;
     private T data;
-    private int httpStatus;
+    private Integer httpStatus;
 }

@@ -13,7 +13,7 @@ public class RabbitMqConfig {
     public static final String CLIENTE_CREATE_QUEUE = "cliente.create.queue";
 
     // Fila Saga
-    public static final String SAGA_RESPONSE_QUEUE = "saga.response.queue";
+    public static final String SAGA_AUTOCADASTRO_QUEUE = "saga.autocadastro.queue";
 
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {
