@@ -28,6 +28,10 @@ export class LocalContasService extends LocalBaseService {
     return this.read().find(c => c.numero === numero);
   }
 
+  getAllContas(): ContaResponse[] {
+    return this.read();
+  }
+
   private registrarMovimento(
     conta: ContaResponse, 
     movimento: ItemExtratoResponse

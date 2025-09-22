@@ -1,3 +1,5 @@
+import { TipoGerente } from "./dadoGerente";
+
 export interface DadoGerenteInsercao { 
     /**
      * CPF do gerente
@@ -14,7 +16,7 @@ export interface DadoGerenteInsercao {
     /**
      * Tipo do gerente
      */
-    tipo?: string;
+    tipo?: TipoGerente;
     /**
      * Senha do novo gerente
      */
