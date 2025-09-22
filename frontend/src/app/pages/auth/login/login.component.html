@@ -1,7 +1,7 @@
 <div class="mainAzul">
 <div class="row justify-content-center">
   <div class="col-md-4">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
       <div>
         <label for="email" class="form-label">E-mail</label>
         <input
@@ -10,11 +10,12 @@
           id="email"
           name="email"
           formControlName="email"
-          required
-          email
+          [class.is-invalid]="loginForm.get('email')?.invalid && (loginForm.get('email')?.touched || loginForm.get('email')?.dirty)"
         />
+        <div class="invalid-feedback" *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.touched || loginForm.get('email')?.dirty)">
+          Por favor insira um e-mail válido
+        </div>
       </div>
-      <div *ngIf="this.loginForm.get('email')?.errors">Por favor insira um e-mail válido</div>
       <div>
         <label for="senha" class="form-label">Senha</label>
         <input
@@ -23,11 +24,12 @@
           id="senha"
           name="senha"
           formControlName="senha"
-          minlength="4"
-          required
+          [class.is-invalid]="loginForm.get('senha')?.invalid && (loginForm.get('senha')?.touched || loginForm.get('senha')?.dirty)"
         />
+        <div class="invalid-feedback" *ngIf="loginForm.get('senha')?.invalid && (loginForm.get('senha')?.touched || loginForm.get('senha')?.dirty)">
+          Por favor insira uma senha válida
+        </div>
       </div>
-      <div *ngIf="this.loginForm.get('senha')?.errors">Por favor insira uma senha</div>
       <div class="d-flex justify-content-center">
         <button type="submit" [disabled]="loginForm.invalid" class="btn btnCreme" style="margin-top: 1rem;">Login</button>
       </div>

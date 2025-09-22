@@ -17,12 +17,12 @@
         <label for="saldo" class="form-label">Saldo a ser transferido</label>
         <input type="number" class="form-control" id="saldo" name="saldo" formControlName="valor" required placeholder="R$" />
       </div>
-      <div *ngIf="this.transferenciaForm.get('valor')?.errors">Por favor insira um valor válido</div>
+      <div *ngIf="this.transferenciaForm.get('valor')?.invalid && (this.transferenciaForm.get('valor')?.touched || this.transferenciaForm.get('valor')?.dirty)">Por favor insira um valor válido</div>
       <div>
         <label for="conta" class="form-label">Conta de Destino</label>
         <input type="number" class="form-control" id="conta" name="conta" formControlName="numeroContaDestino" required />
       </div>
-      <div *ngIf="this.transferenciaForm.get('numeroContaDestino')?.errors">Por favor insira um número de conta válido</div>
+      <div *ngIf="this.transferenciaForm.get('numeroContaDestino')?.invalid && (this.transferenciaForm.get('numeroContaDestino')?.touched || this.transferenciaForm.get('numeroContaDestino')?.dirty)">Por favor insira um número de conta válido</div>
       <div class="d-flex justify-content-center">
         <button type="submit" class="btn btnAzulRosa">Confirmar</button>
       </div>
