@@ -5,13 +5,8 @@
       <div class="row">
         <div class="col-12">
         <label for="nome" class="form-label">Nome</label>
-        <input type="text" class="form-control"
-               id="nome"
-               formControlName="nome"
-               minlength="2"
-               maxlength="100"
-               [class.is-invalid]="clienteForm.get('nome')?.invalid && (clienteForm.get('nome')?.touched || clienteForm.get('nome')?.dirty)" />
-        <div class="invalid-feedback" *ngIf="clienteForm.get('nome')?.invalid && (clienteForm.get('nome')?.touched || clienteForm.get('nome')?.dirty)">Por favor insira um nome</div>
+        <input type="text" class="form-control" id="nome" formControlName="nome" minlength="2" maxlength="100" required />
+  <div *ngIf="clienteForm.get('nome')?.invalid && (clienteForm.get('nome')?.touched || clienteForm.get('nome')?.dirty)">Por favor insira um nome</div>
       </div>
       </div>
 
@@ -25,16 +20,13 @@
                  [class.is-invalid]="clienteForm.get('email')?.invalid && (clienteForm.get('email')?.touched || clienteForm.get('email')?.dirty)" />
           <div class="invalid-feedback" *ngIf="clienteForm.get('email')?.invalid && (clienteForm.get('email')?.touched || clienteForm.get('email')?.dirty)">Por favor insira um e-mail válido</div>
         </div>
+  <div *ngIf="clienteForm.get('email')?.invalid && (clienteForm.get('email')?.touched || clienteForm.get('email')?.dirty)">Por favor insira um e-mail válido</div>
         <div class="col-5">
           <label for="cpf" class="form-label">CPF</label>
-          <input type="text" class="form-control"
-                 id="cpf"
-                 formControlName="cpf"
-                 placeholder="000.000.000-00"
-                 mask="000.000.000-00"
-                 [class.is-invalid]="clienteForm.get('cpf')?.invalid && (clienteForm.get('cpf')?.touched || clienteForm.get('cpf')?.dirty)" />
-          <div class="invalid-feedback" *ngIf="clienteForm.get('cpf')?.invalid && (clienteForm.get('cpf')?.touched || clienteForm.get('cpf')?.dirty)">Por favor insira um cpf válido</div>
-        </div>       
+          <input type="text" class="form-control" id="cpf" formControlName="cpf" required placeholder="000.000.000-00"
+            mask="000.000.000-00" />
+        </div>
+  <div *ngIf="clienteForm.get('cpf')?.invalid && (clienteForm.get('cpf')?.touched || clienteForm.get('cpf')?.dirty)">Por favor insira um cpf válido</div>       
       </div>
 
       <div class="row">
@@ -48,6 +40,7 @@
                  [class.is-invalid]="clienteForm.get('telefone')?.invalid && (clienteForm.get('telefone')?.touched || clienteForm.get('telefone')?.dirty)" />
           <div class="invalid-feedback" *ngIf="clienteForm.get('telefone')?.invalid && (clienteForm.get('telefone')?.touched || clienteForm.get('telefone')?.dirty)">Por favor insira um telefone válido</div>
         </div>
+  <div *ngIf="clienteForm.get('telefone')?.invalid && (clienteForm.get('telefone')?.touched || clienteForm.get('telefone')?.dirty)">Por favor insira um telefone válido</div>
         <div class="col-6">
           <label for="salario" class="form-label">Salário</label>
           <input type="number" class="form-control"
@@ -57,6 +50,7 @@
                  [class.is-invalid]="clienteForm.get('salario')?.invalid && (clienteForm.get('salario')?.touched || clienteForm.get('salario')?.dirty)" />
           <div class="invalid-feedback" *ngIf="clienteForm.get('salario')?.invalid && (clienteForm.get('salario')?.touched || clienteForm.get('salario')?.dirty)">Por favor insira um salário</div>
         </div>
+  <div *ngIf="clienteForm.get('salario')?.invalid && (clienteForm.get('salario')?.touched || clienteForm.get('salario')?.dirty)">Por favor insira um salário</div>
       </div>
 
       <div formGroupName="endereco">
@@ -70,6 +64,7 @@
                    [class.is-invalid]="clienteForm.get('endereco.tipo')?.invalid && (clienteForm.get('endereco.tipo')?.touched || clienteForm.get('endereco.tipo')?.dirty)" />
             <div class="invalid-feedback" *ngIf="clienteForm.get('endereco.tipo')?.invalid && (clienteForm.get('endereco.tipo')?.touched || clienteForm.get('endereco.tipo')?.dirty)">Por favor selecione uma opção</div>
           </div>
+          <div *ngIf="clienteForm.get('endereco.tipo')?.invalid && (clienteForm.get('endereco.tipo')?.touched || clienteForm.get('endereco.tipo')?.dirty)">Por favor selecione uma opção</div>
           <div class="col-8">
             <label for="logradouro" class="form-label">Logradouro</label>
             <input type="text" class="form-control"
@@ -79,6 +74,7 @@
                    [class.is-invalid]="clienteForm.get('endereco.logradouro')?.invalid && (clienteForm.get('endereco.logradouro')?.touched || clienteForm.get('endereco.logradouro')?.dirty)" />
             <div class="invalid-feedback" *ngIf="clienteForm.get('endereco.logradouro')?.invalid && (clienteForm.get('endereco.logradouro')?.touched || clienteForm.get('endereco.logradouro')?.dirty)">Por favor insira um logradouro</div>
           </div>
+          <div *ngIf="clienteForm.get('endereco.logradouro')?.invalid && (clienteForm.get('endereco.logradouro')?.touched || clienteForm.get('endereco.logradouro')?.dirty)">Por favor insira um logradouro</div>
         </div>
         <div class="row">
           <div class="col-3">
@@ -90,6 +86,7 @@
                    [class.is-invalid]="clienteForm.get('endereco.numero')?.invalid && (clienteForm.get('endereco.numero')?.touched || clienteForm.get('endereco.numero')?.dirty)" />
             <div class="invalid-feedback" *ngIf="clienteForm.get('endereco.numero')?.invalid && (clienteForm.get('endereco.numero')?.touched || clienteForm.get('endereco.numero')?.dirty)">Por favor insira um numero</div>
           </div>
+          <div *ngIf="clienteForm.get('endereco.numero')?.invalid && (clienteForm.get('endereco.numero')?.touched || clienteForm.get('endereco.numero')?.dirty)">Por favor insira um numero</div>
           <div class="col-9">
             <label for="complemento" class="form-label">Complemento</label>
             <input type="text" class="form-control" id="complemento" formControlName="complemento" placeholder="Bloco, AP..." />
@@ -106,6 +103,7 @@
                    [class.is-invalid]="clienteForm.get('endereco.cep')?.invalid && (clienteForm.get('endereco.cep')?.touched || clienteForm.get('endereco.cep')?.dirty)" />
             <div class="invalid-feedback" *ngIf="clienteForm.get('endereco.cep')?.invalid && (clienteForm.get('endereco.cep')?.touched || clienteForm.get('endereco.cep')?.dirty)">Por favor insira um cep válido</div>
           </div>
+          <div *ngIf="clienteForm.get('endereco.cep')?.invalid && (clienteForm.get('endereco.cep')?.touched || clienteForm.get('endereco.cep')?.dirty)">Por favor insira um cep válido</div>
           <div class="col-6">
             <label for="cidade" class="form-label">Cidade</label>
             <input type="text" class="form-control"
@@ -115,6 +113,7 @@
                    [class.is-invalid]="clienteForm.get('endereco.cidade')?.invalid && (clienteForm.get('endereco.cidade')?.touched || clienteForm.get('endereco.cidade')?.dirty)" />
             <div class="invalid-feedback" *ngIf="clienteForm.get('endereco.cidade')?.invalid && (clienteForm.get('endereco.cidade')?.touched || clienteForm.get('endereco.cidade')?.dirty)">Por favor insira uma cidade</div>
           </div>
+          <div *ngIf="clienteForm.get('endereco.cidade')?.invalid && (clienteForm.get('endereco.cidade')?.touched || clienteForm.get('endereco.cidade')?.dirty)">Por favor insira uma cidade</div>
           <div class="col-2">
             <label for="estado" class="form-label">UF</label>
             <input type="text" class="form-control"
@@ -125,6 +124,7 @@
                    [class.is-invalid]="clienteForm.get('endereco.estado')?.invalid && (clienteForm.get('endereco.estado')?.touched || clienteForm.get('endereco.estado')?.dirty)" />
             <div class="invalid-feedback" *ngIf="clienteForm.get('endereco.estado')?.invalid && (clienteForm.get('endereco.estado')?.touched || clienteForm.get('endereco.estado')?.dirty)">Por favor insira uma UF</div>
           </div>
+          <div *ngIf="clienteForm.get('endereco.estado')?.invalid && (clienteForm.get('endereco.estado')?.touched || clienteForm.get('endereco.estado')?.dirty)">Por favor insira uma UF</div>
         </div>
       </div>
       <div class="d-flex justify-content-center">
