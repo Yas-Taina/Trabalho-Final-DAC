@@ -1,3 +1,7 @@
+import { DadosClienteResponse } from "./dadosClienteResponse";
+
+export type TipoGerente = 'ADMINISTRADOR' | 'GERENTE';
+
 export interface DadoGerente { 
     /**
      * CPF do gerente
@@ -16,6 +20,9 @@ export interface DadoGerente {
     /**
      * Tipo do gerente
      */
-    tipo?: string;
+    tipo?: TipoGerente;
+    /**
+     * Clientes
+     */
+    clientes?: DadosClienteResponse[];
 }
-

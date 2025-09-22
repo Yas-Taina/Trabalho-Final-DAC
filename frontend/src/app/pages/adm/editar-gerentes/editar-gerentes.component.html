@@ -1,42 +1,58 @@
 <div class="row mainRosa justify-content-evenly">
-    <div class="col-5 d-flex flex-column justify-content-center">
-        <hr>
-        <h1 class="tituloGrande">
-            Gerente
-        </h1>
-        <hr>
-    </div>
-    <div class="col-5 d-flex flex-column justify-content-center">
+  <div class="col-5 d-flex flex-column justify-content-center">
+    <hr>
+    <h1 class="tituloGrande">
+      {{ editMode ? 'Editar Gerente' : 'Novo Gerente' }}
+    </h1>
+    <hr>
+  </div>
 
-    <form action="">
+  <div class="col-5 d-flex flex-column justify-content-center">
+    <form [formGroup]="form" (ngSubmit)="salvar()">
 
-        <div class="row">
-            <div class="col-7">
+      <div class="row">
+        <div class="col-7">
           <label for="nome" class="form-label">Nome</label>
-          <input type="text" class="form-control" id="nome" name="nome" minlength="2" maxlength="100" required />
-          </div>
-          <div class="col-5">
-            <label for="cpf" class="form-label">CPF</label>
-            <input type="text" class="form-control" id="cpf" name="cpf" required placeholder="000.000.000-00"
-              mask="000.000.000-00" />
-          </div>    
+          <input type="text" class="form-control" id="nome" formControlName="nome" />
         </div>
+        <div class="col-5">
+          <label for="cpf" class="form-label">CPF</label>
+          <input type="text" class="form-control" id="cpf" formControlName="cpf" placeholder="000.000.000-00" mask="000.000.000-00" />
+        </div>    
+      </div>
 
-        <div class="row">
-          <div class="col-7">
-            <label for="email" class="form-label">E-mail</label>
-            <input type="email" class="form-control" id="email" name="email" maxlength="100" required email />
-          </div>
-          <div class="col-5">
-            <label for="telefone" class="form-label">Telefone</label>
-            <input type="string" class="form-control" id="telefone" name="telefone" required placeholder="(00)00000-0000" mask="(00)00000-0000" />
-          </div>        
+      <div class="row">
+        <div class="col-7">
+          <label for="email" class="form-label">E-mail</label>
+          <input type="email" class="form-control" id="email" formControlName="email" />
         </div>
-        <div class="d-flex flex-row-reverse align-items-end">
-      <a><i class="fa-solid fa-floppy-disk btnIcon"></i></a>
-      <a routerLink="/adm/home"
-                routerLinkActive="active"><i class="fa-solid fa-location-arrow btnVoltar btnIcon"></i></a></div>
+        <div class="col-5">
+          <label for="telefone" class="form-label">Telefone</label>
+          <input type="text" class="form-control" id="telefone" formControlName="telefone" placeholder="(00)00000-0000" mask="(00)00000-0000" />
+        </div>        
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-12">
+          <label for="tipo" class="form-label">Tipo</label>
+          <select class="form-control" id="tipo" formControlName="tipo">
+            <option *ngFor="let t of tipos" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="d-flex flex-row-reverse align-items-end mt-3">
+        <button type="submit" class="btnIcon border-0 bg-transparent">
+          <i class="fa-solid fa-floppy-disk"></i>
+        </button>
+        <a routerLink="/adm/home" routerLinkActive="active">
+          <i class="fa-solid fa-location-arrow btnVoltar btnIcon"></i>
+        </a>
+      </div>
     </form>
-    </div>
-</div>
 
+    <div *ngIf="mensagem" class="alert alert-info mt-3">
+      {{ mensagem }}
+    </div>
+  </div>
+</div>

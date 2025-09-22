@@ -27,8 +27,12 @@
             <td>{{gerente.email}}</td>
             <td>{{gerente.telefone}}</td>
             <td style="min-width: 100px;">
-                <a style="margin-right: 5px;"><i class="fa-solid fa-magnifying-glass btnIcon"></i></a>
-                <a><i class="fa-solid fa-trash btnIcon"></i></a>
+                <a [routerLink]="['/adm/gerentes', gerente.cpf]" style="margin-right: 5px;">
+                  <i class="fa-solid fa-magnifying-glass btnIcon"></i>
+                </a>
+                <a (click)="removerGerente(gerente.cpf!)">
+                  <i class="fa-solid fa-trash btnIcon"></i>
+                </a>
             </td>
           </tr>          
         </tbody>

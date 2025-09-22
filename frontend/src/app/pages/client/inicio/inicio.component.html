@@ -38,7 +38,7 @@
       'saldo-positivo': conta.saldo && conta.saldo > 0,
       'saldo-negativo': conta.saldo && conta.saldo < 0
     }">
-    {{ conta.saldo | currency:'BRL':'symbol':'1.2-2' }}</h3>
+    {{ conta?.saldo | currency:'BRL':'symbol':'1.2-2' }}</h3>
     <hr>
   </div>
 </div>
