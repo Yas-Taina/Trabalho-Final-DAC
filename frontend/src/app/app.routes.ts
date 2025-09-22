@@ -90,7 +90,11 @@ export const routes: Routes = [
         component: GerentesComponent
     },
     {
-        path: 'gerentes/edit',
+        path: 'adm/gerentes/novo',
+        component: EditarGerentesComponent
+    },
+    {
+        path: 'adm/gerentes/:cpf',
         component: EditarGerentesComponent
     },
 

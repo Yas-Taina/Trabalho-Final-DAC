@@ -24,5 +24,5 @@ export interface DadoGerente {
     /**
      * Clientes
      */
-    clientes: DadosClienteResponse[];
+    clientes?: DadosClienteResponse[];
 }

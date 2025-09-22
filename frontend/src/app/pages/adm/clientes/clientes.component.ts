@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { DadosClienteResponse } from '../../../services';
-
+import { DadosClienteResponse } from '../../../services/model';
+import { LocalClientesService } from '../../../services';
 @Component({
   selector: 'app-clientesadm',
   standalone: true,
@@ -10,71 +10,23 @@ import { DadosClienteResponse } from '../../../services';
   templateUrl: './clientes.component.html',
   styleUrl: './clientes.component.css'
 })
-export class ClientesAdmComponent {
-  clientes: DadosClienteResponse[] = [
-    {
-      cpf: '111.111.111.11',
-      nome: 'Maria Terezinha',
-      email: 'mariazinha@gmail.com',
-      endereco: {
-        tipo: 'Avenida',
-        logradouro: 'Rua das Flores',
-        numero: '56',
-        complemento: 'ap09',
-        cep: '88888-888',
-        cidade: 'Curitiba',
-        estado: 'PR'
-      },
-      salario: 5000.55,
-      conta: '2222',
-      saldo: '9999.99',
-      limite: 2500.00,
-      gerente: '01',
-      gerente_nome: 'José',
-      gerente_email: 'jose@gmail.com'
-    },
-    {
-      cpf: '222.222.222.22',
-      nome: 'João maria',
-      email: 'joaozinho@gmail.com',
-      endereco: {
-        tipo: 'Avenida',
-        logradouro: 'Rua das Flores',
-        numero: '56',
-        complemento: 'ap09',
-        cep: '88888-888',
-        cidade: 'Curitiba',
-        estado: 'PR'
-      },
-      salario: 5000.55,
-      conta: '3333',
-      saldo: '9999.99',
-      limite: 2500.00,
-      gerente: '01',
-      gerente_nome: 'José',
-      gerente_email: 'jose@gmail.com'
-    },
-    {
-      cpf: '333.333.333.33',
-      nome: 'Ricardão',
-      email: 'ricardao@gmail.com',
-      endereco: {
-        tipo: 'Avenida',
-        logradouro: 'Rua das Flores',
-        numero: '56',
-        complemento: 'ap09',
-        cep: '88888-888',
-        cidade: 'Curitiba',
-        estado: 'PR'
-      },
-      salario: 5000.55,
-      conta: '5555',
-      saldo: '9999.99',
-      limite: 2500.00,
-      gerente: '01',
-      gerente_nome: 'José',
-      gerente_email: 'jose@gmail.com'
-    }
-  ]
+export class ClientesAdmComponent implements OnInit {
+  clientes: DadosClienteResponse[] = [];
 
+  constructor(private clientesService: LocalClientesService) {}
+
+  ngOnInit(): void {
+    this.carregarClientes();
+  }
+
+  carregarClientes(): void {
+    this.clientesService.getClientes().subscribe({
+      next: (data) => {
+        this.clientes = data;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar clientes', err);
+      }
+    });
+  }
 }

@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { DadoGerente } from '../../../services';
+import { DadoGerente } from '../../../services/model';
+import { LocalGerentesService } from '../../../services';
 
 @Component({
   selector: 'app-gerentes',
@@ -10,38 +11,34 @@ import { DadoGerente } from '../../../services';
   templateUrl: './gerentes.component.html',
   styleUrl: './gerentes.component.css'
 })
-export class GerentesComponent {
-  gerentes: DadoGerente[] = [
-    {
-      cpf: '111.111.111-11',
-      nome: 'Gerente',
-      email:'gerente@gerente.com',
-      telefone:'(11)11111-1111'
-    },
-    {
-      cpf: '111.111.111-11',
-      nome: 'Gerente',
-      email:'gerente@gerente.com',
-      telefone:'(11)11111-1111'
-    },
-    {
-      cpf: '111.111.111-11',
-      nome: 'Gerente',
-      email:'gerente@gerente.com',
-      telefone:'(11)11111-1111'
-    },
-    {
-      cpf: '111.111.111-11',
-      nome: 'Gerente',
-      email:'gerente@gerente.com',
-      telefone:'(11)11111-1111'
-    },
-    {
-      cpf: '111.111.111-11',
-      nome: 'Gerente',
-      email:'gerente@gerente.com',
-      telefone:'(11)11111-1111'
-    }
-  ]
+export class GerentesComponent implements OnInit {
+  gerentes: DadoGerente[] = [];
 
+  constructor(private gerentesService: LocalGerentesService) {}
+
+  ngOnInit(): void {
+    this.carregarGerentes();
+  }
+
+  carregarGerentes(): void {
+    this.gerentesService.getGerentes().subscribe({
+      next: (data) => {
+        this.gerentes = data;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar gerentes', err);
+      }
+    });
+  }
+
+  removerGerente(cpf: string): void {
+    this.gerentesService.removerGerente(cpf).subscribe({
+      next: () => {
+        this.carregarGerentes();
+      },
+      error: (err) => {
+        console.error('Erro ao remover gerente', err);
+      }
+    });
+  }
 }
