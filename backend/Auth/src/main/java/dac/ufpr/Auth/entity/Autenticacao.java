@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class User implements UserDetails {
+public class Autenticacao implements UserDetails {
 
     @MongoId
     private String id;
@@ -30,6 +30,7 @@ public class User implements UserDetails {
 
     private EnRole role;
 
+    private Long idUsuario;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
