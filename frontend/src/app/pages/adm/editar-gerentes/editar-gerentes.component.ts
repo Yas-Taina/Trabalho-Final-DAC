@@ -17,7 +17,7 @@ export class EditarGerentesComponent implements OnInit {
   form!: FormGroup;
   tipos: TipoGerente[] = ['ADMINISTRADOR', 'GERENTE'];
   mensagem: string | null = null;
-  editMode = false; // true se for edição
+  editMode = false; 
   cpfParam!: string;
 
   constructor(
@@ -36,12 +36,10 @@ export class EditarGerentesComponent implements OnInit {
       tipo: ['GERENTE', [Validators.required]]
     });
 
-    // verificar se veio cpf na rota → edição
     this.cpfParam = this.route.snapshot.paramMap.get('cpf') ?? '';
     if (this.cpfParam) {
       this.editMode = true;
       this.carregarGerente(this.cpfParam);
-      // se for edição, CPF não pode ser alterado
       this.form.get('cpf')?.disable();
     }
   }
@@ -68,7 +66,7 @@ export class EditarGerentesComponent implements OnInit {
     }
 
     const dados: DadoGerente = {
-      ...this.form.getRawValue() // pega inclusive CPF desabilitado
+      ...this.form.getRawValue() 
     };
 
     if (this.editMode) {
