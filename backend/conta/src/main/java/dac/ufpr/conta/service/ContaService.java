@@ -5,13 +5,17 @@ import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import dac.ufpr.conta.dto.ContaDto;
 import dac.ufpr.conta.entity.Conta;
 import dac.ufpr.conta.entity.Movimentacao;
 import dac.ufpr.conta.exception.BusinessException;
 import dac.ufpr.conta.exception.ForbiddenException;
 import dac.ufpr.conta.exception.NotFoundException;
+import dac.ufpr.conta.mapper.ContaMapper;
 import dac.ufpr.conta.messaging.EventPublisher;
 import dac.ufpr.conta.repository.ContaRepository;
 import dac.ufpr.conta.repository.MovimentoRepository;
@@ -24,9 +28,22 @@ import dac.ufpr.conta.enums.enTipoMovimento;
 @RequiredArgsConstructor
 public class ContaService {
 
+    private static final Logger log = LoggerFactory.getLogger(ContaService.class);
+
     private final ContaRepository     contaRepo;
     private final MovimentoRepository movRepo;
     private final EventPublisher      publisher;
+
+    public ContaDto criar(ContaDto contaDto) {
+        log.info("Criando cliente: {}", contaDto);
+
+        // validarCliente(contaDto, -1L);
+
+        Conta conta = contaRepo.save(ContaMapper.toEntity(contaDto));
+        log.info("Conta criada com sucesso: {}", conta);
+
+        return ContaMapper.toDto(conta);
+    }
 
     @Transactional
     public void depositar(String numeroConta, BigDecimal valor, Long usuarioIdDono) {
