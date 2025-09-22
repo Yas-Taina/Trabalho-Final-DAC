@@ -18,9 +18,8 @@ import { GerentesComponent } from './pages/adm/gerentes/gerentes.component';
 import { EditarGerentesComponent } from './pages/adm/editar-gerentes/editar-gerentes.component';
 
 export const routes: Routes = [
-    //public routes
     {
-        path: 'home',
+        path: 'home',		
         component: HomeComponent
     },
     {
@@ -31,8 +30,7 @@ export const routes: Routes = [
         path: 'login',
         component: LoginComponent
     },
-
-    //client routes
+	
     {
         path: 'client/home',
         component: InicioClientComponent
@@ -58,7 +56,6 @@ export const routes: Routes = [
         component: TransferenciaComponent
     },
 
-    //manager routes
     {
         path: 'gerente/home',
         component: InicioManagerComponent
@@ -76,7 +73,6 @@ export const routes: Routes = [
         component: MelhoresClientesComponent
     },
 
-    //adm routes
     {
         path: 'adm/home',
         component: InicioAdmComponent
@@ -94,6 +90,5 @@ export const routes: Routes = [
         component: EditarGerentesComponent
     },
 
-    //default
     { path: "", redirectTo: "home", pathMatch: "full"},
 ];

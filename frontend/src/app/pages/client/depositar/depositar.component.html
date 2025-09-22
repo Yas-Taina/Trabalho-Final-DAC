@@ -17,7 +17,7 @@
         <label for="valor" class="form-label">Saldo a ser depositado</label>
         <input type="number" class="form-control" id="valor" name="valor" formControlName="valor" required placeholder="R$" />
       </div>
-      <div *ngIf="this.depositoForm.get('valor')?.errors">Por favor insira um valor válido</div>
+      <div *ngIf="this.depositoForm.get('valor')?.invalid && (this.depositoForm.get('valor')?.touched || this.depositoForm.get('valor')?.dirty)">Por favor insira um valor válido</div>
       <div class="d-flex justify-content-center">
         <button type="submit" [disabled]="depositoForm.invalid" class="btn btnAzulRosa">Confirmar</button>
       </div>
