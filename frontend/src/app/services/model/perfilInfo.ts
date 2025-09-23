@@ -1,11 +1,8 @@
-import { DadosClienteResponse } from "./dadosClienteResponse";
-import { Endereco } from "./endereco";
-
 export interface PerfilInfo { 
     nome?: string;
     email?: string;
     salario?: number;
-    endereco?: Endereco;
+    endereco?: string;
     CEP?: string;
     cidade?: string;
     estado?: string;
