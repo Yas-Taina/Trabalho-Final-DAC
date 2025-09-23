@@ -14,34 +14,36 @@ export class LocalClientesService extends LocalBaseService {
     return this.readLocalArray<Cliente>(this.storageKey);
   }
 
+  listarClientes(): Cliente[] {
+    return this.readStorage();
+  }
+
   private writeStorage(clientes: Cliente[]): void {
     this.writeLocalArray<Cliente>(this.storageKey, clientes);
   }
 
   // GET /clientes?filtro=...
   getClientes(filtro?: 'para_aprovar' | 'adm_relatorio_clientes' | 'melhores_clientes'): Observable<DadosClienteResponse[]> {
-    const clientesStorage = localStorage.getItem(this.storageKey);
-    // prefer local storage when available
-    if (!clientesStorage) {
+    const clientes = this.readStorage();
+    if (!clientes) {
       return new Observable<DadosClienteResponse[]>((observer) => {
         observer.next([]);
         observer.complete();
       });
     }
 
-    const clientes = JSON.parse(clientesStorage) as Cliente[];
-      return new Observable<DadosClienteResponse[]>((observer) => {
-        if (filtro === 'para_aprovar') {
-          observer.next(clientes.filter(c => c.status === 'PENDENTE'));
-        } else if (filtro === 'adm_relatorio_clientes') {
-          observer.next(clientes.filter(c => c.status === 'APROVADO'));
-        } else if (filtro === 'melhores_clientes') {
-          observer.next(clientes.filter(c => (c.dadosConta?.saldo ?? 0) >= 10000));
-        } else {
-          observer.next(clientes);
-        }
-        observer.complete();
-      });
+    return new Observable<DadosClienteResponse[]>((observer) => {
+      if (filtro === 'para_aprovar') {
+        observer.next(clientes.filter(c => c.status === 'PENDENTE'));
+      } else if (filtro === 'adm_relatorio_clientes') {
+        observer.next(clientes.filter(c => c.status === 'APROVADO'));
+      } else if (filtro === 'melhores_clientes') {
+        observer.next(clientes.filter(c => (c.dadosConta?.saldo ?? 0) >= 10000));
+      } else {
+        observer.next(clientes);
+      }
+      observer.complete();
+    });
   }
 
   // POST /clientes (autocadastro)
@@ -153,7 +155,6 @@ export class LocalClientesService extends LocalBaseService {
       }
 
       clientes[idx].status = 'REJEITADO';
-      // optionally store motivo
       (clientes[idx] as Cliente).rejeicaoMotivo = motivo;
       this.writeStorage(clientes);
 

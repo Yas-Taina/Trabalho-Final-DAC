@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { map, Observable, of } from 'rxjs';
 import { DadoGerente, DadoGerenteInsercao, DadoGerenteAtualizacao, DadoConta, DadosClienteResponse } from '../model';
+import { Gerente } from './models/gerente';
 import { LocalBaseService } from '../local.base.service';
 import { LocalContasService } from './contas.service';
 import { LocalClientesService } from './clientes.service';
@@ -13,15 +14,14 @@ export class LocalGerentesService extends LocalBaseService {
 
   readonly contasService = inject(LocalContasService);
   readonly clientesService = inject(LocalClientesService);
-
-  private read(): DadoGerente[] {
-    return this.readLocalArray<DadoGerente>(this.storageKey);
+  
+  private read(): Gerente[] {
+    return this.readLocalArray<Gerente>(this.storageKey);
   }
 
-  private write(list: DadoGerente[]): void {
-    this.writeLocalArray<DadoGerente>(this.storageKey, list);
+  private write(list: Gerente[]): void {
+    this.writeLocalArray<Gerente>(this.storageKey, list);
   }
-
 
   // GET /gerentes?numero=dashboard
   getGerentes(numero?: 'dashboard'): Observable<any> {
@@ -83,7 +83,11 @@ export class LocalGerentesService extends LocalBaseService {
         clientes: [],
       } as DadoGerente;
 
-      lista.push(novo);
+      lista.push({
+        ...novo,
+        id: (Math.random() * 1e8).toFixed(0),
+        senha: data.senha,
+      });
       this.write(lista);
 
       observer.next(novo);
@@ -136,7 +140,7 @@ export class LocalGerentesService extends LocalBaseService {
         return;
       }
 
-      const updated: DadoGerente = {
+      const updated: Gerente = {
         ...lista[idx],
         nome: data.nome ?? lista[idx].nome,
         email: data.email ?? lista[idx].email,
@@ -148,5 +152,9 @@ export class LocalGerentesService extends LocalBaseService {
       observer.next(updated);
       observer.complete();
     });
+  }
+
+  listarGerentes(): Gerente[] {
+    return this.read();
   }
 }

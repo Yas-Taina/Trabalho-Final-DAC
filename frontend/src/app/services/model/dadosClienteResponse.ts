@@ -5,6 +5,7 @@ export interface DadosClienteResponse {
     nome?: string;
     email?: string;
     endereco?: Endereco;
+    telefone?: string;
     salario?: number;
     conta?: string;
     saldo?: string;
