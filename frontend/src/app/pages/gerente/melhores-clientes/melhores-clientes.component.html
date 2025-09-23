@@ -26,8 +26,8 @@
           <tr *ngFor="let cliente of clientes">
             <td>{{cliente.cpf}}</td>
             <td>{{cliente.nome}}</td>
-            <td>{{cliente.endereco?.cidade}}</td>
-            <td>{{cliente.endereco?.estado}}</td>
+            <td>{{cliente.endereco.cidade}}</td>
+            <td>{{cliente.endereco.estado}}</td>
             <td>{{cliente.saldo}}</td>
           </tr>   
         </tbody>

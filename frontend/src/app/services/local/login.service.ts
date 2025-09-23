@@ -21,7 +21,7 @@ export class LocalLoginService {
     return new Observable<LoginResponse>((observer) => {
       const email = credentials.email.toLowerCase();
 
-      const gerentes = this.gerentesService.listarGerentes();
+      const gerentes = this.gerentesService.listarTodosGerentes();
       const gerente = gerentes.find((g: Gerente) => g.email!.toLowerCase() === email);
 
       if (gerente) {

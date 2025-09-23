@@ -1,54 +1,55 @@
-import { Component, inject } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
-import { ClienteResponse, LocalContasService, LocalLoginService } from '../../../services';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnInit, inject } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { LocalLoginService } from '../../../services';
+import { LocalContasService } from '../../../services';
+import { ClienteResponse, DadoGerente } from '../../../services';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-depositar',
   standalone: true,
-  imports: [RouterModule, ReactiveFormsModule, CommonModule],
+  imports: [RouterModule, CommonModule, ReactiveFormsModule],
   templateUrl: './depositar.component.html',
-  styleUrl: './depositar.component.css'
+  styleUrls: ['./depositar.component.css']
 })
-export class DepositarComponent {
-  readonly contaService: LocalContasService = inject(LocalContasService);
-  readonly loginService: LocalLoginService = inject(LocalLoginService);
-  readonly router: Router = inject(Router);
-  readonly builder: FormBuilder = inject(FormBuilder);
+export class DepositarComponent implements OnInit {
+  depositoForm!: FormGroup;
 
-  depositoModel = {
-    numeroConta: '',
-    valor: 0
-  };
+  constructor(
+    private fb: FormBuilder,
+    private loginService: LocalLoginService,
+    private contasService: LocalContasService
+  ) {}
 
-  depositoForm = this.builder.group({
-    numeroConta: [this.depositoModel.numeroConta, [Validators.required]],
-    valor: [this.depositoModel.valor, [Validators.required, Validators.min(1.0)]],
-  });
-
-  constructor() {
-    const session = this.loginService.sessionInfo();
-    if (session?.tipo === 'CLIENTE') { 
-      const cliente = session.usuario as ClienteResponse;
-      this.depositoForm.patchValue({ numeroConta: cliente.conta ?? "" });
-    }
+  ngOnInit(): void {
+    this.depositoForm = this.fb.group({
+      valor: [null, [Validators.required, Validators.min(1)]]
+    });
   }
 
-  async onSubmit() {
-  if (!this.depositoForm.valid) return;
+  private isCliente(usuario: ClienteResponse | DadoGerente): usuario is ClienteResponse {
+    return (usuario as ClienteResponse).conta !== undefined;
+  }
 
-  const { numeroConta, valor } = this.depositoForm.value;
+  onSubmit(): void {
+    if (this.depositoForm.valid) {
+      const session = this.loginService.sessionInfo();
+      if (!session || !this.isCliente(session.usuario)) {
+        alert('Sessão inválida ou usuário não é cliente');
+        return;
+      }
 
-  this.contaService.depositar(numeroConta!, valor!).subscribe({
-    next: () => {
-      alert(`Depósito de R$${valor?.toFixed(2)} realizado com sucesso.`);
-      this.router.navigate(['/client/home']);
-    },
-    error: (err: any) => {
-      alert('Erro no depósito: ' + (err.error?.message || err.message || 'Erro desconhecido'));
+      const numeroConta = session.usuario.conta;
+      const valor = this.depositoForm.value.valor;
+
+      try {
+        this.contasService.depositar(numeroConta!, valor);
+        alert('Depósito realizado com sucesso!');
+        this.depositoForm.reset();
+      } catch (error: any) {
+        alert(error.message || 'Erro ao realizar depósito');
+      }
     }
-  });
-}
-
+  }
 }

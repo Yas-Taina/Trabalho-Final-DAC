@@ -1,9 +1,18 @@
-import { ContaResponse, DadosClienteResponse } from "../../model";
+import { Endereco } from './endereco';
+import { Conta } from './conta';
 
-export interface Cliente extends DadosClienteResponse {
-  id: string;
-  senha?: string;
-  dadosConta?: ContaResponse;
-  status: 'PENDENTE' | 'APROVADO' | 'REJEITADO';
-  rejeicaoMotivo?: string;
+export type EstadoCliente = 'AGUARDANDO' | 'APROVADO' | 'RECUSADO';
+
+export interface Cliente {
+  nome: string;
+  email: string;
+  cpf: string;
+  endereco: Endereco;
+  telefone: string;
+  salario: number;
+  estado: EstadoCliente;
+  dadosConta?: Conta;
+  senha?: string; 
+  gerenteCpf?: string;
+  motivoRecusa?: string;
 }

@@ -1,90 +1,68 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { NgxMaskDirective } from 'ngx-mask';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { LocalGerentesService } from '../../../services';
-import { DadoGerente, TipoGerente } from '../../../services/model';
+import { Gerente } from '../../../services/local/models/gerente';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-editar-gerentes',
   standalone: true,
-  imports: [RouterModule, CommonModule, NgxMaskDirective, ReactiveFormsModule],
+  imports: [RouterModule, CommonModule, ReactiveFormsModule],
   templateUrl: './editar-gerentes.component.html',
-  styleUrl: './editar-gerentes.component.css'
+  styleUrls: ['./editar-gerentes.component.css']
 })
 export class EditarGerentesComponent implements OnInit {
-  form!: FormGroup;
-  tipos: TipoGerente[] = ['ADMINISTRADOR', 'GERENTE'];
+  form: FormGroup;
+  tipos = ['GERENTE', 'ADMINISTRADOR'];
+  editMode = false;
   mensagem: string | null = null;
-  editMode = false; 
-  cpfParam!: string;
 
   constructor(
     private fb: FormBuilder,
     private gerentesService: LocalGerentesService,
     private route: ActivatedRoute,
     private router: Router
-  ) {}
-
-  ngOnInit(): void {
+  ) {
     this.form = this.fb.group({
-      nome: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-      cpf: ['', [Validators.required]],
+      nome: ['', Validators.required],
+      cpf: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      telefone: ['', [Validators.required]],
-      tipo: ['GERENTE', [Validators.required]]
+      telefone: ['', Validators.required],
+      tipo: ['GERENTE', Validators.required]
     });
-
-    this.cpfParam = this.route.snapshot.paramMap.get('cpf') ?? '';
-    if (this.cpfParam) {
-      this.editMode = true;
-      this.carregarGerente(this.cpfParam);
-      this.form.get('cpf')?.disable();
-    }
   }
 
-  carregarGerente(cpf: string): void {
-    this.gerentesService.getGerente(cpf).subscribe({
-      next: (g) => {
-        this.form.patchValue({
-          nome: g.nome,
-          cpf: g.cpf,
-          email: g.email,
-          telefone: g.telefone,
-          tipo: g.tipo ?? 'GERENTE'
-        });
-      },
-      error: (err) => this.mensagem = err.message
-    });
+  ngOnInit(): void {
+    const cpf = this.route.snapshot.paramMap.get('cpf');
+    if (cpf) {
+      this.editMode = true;
+      const gerente = this.gerentesService.listarGerentes().find(g => g.cpf === cpf);
+      if (gerente) {
+        this.form.patchValue(gerente);
+        this.form.get('cpf')?.disable();
+      }
+    }
   }
 
   salvar(): void {
     if (this.form.invalid) {
-      this.mensagem = 'Preencha todos os campos corretamente!';
+      this.mensagem = 'Preencha todos os campos corretamente.';
       return;
     }
 
-    const dados: DadoGerente = {
-      ...this.form.getRawValue() 
-    };
-
-    if (this.editMode) {
-      this.gerentesService.atualizarGerente(this.cpfParam, dados).subscribe({
-        next: (res) => {
-          this.mensagem = `Gerente ${res.nome} atualizado com sucesso!`;
-          setTimeout(() => this.router.navigate(['/adm/home']), 1500);
-        },
-        error: (err) => this.mensagem = err.message
-      });
-    } else {
-      this.gerentesService.inserirGerente(dados).subscribe({
-        next: (res) => {
-          this.mensagem = `Gerente ${res.nome} cadastrado com sucesso!`;
-          this.form.reset();
-        },
-        error: (err) => this.mensagem = err.message
-      });
+    const dados: Gerente = { ...this.form.getRawValue() };
+    try {
+      if (this.editMode) {
+        this.gerentesService.editarGerente(dados.cpf!, dados);
+        this.mensagem = 'Gerente atualizado com sucesso!';
+      } else {
+        this.gerentesService.inserirUsuario(dados);
+        this.mensagem = 'Gerente cadastrado com sucesso!';
+        this.form.reset({ tipo: 'GERENTE' });
+      }
+    } catch (error: any) {
+      this.mensagem = error.message;
     }
   }
 }

@@ -1,6 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { LocalClientesService } from '../../../services';
+import { LocalLoginService } from '../../../services';
+import { Cliente } from '../../../services/local/models/cliente';
+import { ClienteResponse, DadoGerente } from '../../../services';
 import { RouterModule } from '@angular/router';
-import { DadosClienteResponse, LocalClientesService } from '../../../services';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,22 +11,30 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [RouterModule, CommonModule],
   templateUrl: './melhores-clientes.component.html',
-  styleUrl: './melhores-clientes.component.css'
+  styleUrls: ['./melhores-clientes.component.css']
 })
-export class MelhoresClientesComponent {
 
-  clienteService = inject(LocalClientesService);
+export class MelhoresClientesComponent implements OnInit {
+  clientes: (Cliente & { saldo?: number })[] = [];
 
-  clientes: DadosClienteResponse[] = [];
+  constructor(
+    private clientesService: LocalClientesService,
+    private loginService: LocalLoginService
+  ) {}
 
-  ngOnInit() {
-    this.clienteService.getClientes("melhores_clientes").subscribe({
-      next: (clientes) => {
-        this.clientes = clientes;
-      },
-      error: (err) => {
-        alert('Erro ao carregar melhores clientes: ' + (err.error?.message || err.message || 'Unknown error'));
-      }
-    });
+  ngOnInit(): void {
+    this.carregarMelhoresClientes();
+  }
+
+  carregarMelhoresClientes(): void {
+    const session = this.loginService.sessionInfo();
+    if (!session || session.tipo !== 'GERENTE') return;
+
+    const gerenteCpf = (session.usuario as DadoGerente).cpf!;
+    const top3 = this.clientesService.consultarTop3(gerenteCpf);
+    this.clientes = top3.map(c => ({
+      ...c,
+      saldo: c.dadosConta?.saldo
+    }));
   }
 }
