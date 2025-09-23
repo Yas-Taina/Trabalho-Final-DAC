@@ -10,7 +10,7 @@ import { NgxMaskDirective } from 'ngx-mask';
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [RouterModule, CommonModule, ReactiveFormsModule, NgxMaskDirective],
+  imports: [RouterModule, CommonModule, ReactiveFormsModule],
   templateUrl: './inicio.component.html',
   styleUrl: './inicio.component.css'
 })
