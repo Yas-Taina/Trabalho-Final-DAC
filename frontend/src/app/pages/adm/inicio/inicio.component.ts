@@ -23,7 +23,7 @@ export class InicioAdmComponent implements OnInit {
   constructor(private gerentesService: LocalGerentesService) {}
 
   ngOnInit(): void {
-    const dadosGerentes = this.gerentesService.dashboard(); // retorna array de objetos com nome, total, saldoPositivo, saldoNegativo
+    const dadosGerentes = this.gerentesService.dashboard(); 
     this.dashboards = dadosGerentes.map(d => ({
       gerente: d.nome,
       clientes: d.total,
@@ -32,3 +32,4 @@ export class InicioAdmComponent implements OnInit {
     }));
   }
 }
+
