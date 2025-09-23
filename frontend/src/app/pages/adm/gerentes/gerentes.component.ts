@@ -1,18 +1,18 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { DadoGerente } from '../../../services/model';
 import { LocalGerentesService } from '../../../services';
+import { Gerente } from '../../../services/local/models/gerente';
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-gerentes',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './gerentes.component.html',
-  styleUrl: './gerentes.component.css'
+  styleUrls: ['./gerentes.component.css']
 })
 export class GerentesComponent implements OnInit {
-  gerentes: DadoGerente[] = [];
+  gerentes: Gerente[] = [];
 
   constructor(private gerentesService: LocalGerentesService) {}
 
@@ -21,24 +21,17 @@ export class GerentesComponent implements OnInit {
   }
 
   carregarGerentes(): void {
-    this.gerentesService.getGerentes().subscribe({
-      next: (data) => {
-        this.gerentes = data;
-      },
-      error: (err) => {
-        console.error('Erro ao carregar gerentes', err);
-      }
-    });
+    this.gerentes = this.gerentesService.listarGerentes();
   }
 
   removerGerente(cpf: string): void {
-    this.gerentesService.removerGerente(cpf).subscribe({
-      next: () => {
+    if (confirm('Tem certeza que deseja remover este gerente?')) {
+      try {
+        this.gerentesService.removerGerente(cpf);
         this.carregarGerentes();
-      },
-      error: (err) => {
-        console.error('Erro ao remover gerente', err);
+      } catch (error: any) {
+        alert(error.message);
       }
-    });
+    }
   }
 }

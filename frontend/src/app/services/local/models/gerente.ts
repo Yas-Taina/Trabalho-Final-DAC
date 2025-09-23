@@ -1,7 +1,10 @@
-import { DadoGerente } from "../../model";
+export type TipoGerente = 'ADMINISTRADOR' | 'GERENTE';
 
-export interface Gerente extends DadoGerente {
-  id: string;
+export interface Gerente {
+  nome: string;
+  email: string;
+  telefone: string;
+  cpf: string;
+  tipo: TipoGerente;
   senha?: string;
-  ativo?: boolean;
 }

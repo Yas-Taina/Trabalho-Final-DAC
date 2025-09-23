@@ -1,28 +1,39 @@
-// src/app/services/base.service.ts
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+export class LocalBaseService<T> {
+  private storageKey: string;
 
-@Injectable({
-  providedIn: 'root',
-})
-export class LocalBaseService {
-
-  protected readLocal<T>(key: string): T | null {
-    const raw = localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : null;
+  constructor(storageKey: string) {
+    this.storageKey = storageKey;
   }
 
-  protected writeLocal<T>(key: string, value: T): void {
-    localStorage.setItem(key, JSON.stringify(value));
+  getAll(): T[] {
+    return JSON.parse(localStorage.getItem(this.storageKey) || '[]');
   }
 
-  protected readLocalArray<T>(key: string): T[] {
-    const raw = localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T[]) : [];
+  getById(id: string, idKey: keyof T): T | undefined {
+    return this.getAll().find(item => (item as any)[idKey] === id);
   }
 
-  protected writeLocalArray<T>(key: string, value: T[]): void {
-    localStorage.setItem(key, JSON.stringify(value));
+  saveAll(data: T[]): void {
+    localStorage.setItem(this.storageKey, JSON.stringify(data));
+  }
+
+  add(item: T): void {
+    const data = this.getAll();
+    data.push(item);
+    this.saveAll(data);
+  }
+
+  update(id: string, idKey: keyof T, item: T): void {
+    const data = this.getAll();
+    const index = data.findIndex(d => (d as any)[idKey] === id);
+    if (index > -1) {
+      data[index] = item;
+      this.saveAll(data);
+    }
+  }
+
+  delete(id: string, idKey: keyof T): void {
+    const data = this.getAll().filter(d => (d as any)[idKey] !== id);
+    this.saveAll(data);
   }
 }

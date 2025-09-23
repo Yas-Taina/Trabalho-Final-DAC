@@ -142,13 +142,20 @@ export const routes: Routes = [
       requiredRole: 'ADMINISTRADOR',
     },
   },
-  {
-    path: 'gerentes/edit',
+  { path: 'adm/gerentes/novo', 
     component: EditarGerentesComponent,
     //canActivate: [authGuard],
     data: {
       requiredRole: 'ADMINISTRADOR',
-    },
+    }, 
+  },
+
+  { path: 'adm/gerentes/:cpf', 
+    component: EditarGerentesComponent,
+    //canActivate: [authGuard],
+    data: {
+      requiredRole: 'ADMINISTRADOR',
+    }, 
   },
 
   //default

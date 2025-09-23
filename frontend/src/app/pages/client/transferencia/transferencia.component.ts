@@ -1,56 +1,68 @@
-import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-import { LocalContasService, LocalLoginService, ClienteResponse } from '../../../services';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { LocalContasService } from '../../../services';
+import { LocalLoginService } from '../../../services';
+import { ClienteResponse, DadoGerente } from '../../../services';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-transferencia',
   standalone: true,
-  imports: [RouterModule, ReactiveFormsModule, CommonModule],
+  imports: [RouterModule, CommonModule, ReactiveFormsModule],
   templateUrl: './transferencia.component.html',
-  styleUrl: './transferencia.component.css'
+  styleUrls: ['./transferencia.component.css']
 })
-export class TransferenciaComponent {
-  readonly contaService: LocalContasService = inject(LocalContasService);
-  readonly loginService: LocalLoginService = inject(LocalLoginService);
-  readonly router: Router = inject(Router);
-  readonly builder: FormBuilder = inject(FormBuilder);
+export class TransferenciaComponent implements OnInit {
+  transferenciaForm: FormGroup;
+  numeroContaOrigem: string | null = null;
 
-  transferenciaModel = {
-    numeroConta: '',
-    numeroContaDestino: '',
-    valor: 0
-  };
-
-  transferenciaForm = this.builder.group({
-    numeroConta: [this.transferenciaModel.numeroConta, [Validators.required]],
-    numeroContaDestino: [this.transferenciaModel.numeroContaDestino, [Validators.required]],
-    valor: [this.transferenciaModel.valor, [Validators.required, Validators.min(1.0)]],
-  });
-
-  constructor() {
-    const session = this.loginService.sessionInfo();
-    if (session?.tipo === 'CLIENTE') { 
-      const cliente = session.usuario as ClienteResponse;
-      this.transferenciaForm.patchValue({ numeroConta: cliente.conta ?? "" });
-    }
+  constructor(
+    private fb: FormBuilder,
+    private contasService: LocalContasService,
+    private loginService: LocalLoginService
+  ) {
+    this.transferenciaForm = this.fb.group({
+      valor: [0, [Validators.required, Validators.min(0.01)]],
+      numeroContaDestino: ['', [Validators.required]]
+    });
   }
 
-  async onSubmit() {
-  if (!this.transferenciaForm.valid) return;
+  ngOnInit(): void {
+    this.carregarContaOrigem();
+  }
 
-  const { numeroConta, numeroContaDestino, valor } = this.transferenciaForm.value;
+  private isCliente(usuario: ClienteResponse | DadoGerente): usuario is ClienteResponse {
+    return (usuario as ClienteResponse).conta !== undefined;
+  }
 
-  this.contaService.transferir(numeroConta!, numeroContaDestino!, valor!).subscribe({
-    next: () => {
-      alert(`Transferência de R$${valor?.toFixed(2)} para a conta ${numeroContaDestino} realizada com sucesso.`);
-      this.router.navigate(['/client/home']);
-    },
-    error: (err) => {
-      alert('Erro na transferência: ' + (err.error?.message || err.message || 'Erro desconhecido'));
+  private carregarContaOrigem(): void {
+    const session = this.loginService.sessionInfo();
+    if (!session || !this.isCliente(session.usuario)) {
+      alert('Sessão inválida ou usuário não é cliente');
+      return;
     }
-  });
-}
 
+    if (!session.usuario.conta) {
+      alert('Número da conta não disponível');
+      return;
+    }
+
+    this.numeroContaOrigem = session.usuario.conta;
+  }
+
+  onSubmit(): void {
+    if (!this.numeroContaOrigem) return;
+
+    const valor = this.transferenciaForm.value.valor;
+    const contaDestino = this.transferenciaForm.value.numeroContaDestino;
+
+    try {
+      this.contasService.transferir(this.numeroContaOrigem, contaDestino, valor);
+      alert(`Transferência de R$ ${valor.toFixed(2)} para a conta ${contaDestino} realizada com sucesso!`);
+      this.transferenciaForm.reset({ valor: 0, numeroContaDestino: '' });
+    } catch (error: any) {
+      alert(error.message || 'Erro ao realizar transferência');
+    }
+  }
 }
