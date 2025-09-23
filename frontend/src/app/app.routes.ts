@@ -123,7 +123,7 @@ export const routes: Routes = [
     component: InicioAdmComponent,
     //canActivate: [authGuard],
     data: {
-      requiredRole: 'ADMIN',
+      requiredRole: 'ADMINISTRADOR',
     },
   },
   {
@@ -131,7 +131,7 @@ export const routes: Routes = [
     component: ClientesAdmComponent,
     //canActivate: [authGuard],
     data: {
-      requiredRole: 'ADMIN',
+      requiredRole: 'ADMINISTRADOR',
     },
   },
   {
@@ -139,7 +139,7 @@ export const routes: Routes = [
     component: GerentesComponent,
     //canActivate: [authGuard],
     data: {
-      requiredRole: 'ADMIN',
+      requiredRole: 'ADMINISTRADOR',
     },
   },
   {
@@ -147,7 +147,7 @@ export const routes: Routes = [
     component: EditarGerentesComponent,
     //canActivate: [authGuard],
     data: {
-      requiredRole: 'ADMIN',
+      requiredRole: 'ADMINISTRADOR',
     },
   },
 

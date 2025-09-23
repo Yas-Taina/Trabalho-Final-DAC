@@ -21,7 +21,7 @@ export const authGuard: CanActivateFn = (route, state) => {
       return false;
     }
 
-    if (sessao.tipo === 'ADMIN') {
+    if (sessao.tipo === 'ADMINISTRADOR') {
       router.navigate(["/adm/home"]);
       return false;
     }

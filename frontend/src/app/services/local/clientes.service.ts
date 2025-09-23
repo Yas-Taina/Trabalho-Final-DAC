@@ -14,6 +14,10 @@ export class LocalClientesService extends LocalBaseService {
     return this.readLocalArray<Cliente>(this.storageKey);
   }
 
+  listarClientes(): Cliente[] {
+    return this.readStorage();
+  }
+
   private writeStorage(clientes: Cliente[]): void {
     this.writeLocalArray<Cliente>(this.storageKey, clientes);
   }
