@@ -101,6 +101,14 @@ export const routes: Routes = [
     },
   },
   {
+    path: 'clients/:cpf',
+    component: ConsultaComponent,
+    //canActivate: [authGuard],
+    data: {
+      requiredRole: 'GERENTE',
+    },
+  },
+  {
     path: 'clients/consulta',
     component: ConsultaComponent,
     //canActivate: [authGuard],
@@ -109,7 +117,7 @@ export const routes: Routes = [
     },
   },
   {
-    path: 'clients/melhores',
+    path: 'clientes/melhores',
     component: MelhoresClientesComponent,
     //canActivate: [authGuard],
     data: {
