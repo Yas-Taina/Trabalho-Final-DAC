@@ -4,11 +4,12 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { LocalGerentesService } from '../../../services';
 import { Gerente } from '../../../services/local/models/gerente';
 import { CommonModule } from '@angular/common';
+import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-editar-gerentes',
   standalone: true,
-  imports: [RouterModule, CommonModule, ReactiveFormsModule],
+  imports: [RouterModule, CommonModule, ReactiveFormsModule, NgxMaskDirective],
   templateUrl: './editar-gerentes.component.html',
   styleUrls: ['./editar-gerentes.component.css']
 })
