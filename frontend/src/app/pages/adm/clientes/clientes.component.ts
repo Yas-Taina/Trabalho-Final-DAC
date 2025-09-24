@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalClientesService } from '../../../services';
+import { LocalClientesService, LocalGerentesService } from '../../../services';
 import { Cliente } from '../../../services/local/models/cliente';
 import { Gerente } from '../../../services/local/models/gerente';
 import { RouterModule } from '@angular/router';
@@ -27,7 +27,10 @@ interface ClienteExibicao {
 export class ClientesAdmComponent implements OnInit {
   clientes: ClienteExibicao[] = [];
 
-  constructor(private clientesService: LocalClientesService) {}
+  constructor(
+    private clientesService: LocalClientesService,
+    private gerentesService: LocalGerentesService
+  ) {}
 
   ngOnInit(): void {
     this.carregarClientes();
@@ -38,7 +41,7 @@ export class ClientesAdmComponent implements OnInit {
     this.clientes = todos
       .filter(c => c.estado === 'APROVADO')
       .map(c => {
-        const gerente: Gerente | undefined = (c as any).gerente; 
+        const gerente = this.gerentesService.listarGerentes().find(g => g.cpf === c.gerenteCpf);
         return {
           cpf: c.cpf,
           nome: c.nome,

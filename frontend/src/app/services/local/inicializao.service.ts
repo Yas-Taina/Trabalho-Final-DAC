@@ -36,6 +36,15 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
         senha: '1234',
       };
 
+      const gerenteExemplo2: Gerente = {
+        nome: 'Gerente Exemplo 2',
+        email: 'g@g',
+        telefone: '41 98888-0003',
+        cpf: '222.222.222-21',
+        tipo: 'GERENTE',
+        senha: '1234',
+      };
+
       const adminExemplo: Gerente = {
         nome: 'Administrador Exemplo',
         email: 'a@a',
@@ -51,6 +60,33 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
         saldo: 2500,
         limite: 1000,
         gerenteCpf: gerenteExemplo.cpf,
+        historico: [],
+      };
+
+      // const contaExemplo2: Conta = {
+      //   numero: '1002',
+      //   dataCriacao: new Date().toISOString(),
+      //   saldo: 2500,
+      //   limite: 1000,
+      //   gerenteCpf: gerenteExemplo.cpf,
+      //   historico: [],
+      // };
+
+      const contaExemplo3: Conta = {
+        numero: '1003',
+        dataCriacao: new Date().toISOString(),
+        saldo: 3000,
+        limite: 500,
+        gerenteCpf: gerenteExemplo2.cpf,
+        historico: [],
+      };
+
+      const contaExemplo4: Conta = {
+        numero: '1004',
+        dataCriacao: new Date().toISOString(),
+        saldo: -400,
+        limite: 1000,
+        gerenteCpf: gerenteExemplo2.cpf,
         historico: [],
       };
 
@@ -75,8 +111,8 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
         gerenteCpf: gerenteExemplo.cpf,
       };
 
-      localStorage.setItem(gerentesKey, JSON.stringify([gerenteExemplo, adminExemplo]));
-      localStorage.setItem(contasKey, JSON.stringify([contaExemplo]));
+      localStorage.setItem(gerentesKey, JSON.stringify([gerenteExemplo, gerenteExemplo2, adminExemplo]));
+      localStorage.setItem(contasKey, JSON.stringify([contaExemplo, contaExemplo3, contaExemplo4]));
       localStorage.setItem(clientesKey, JSON.stringify([clienteExemplo]));
       localStorage.setItem(inicializacaoKey, JSON.stringify([new Date().toISOString()]));
 
