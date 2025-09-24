@@ -35,7 +35,7 @@ export class LocalContasService {
     if (valor <= 0) throw new Error('Valor inválido');
     const conta = this.getConta(numeroConta);
     if (!conta) throw new Error('Conta não encontrada');
-    if (valor > conta.saldo) throw new Error('Saldo insuficiente');
+    if (valor > conta.saldo + conta.limite) throw new Error('Saldo insuficiente');
 
     conta.saldo -= valor;
     this.adicionarMovimento(conta, {
@@ -51,7 +51,7 @@ export class LocalContasService {
     if (valor <= 0) throw new Error('Valor inválido');
     const origem = this.getConta(contaOrigemNum);
     if (!origem) throw new Error('Conta de origem não encontrada');
-    if (valor > origem.saldo) throw new Error('Saldo insuficiente');
+    if (valor > origem.saldo + origem.limite) throw new Error('Saldo insuficiente');
 
     origem.saldo -= valor;
 
