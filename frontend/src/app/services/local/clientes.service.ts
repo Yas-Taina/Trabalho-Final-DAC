@@ -16,22 +16,26 @@ export class LocalClientesService {
     return this.base.getAll();
   }
 
- cadastrarCliente(cliente: Cliente): void {
+cadastrarCliente(cliente: Cliente): void {
   const jaExiste = this.listarClientes().some(c => c.cpf === cliente.cpf);
   if (jaExiste) throw new Error('Cliente já cadastrado');
 
   const gerentes = this.gerentesBase.getAll().filter(g => g.tipo === 'GERENTE');
   if (!gerentes.length) throw new Error('Nenhum gerente disponível');
 
-  const contas = this.contasBase.getAll();
-  const contasPorGerente: Record<string, number> = {};
+  const clientes = this.listarClientes();
+  const clientesPorGerente: Record<string, number> = {};
   gerentes.forEach(g => {
-    contasPorGerente[g.cpf] = contas.filter(c => c.gerenteCpf === g.cpf).length;
+    clientesPorGerente[g.cpf] = clientes.filter(
+      c => c.gerenteCpf === g.cpf && (c.estado === 'AGUARDANDO' || c.estado === 'APROVADO')
+    ).length;
   });
 
-  const menorNumeroContas = Math.min(...Object.values(contasPorGerente));
-  const gerentesComMenosContas = gerentes.filter(g => contasPorGerente[g.cpf] === menorNumeroContas);
-  const gerenteEscolhido = gerentesComMenosContas[Math.floor(Math.random() * gerentesComMenosContas.length)];
+  const menorNumeroClientes = Math.min(...Object.values(clientesPorGerente));
+  const gerentesComMenosClientes = gerentes.filter(
+    g => clientesPorGerente[g.cpf] === menorNumeroClientes
+  );
+  const gerenteEscolhido = gerentesComMenosClientes[Math.floor(Math.random() * gerentesComMenosClientes.length)];
 
   cliente.estado = 'AGUARDANDO';
   cliente.gerenteCpf = gerenteEscolhido.cpf;
