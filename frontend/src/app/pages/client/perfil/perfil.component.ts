@@ -70,7 +70,7 @@ export class PerfilComponent implements OnInit {
     const dados: Cliente = { ...this.form.getRawValue() };
     try {
       this.clientesService.editarPerfil(dados.cpf!, dados);
-      this.mensagem = 'Gerente atualizado com sucesso!';
+      this.mensagem = 'Dados atualizados com sucesso!';
     } catch (error: any) {
       this.mensagem = error.message;
     }
