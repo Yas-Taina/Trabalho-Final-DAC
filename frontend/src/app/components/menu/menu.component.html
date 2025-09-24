@@ -1,0 +1,20 @@
+<nav class="navbar" *ngIf="isLoggedIn">
+
+  <button class="menu-btn" (click)="toggleMenu()">
+    <span [class.open]="isOpen"></span>
+    <span [class.open]="isOpen"></span>
+    <span [class.open]="isOpen"></span>
+  </button>
+
+  <button class="btnBox" (click)="logout()">
+    <i class="fa-solid fa-right-from-bracket btnIcon"></i>
+  </button>
+</nav>
+
+<ul class="menu-links" [class.open]="isOpen">
+  <li *ngFor="let link of links">
+    <a [routerLink]="link.path" (click)="toggleMenu()">{{ link.label }}</a>
+  </li>
+
+</ul>
+
