@@ -16,27 +16,28 @@ export class LocalClientesService {
     return this.base.getAll();
   }
 
-  cadastrarCliente(cliente: Cliente): void {
-    const jaExiste = this.listarClientes().some(c => c.cpf === cliente.cpf);
-    if (jaExiste) throw new Error('Cliente já cadastrado');
+ cadastrarCliente(cliente: Cliente): void {
+  const jaExiste = this.listarClientes().some(c => c.cpf === cliente.cpf);
+  if (jaExiste) throw new Error('Cliente já cadastrado');
 
-    const gerentes = this.gerentesBase.getAll().filter(g => g.tipo === 'GERENTE');
-    if (!gerentes.length) throw new Error('Nenhum gerente disponível');
+  const gerentes = this.gerentesBase.getAll().filter(g => g.tipo === 'GERENTE');
+  if (!gerentes.length) throw new Error('Nenhum gerente disponível');
 
-    const contas = this.contasBase.getAll();
-    const contasPorGerente: Record<string, number> = {};
-    gerentes.forEach(g => {
-      contasPorGerente[g.cpf] = contas.filter(c => c.gerenteCpf === g.cpf).length;
-    });
-    const menor = Math.min(...Object.values(contasPorGerente));
-    const gerenteEscolhido = gerentes.find(g => contasPorGerente[g.cpf] === menor)!;
+  const contas = this.contasBase.getAll();
+  const contasPorGerente: Record<string, number> = {};
+  gerentes.forEach(g => {
+    contasPorGerente[g.cpf] = contas.filter(c => c.gerenteCpf === g.cpf).length;
+  });
 
-    cliente.estado = 'AGUARDANDO';
-    cliente.gerenteCpf = gerenteEscolhido.cpf;
+  const menorNumeroContas = Math.min(...Object.values(contasPorGerente));
+  const gerentesComMenosContas = gerentes.filter(g => contasPorGerente[g.cpf] === menorNumeroContas);
+  const gerenteEscolhido = gerentesComMenosContas[Math.floor(Math.random() * gerentesComMenosContas.length)];
 
-    this.base.add(cliente);
-    alert('Cadastro realizado com sucesso! Cliente aguardando aprovação.');
-  }
+  cliente.estado = 'AGUARDANDO';
+  cliente.gerenteCpf = gerenteEscolhido.cpf;
+  this.base.add(cliente);
+}
+
 
   aprovarCliente(cpf: string): void {
     const cliente = this.base.getById(cpf, 'cpf');
