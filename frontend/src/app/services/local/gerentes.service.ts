@@ -16,24 +16,35 @@ export class LocalGerentesService {
 
     this.gerentesBase.add(gerente);
 
-    if (gerente.tipo === 'GERENTE') {
-      const contas = this.contasBase.getAll();
-      if (contas.length > 0) {
-        const contasPorGerente: Record<string, number> = {};
-        gerentes.filter(g => g.tipo === 'GERENTE').forEach(g => {
-          contasPorGerente[g.cpf] = contas.filter(c => c.gerenteCpf === g.cpf).length;
-        });
+    this.redistribuirContas(gerente);
+  }
 
-        const max = Math.max(...Object.values(contasPorGerente));
-        const gerenteOrigem = gerentes.find(g => g.tipo === 'GERENTE' && contasPorGerente[g.cpf] === max);
-        if (gerenteOrigem) {
-          contas.filter(c => c.gerenteCpf === gerenteOrigem.cpf).forEach(c => {
-            c.gerenteCpf = gerente.cpf;
-            this.contasBase.update(c.numero, 'numero', c);
-          });
-        }
+  private redistribuirContas(gerenteDestino: Gerente): void {
+    const contas = this.contasBase.getAll();
+    const gerentes = this.dashboard().filter(g => g.cpf !== gerenteDestino.cpf).sort((a, b) => b.total - a.total);
+
+    const contasPorGerente = gerentes.map(g => {
+      return {
+        cpf: g.cpf,
+        contas: contas.filter(c => c.gerenteCpf === g.cpf),
+        saldoPositivo: g.saldoPositivo,
       }
+    });
+
+    if (contas.length < 2) {
+      return;
     }
+
+    let contaParaRedistribuir = contasPorGerente[0].contas.pop();
+
+    const gerentesComMaisContas = contasPorGerente.filter(c => c.saldoPositivo === contasPorGerente[0].saldoPositivo);
+
+    if (gerentesComMaisContas.length > 1) {
+      contaParaRedistribuir = gerentesComMaisContas.sort((a, b) => a.saldoPositivo - b.saldoPositivo)[0].contas.pop();
+    }
+
+    contaParaRedistribuir!.gerenteCpf = gerenteDestino.cpf;
+    this.contasBase.update(contaParaRedistribuir!.numero, 'numero', contaParaRedistribuir!);
   }
 
   listarGerentes(): Gerente[] {
@@ -68,7 +79,7 @@ export class LocalGerentesService {
     this.gerentesBase.delete(cpf, 'cpf');
   }
 
-  dashboard(): { nome: string, total: number, saldoPositivo: number, saldoNegativo: number }[] {
+  dashboard(): { cpf: string, nome: string, total: number, saldoPositivo: number, saldoNegativo: number }[] {
     const gerentes = this.gerentesBase.getAll().filter(g => g.tipo === 'GERENTE');
     const contas = this.contasBase.getAll();
 
@@ -78,7 +89,7 @@ export class LocalGerentesService {
       const saldoPositivo = contasGerente.filter(c => c.saldo > 0).length;
       const saldoNegativo = contasGerente.filter(c => c.saldo <= 0).length;
 
-      return { nome: g.nome, total, saldoPositivo, saldoNegativo };
+      return { cpf: g.cpf, nome: g.nome, total, saldoPositivo, saldoNegativo };
     });
   }
 
