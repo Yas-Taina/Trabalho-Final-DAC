@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { LocalLoginService } from '../../../services';
 import { LocalContasService } from '../../../services';
 import { ClienteResponse, DadoGerente } from '../../../services';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -19,7 +19,8 @@ export class DepositarComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private loginService: LocalLoginService,
-    private contasService: LocalContasService
+    private contasService: LocalContasService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -47,6 +48,8 @@ export class DepositarComponent implements OnInit {
         this.contasService.depositar(numeroConta!, valor);
         alert('Depósito realizado com sucesso!');
         this.depositoForm.reset();
+
+        this.router.navigate(['/client/home']);
       } catch (error: any) {
         alert(error.message || 'Erro ao realizar depósito');
       }

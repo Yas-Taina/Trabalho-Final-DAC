@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { LocalContasService } from '../../../services';
 import { LocalLoginService } from '../../../services';
 import { ClienteResponse, DadoGerente } from '../../../services';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -20,7 +20,8 @@ export class TransferenciaComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private contasService: LocalContasService,
-    private loginService: LocalLoginService
+    private loginService: LocalLoginService,
+    private router: Router
   ) {
     this.transferenciaForm = this.fb.group({
       valor: [0, [Validators.required, Validators.min(0.01)]],
@@ -61,6 +62,8 @@ export class TransferenciaComponent implements OnInit {
       this.contasService.transferir(this.numeroContaOrigem, contaDestino, valor);
       alert(`Transferência de R$ ${valor.toFixed(2)} para a conta ${contaDestino} realizada com sucesso!`);
       this.transferenciaForm.reset({ valor: 0, numeroContaDestino: '' });
+
+      this.router.navigate(['/client/home']);
     } catch (error: any) {
       alert(error.message || 'Erro ao realizar transferência');
     }

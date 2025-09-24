@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { LocalContasService } from '../../../services';
 import { LocalLoginService } from '../../../services';
 import { ClienteResponse, DadoGerente } from '../../../services';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -20,7 +20,8 @@ export class SaqueComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private contasService: LocalContasService,
-    private loginService: LocalLoginService
+    private loginService: LocalLoginService,
+    private router: Router
   ) {
     this.saqueForm = this.fb.group({
       valor: [0, [Validators.required, Validators.min(0.01)]]
@@ -58,6 +59,8 @@ export class SaqueComponent implements OnInit {
       this.contasService.sacar(this.numeroConta, valor);
       alert(`Saque de R$ ${valor.toFixed(2)} realizado com sucesso!`);
       this.saqueForm.reset({ valor: 0 });
+
+      this.router.navigate(['/client/home']);
     } catch (error: any) {
       alert(error.message || 'Erro ao realizar saque');
     }
