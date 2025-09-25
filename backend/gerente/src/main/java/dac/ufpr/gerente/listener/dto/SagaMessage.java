@@ -1,4 +1,4 @@
-package dac.ufpr.gerente.listener;
+package dac.ufpr.gerente.listener.dto;
 
 import dac.ufpr.gerente.enums.EnStatusIntegracao;
 import lombok.AllArgsConstructor;

@@ -5,7 +5,7 @@ import dac.ufpr.gerente.exception.custom.BadRequestException;
 import dac.ufpr.gerente.exception.custom.ResourceAlreadyExistsException;
 import dac.ufpr.gerente.exception.custom.ResourceNotFoundException;
 import dac.ufpr.gerente.mapper.GerenteMapper;
-import dac.ufpr.gerente.model.Gerente;
+import dac.ufpr.gerente.entity.Gerente;
 import dac.ufpr.gerente.repository.GerenteRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
