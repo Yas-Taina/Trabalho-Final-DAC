@@ -45,10 +45,11 @@ export class LocalGerentesService {
       contaParaRedistribuir = gerentesComMaisContas.sort((a, b) => a.saldoPositivo - b.saldoPositivo)[0].contas.pop();
     }
 
-    const cliente = this.clientesBase.getAll().find(x => x.gerenteCpf === contaParaRedistribuir?.gerenteCpf);
+    const cliente = this.clientesBase.getAll().find(x => x.dadosConta?.numero === contaParaRedistribuir?.numero);
 
     contaParaRedistribuir!.gerenteCpf = gerenteDestino.cpf;
     cliente!.gerenteCpf = gerenteDestino.cpf;
+    cliente!.dadosConta = contaParaRedistribuir;
 
     this.contasBase.update(contaParaRedistribuir!.numero, 'numero', contaParaRedistribuir!);
     this.clientesBase.update(cliente!.cpf, 'cpf', cliente!);
@@ -97,12 +98,13 @@ export class LocalGerentesService {
 
     const clientesPraRedistribuir = this.clientesBase.getAll().filter(x => x.gerenteCpf === gerenteAntigoCpf);
 
-    contasParaRedistribuir.forEach(x => {
-      x.gerenteCpf = gerenteComMenosContas?.cpf!;
+    contasParaRedistribuir.forEach(conta => {
+      conta.gerenteCpf = gerenteComMenosContas?.cpf!;
     });
 
-    clientesPraRedistribuir.forEach(x => {
-      x.gerenteCpf = gerenteComMenosContas?.cpf!;
+    clientesPraRedistribuir.forEach(cliente => {
+      cliente.gerenteCpf = gerenteComMenosContas?.cpf!;
+      cliente.dadosConta!.gerenteCpf = gerenteComMenosContas?.cpf!;
     });
 
     for (const conta of contasParaRedistribuir) {
