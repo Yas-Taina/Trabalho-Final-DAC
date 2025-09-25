@@ -8,18 +8,38 @@
     </div>
     <div class="col-5">
 
-    <form action="">
+    <form [formGroup]="perfilForm" (ngSubmit)="onSubmit()">
 
-        <div class="row">
+        <div class="row mb-3">
           <div class="col-12">
           <label for="nome" class="form-label">Nome</label>
-          <input type="text" class="form-control" id="nome" name="nome" minlength="2" maxlength="100" required />
+          <input type="text" 
+                 id="nome" 
+                 class="form-control" 
+                 formControlName="nome"
+                 minlength="2" 
+                 maxlength="100"
+                 [class.is-invalid]="perfilForm.get('nome')?.invalid && (perfilForm.get('nome')?.touched || perfilForm.get('nome')?.dirty)" />
+          <div class="invalid-feedback" *ngIf="perfilForm.get('nome')?.errors && (perfilForm.get('nome')?.touched || perfilForm.get('nome')?.dirty)">
+            <div *ngIf="perfilForm.get('nome')?.errors?.['required']">Por favor insira um nome</div>
+            <div *ngIf="perfilForm.get('nome')?.errors?.['minlength']">O nome deve ter pelo menos 2 caracteres</div>
+            <div *ngIf="perfilForm.get('nome')?.errors?.['maxlength']">O nome deve ter no máximo 100 caracteres</div>
+          </div>
         </div>
         </div>
-        <div class="row">
+        <div class="row mb-3">
           <div class="col-7">
             <label for="email" class="form-label">E-mail</label>
-            <input type="email" class="form-control" id="email" name="email" maxlength="100" required email />
+            <input type="email" 
+                   id="email" 
+                   class="form-control" 
+                   formControlName="email"
+                   maxlength="100"
+                   [class.is-invalid]="perfilForm.get('email')?.invalid && (perfilForm.get('email')?.touched || perfilForm.get('email')?.dirty)" />
+            <div class="invalid-feedback" *ngIf="perfilForm.get('email')?.errors && (perfilForm.get('email')?.touched || perfilForm.get('email')?.dirty)">
+              <div *ngIf="perfilForm.get('email')?.errors?.['required']">Por favor insira um e-mail</div>
+              <div *ngIf="perfilForm.get('email')?.errors?.['email']">Por favor insira um e-mail válido</div>
+            </div>
           </div>
           <div class="col-5">
             <label for="cpf" class="form-label">CPF</label>
@@ -30,62 +50,140 @@
 
 
 
-      <div class="row">
+      <div class="row mb-3">
         <div class="col-6">
           <label for="telefone" class="form-label">Telefone</label>
-          <input type="string" class="form-control" id="telefone" name="telefone" required placeholder="(00)00000-0000"
-            mask="(00)00000-0000" />
+          <input type="text" 
+                 id="telefone" 
+                 class="form-control" 
+                 formControlName="telefone"
+                 placeholder="(00)00000-0000"
+                 mask="(00)00000-0000"
+                 [class.is-invalid]="perfilForm.get('telefone')?.invalid && (perfilForm.get('telefone')?.touched || perfilForm.get('telefone')?.dirty)" />
+          <div class="invalid-feedback" *ngIf="perfilForm.get('telefone')?.errors && (perfilForm.get('telefone')?.touched || perfilForm.get('telefone')?.dirty)">
+            <div *ngIf="perfilForm.get('telefone')?.errors?.['required']">Por favor insira um telefone</div>
+          </div>
         </div>
         <div class="col-6">
           <label for="salario" class="form-label">Salário</label>
-          <input type="number" class="form-control" id="salario" name="salario" required placeholder="R$" />
+          <input type="number" 
+                 id="salario" 
+                 class="form-control" 
+                 formControlName="salario"
+                 placeholder="R$"
+                 [class.is-invalid]="perfilForm.get('salario')?.invalid && (perfilForm.get('salario')?.touched || perfilForm.get('salario')?.dirty)" />
+          <div class="invalid-feedback" *ngIf="perfilForm.get('salario')?.errors && (perfilForm.get('salario')?.touched || perfilForm.get('salario')?.dirty)">
+            <div *ngIf="perfilForm.get('salario')?.errors?.['required']">Por favor insira um salário</div>
+          </div>
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-4">
-          <label for="cep" class="form-label">CEP</label>
-          <input type="text" class="form-control" id="cep" name="cep" required placeholder="00000-000"
-            mask="00000-000" />
+      <div formGroupName="endereco">
+        <div class="row mb-3">
+          <div class="col-4">
+            <label for="cep" class="form-label">CEP</label>
+            <input type="text" 
+                   id="cep" 
+                   class="form-control" 
+                   formControlName="cep"
+                   placeholder="00000-000"
+                   mask="00000-000"
+                   [class.is-invalid]="perfilForm.get('endereco.cep')?.invalid && (perfilForm.get('endereco.cep')?.touched || perfilForm.get('endereco.cep')?.dirty)" />
+            <div class="invalid-feedback" *ngIf="perfilForm.get('endereco.cep')?.errors && (perfilForm.get('endereco.cep')?.touched || perfilForm.get('endereco.cep')?.dirty)">
+              <div *ngIf="perfilForm.get('endereco.cep')?.errors?.['required']">Por favor insira um CEP válido</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <label for="cidade" class="form-label">Cidade</label>
+            <input type="text" 
+                   id="cidade" 
+                   class="form-control" 
+                   formControlName="cidade"
+                   placeholder="Cidade"
+                   [class.is-invalid]="perfilForm.get('endereco.cidade')?.invalid && (perfilForm.get('endereco.cidade')?.touched || perfilForm.get('endereco.cidade')?.dirty)" />
+            <div class="invalid-feedback" *ngIf="perfilForm.get('endereco.cidade')?.errors && (perfilForm.get('endereco.cidade')?.touched || perfilForm.get('endereco.cidade')?.dirty)">
+              <div *ngIf="perfilForm.get('endereco.cidade')?.errors?.['required']">Por favor insira uma cidade</div>
+            </div>
+          </div>
+          <div class="col-2">
+            <label for="estado" class="form-label">UF</label>
+            <input type="text" 
+                   id="estado" 
+                   class="form-control" 
+                   formControlName="estado"
+                   maxlength="2" 
+                   placeholder="--"
+                   [class.is-invalid]="perfilForm.get('endereco.estado')?.invalid && (perfilForm.get('endereco.estado')?.touched || perfilForm.get('endereco.estado')?.dirty)" />
+            <div class="invalid-feedback" *ngIf="perfilForm.get('endereco.estado')?.errors && (perfilForm.get('endereco.estado')?.touched || perfilForm.get('endereco.estado')?.dirty)">
+              <div *ngIf="perfilForm.get('endereco.estado')?.errors?.['required']">Por favor insira a UF</div>
+            </div>
+          </div>
         </div>
-        <div class="col-6">
-          <label for="cidade" class="form-label">Cidade</label>
-          <input type="text" class="form-control" id="cidade" name="cidade" required placeholder="Cidade" />
-        </div>
-        <div class="col-2">
-          <label for="estado" class="form-label">UF</label>
-          <input type="text" class="form-control" id="estado" name="estado" required maxlength="2" placeholder="--" />
-        </div>
-      </div>
 
-      <div class="row">
-        <div class="col-4">
-          <label for="tipo" class="form-label">Tipo</label>
-          <input type="text" class="form-control" id="tipo" name="tipo" required maxlength="2"
-            placeholder="Rua, Avenida..." />
+        <div class="row mb-3">
+          <div class="col-4">
+            <label for="tipo" class="form-label">Tipo</label>
+            <input type="text" 
+                   id="tipo" 
+                   class="form-control" 
+                   formControlName="tipo"
+                   placeholder="Rua, Avenida..."
+                   [class.is-invalid]="perfilForm.get('endereco.tipo')?.invalid && (perfilForm.get('endereco.tipo')?.touched || perfilForm.get('endereco.tipo')?.dirty)" />
+            <div class="invalid-feedback" *ngIf="perfilForm.get('endereco.tipo')?.errors && (perfilForm.get('endereco.tipo')?.touched || perfilForm.get('endereco.tipo')?.dirty)">
+              <div *ngIf="perfilForm.get('endereco.tipo')?.errors?.['required']">Por favor insira o tipo</div>
+            </div>
+          </div>
+          <div class="col-8">
+            <label for="logradouro" class="form-label">Logradouro</label>
+            <input type="text" 
+                   id="logradouro" 
+                   class="form-control" 
+                   formControlName="logradouro"
+                   placeholder="Logradouro"
+                   [class.is-invalid]="perfilForm.get('endereco.logradouro')?.invalid && (perfilForm.get('endereco.logradouro')?.touched || perfilForm.get('endereco.logradouro')?.dirty)" />
+            <div class="invalid-feedback" *ngIf="perfilForm.get('endereco.logradouro')?.errors && (perfilForm.get('endereco.logradouro')?.touched || perfilForm.get('endereco.logradouro')?.dirty)">
+              <div *ngIf="perfilForm.get('endereco.logradouro')?.errors?.['required']">Por favor insira um logradouro</div>
+            </div>
+          </div>
         </div>
-        <div class="col-8">
-          <label for="logradouro" class="form-label">Logradouro</label>
-          <input type="text" class="form-control" id="logradouro" name="logradouro" required placeholder="Logradouro" />
-        </div>
-      </div>
 
-      <div class="row">
-        <div class="col-3">
-          <label for="numero" class="form-label">Nº</label>
-          <input type="number" class="form-control" id="numero" name="numero" required placeholder="00" />
-        </div>
-        <div class="col-4">
-          <label for="bairro" class="form-label">Bairro</label>
-          <input type="text" class="form-control" id="bairro" name="bairro" required placeholder="Bairro" />
-        </div>
-        <div class="col-5">
-          <label for="complemento" class="form-label">Complemento</label>
-          <input type="text" class="form-control" id="complemento" name="complemento" placeholder="Bloco, AP..." />
+        <div class="row mb-3">
+          <div class="col-3">
+            <label for="numero" class="form-label">Nº</label>
+            <input type="text" 
+                   id="numero" 
+                   class="form-control" 
+                   formControlName="numero"
+                   placeholder="00"
+                   [class.is-invalid]="perfilForm.get('endereco.numero')?.invalid && (perfilForm.get('endereco.numero')?.touched || perfilForm.get('endereco.numero')?.dirty)" />
+            <div class="invalid-feedback" *ngIf="perfilForm.get('endereco.numero')?.errors && (perfilForm.get('endereco.numero')?.touched || perfilForm.get('endereco.numero')?.dirty)">
+              <div *ngIf="perfilForm.get('endereco.numero')?.errors?.['required']">Por favor insira um número</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <label for="bairro" class="form-label">Bairro</label>
+            <input type="text" 
+                   id="bairro" 
+                   class="form-control" 
+                   formControlName="bairro"
+                   placeholder="Bairro"
+                   [class.is-invalid]="perfilForm.get('endereco.bairro')?.invalid && (perfilForm.get('endereco.bairro')?.touched || perfilForm.get('endereco.bairro')?.dirty)" />
+            <div class="invalid-feedback" *ngIf="perfilForm.get('endereco.bairro')?.errors && (perfilForm.get('endereco.bairro')?.touched || perfilForm.get('endereco.bairro')?.dirty)">
+              <div *ngIf="perfilForm.get('endereco.bairro')?.errors?.['required']">Por favor insira o bairro</div>
+            </div>
+          </div>
+          <div class="col-5">
+            <label for="complemento" class="form-label">Complemento</label>
+            <input type="text" 
+                   id="complemento" 
+                   class="form-control" 
+                   formControlName="complemento"
+                   placeholder="Bloco, AP..." />
+          </div>
         </div>
       </div>
       <div class="d-flex justify-content-end gap-3">
-      <a><i class="fa-solid fa-floppy-disk btnIcon"></i></a>
+      <button type="submit" [disabled]="perfilForm.invalid" class="btn p-0"><i class="fa-solid fa-floppy-disk btnIcon"></i></button>
       <a routerLink="/client/home"
                 routerLinkActive="active"><i class="fa-solid fa-location-arrow btnIcon btnVoltar" style="color: var(--azul);"></i></a></div>
     </form>
