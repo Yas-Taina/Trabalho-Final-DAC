@@ -78,16 +78,32 @@ cadastrarCliente(cliente: Cliente): void {
 
   editarPerfil(cpf: string, novo: Partial<Cliente>): void {
     const cliente = this.base.getById(cpf, 'cpf');
+    const conta = this.contasBase.getAll().find(x => x.numero === cliente?.dadosConta?.numero);
     if (!cliente) throw new Error('Cliente não encontrado');
+    if (!conta) throw new Error('Cliente não possui conta');
 
     if (novo.salario && novo.salario !== cliente.salario) {
       if (cliente.dadosConta) {
-        cliente.dadosConta.limite = novo.salario > 2000 ? novo.salario / 2 : 0;
+        conta.limite = novo.salario >= 2000 ? novo.salario / 2 : 0;
       }
     }
 
+    const saldoPositivo = (conta?.saldo ?? 0) > 0;
+
+    if (!saldoPositivo) {
+      const limite = conta?.limite ?? 0;
+      const saldo = Math.abs(conta?.saldo ?? 0);
+
+      if (saldo >= limite) {
+        conta.limite = saldo;
+      }
+    }
+
+    cliente.dadosConta = conta;
+
     Object.assign(cliente, novo, { cpf: cliente.cpf });
     this.base.update(cliente.cpf, 'cpf', cliente);
+    this.contasBase.update(conta.numero, 'numero', conta);
   }
 
   consultarClientesAguardando(gerenteCpf: string): Cliente[] {

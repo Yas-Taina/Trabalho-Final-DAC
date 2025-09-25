@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { LocalBaseService } from '../local.base.service';
 import { Gerente } from './models/gerente';
 import { Conta } from './models/conta';
+import { Cliente } from './models/cliente';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,7 @@ import { Conta } from './models/conta';
 export class LocalGerentesService {
   private gerentesBase = new LocalBaseService<Gerente>('gerentes');
   private contasBase = new LocalBaseService<Conta>('contas');
+  private clientesBase = new LocalBaseService<Cliente>('clientes');
 
   inserirUsuario(gerente: Gerente): void {
     const gerentes = this.gerentesBase.getAll();
@@ -37,14 +39,20 @@ export class LocalGerentesService {
 
     let contaParaRedistribuir = contasPorGerente[0].contas.pop();
 
-    const gerentesComMaisContas = contasPorGerente.filter(c => c.saldoPositivo === contasPorGerente[0].saldoPositivo);
+    const gerentesComMaisContas = contasPorGerente.filter(c => c.contas.length === contasPorGerente[0].contas.length);
 
     if (gerentesComMaisContas.length > 1) {
       contaParaRedistribuir = gerentesComMaisContas.sort((a, b) => a.saldoPositivo - b.saldoPositivo)[0].contas.pop();
     }
 
+    const cliente = this.clientesBase.getAll().find(x => x.dadosConta?.numero === contaParaRedistribuir?.numero);
+
     contaParaRedistribuir!.gerenteCpf = gerenteDestino.cpf;
+    cliente!.gerenteCpf = gerenteDestino.cpf;
+    cliente!.dadosConta = contaParaRedistribuir;
+
     this.contasBase.update(contaParaRedistribuir!.numero, 'numero', contaParaRedistribuir!);
+    this.clientesBase.update(cliente!.cpf, 'cpf', cliente!);
   }
 
   listarGerentes(): Gerente[] {
@@ -66,17 +74,46 @@ export class LocalGerentesService {
   }
 
   removerGerente(cpf: string): void {
-    const gerentes = this.gerentesBase.getAll().filter(g => g.tipo === 'GERENTE');
-    if (gerentes.length <= 1) throw new Error('Não é possível remover o último gerente');
 
-    const contas = this.contasBase.getAll();
-    const destino = this.getGerenteMenosContas(cpf);
-    contas.filter(c => c.gerenteCpf === cpf).forEach(c => {
-      c.gerenteCpf = destino.cpf;
-      this.contasBase.update(c.numero, 'numero', c);
-    });
+    this.redistribuirContasRemoverGerente(cpf);
 
     this.gerentesBase.delete(cpf, 'cpf');
+  }
+
+  private redistribuirContasRemoverGerente(gerenteAntigoCpf: string) {
+    const contas = this.contasBase.getAll();
+    const gerentes = this.dashboard().filter(g => g.cpf !== gerenteAntigoCpf).sort((a, b) => a.total - b.total);
+
+    const contasPorGerente = gerentes.map(g => {
+      return {
+        cpf: g.cpf,
+        contas: contas.filter(c => c.gerenteCpf === g.cpf),
+        saldoPositivo: g.saldoPositivo,
+      }
+    });
+
+    const contasParaRedistribuir = contas.filter(x => x.gerenteCpf === gerenteAntigoCpf);
+
+    const gerenteComMenosContas = contasPorGerente.filter(c => c.contas.length === contasPorGerente[0].contas.length).pop();
+
+    const clientesPraRedistribuir = this.clientesBase.getAll().filter(x => x.gerenteCpf === gerenteAntigoCpf);
+
+    contasParaRedistribuir.forEach(conta => {
+      conta.gerenteCpf = gerenteComMenosContas?.cpf!;
+    });
+
+    clientesPraRedistribuir.forEach(cliente => {
+      cliente.gerenteCpf = gerenteComMenosContas?.cpf!;
+      cliente.dadosConta!.gerenteCpf = gerenteComMenosContas?.cpf!;
+    });
+
+    for (const conta of contasParaRedistribuir) {
+      this.contasBase.update(conta!.numero, 'numero', conta!);
+    }
+
+    for (const cliente of clientesPraRedistribuir) {
+      this.clientesBase.update(cliente!.cpf, 'cpf', cliente!);
+    }
   }
 
   dashboard(): { cpf: string, nome: string, total: number, saldoPositivo: number, saldoNegativo: number }[] {

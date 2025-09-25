@@ -35,7 +35,7 @@ export class LocalContasService {
     if (valor <= 0) throw new Error('Valor inválido');
     const conta = this.getConta(numeroConta);
     if (!conta) throw new Error('Conta não encontrada');
-    if (valor > conta.saldo) throw new Error('Saldo insuficiente');
+    if (valor > conta.saldo + conta.limite) throw new Error('Saldo insuficiente');
 
     conta.saldo -= valor;
     this.adicionarMovimento(conta, {
@@ -51,25 +51,38 @@ export class LocalContasService {
     if (valor <= 0) throw new Error('Valor inválido');
     const origem = this.getConta(contaOrigemNum);
     if (!origem) throw new Error('Conta de origem não encontrada');
-    if (valor > origem.saldo) throw new Error('Saldo insuficiente');
-
-    origem.saldo -= valor;
+    if (valor > origem.saldo + origem.limite) throw new Error('Saldo insuficiente');
 
     const destino = this.getConta(contaDestinoNum);
-    if (destino) {
-      destino.saldo += valor;
-      this.contasBase.update(destino.numero, 'numero', destino);
+    
+    if (!destino) {
+      throw new Error('Conta de destino não encontrada')
     }
+    
+    origem.saldo -= valor;
+    destino.saldo += valor;
+
+    const clienteOrigem = this.getClientePorConta(contaOrigemNum);
+    const clienteDestino = this.getClientePorConta(contaDestinoNum);
 
     this.adicionarMovimento(origem, {
       dataHora: new Date().toISOString(),
       tipo: 'TRANSFERENCIA',
-      clienteOrigemCpf: this.getClientePorConta(contaOrigemNum)?.cpf,
-      clienteDestinoCpf: this.getClientePorConta(contaDestinoNum)?.cpf,
+      clienteOrigemCpf: clienteOrigem?.cpf,
+      clienteDestinoCpf: clienteDestino?.cpf,
+      valor
+    });
+
+    this.adicionarMovimento(destino!, {
+      dataHora: new Date().toISOString(),
+      tipo: 'TRANSFERENCIA',
+      clienteOrigemCpf: clienteOrigem?.cpf,
+      clienteDestinoCpf: clienteDestino?.cpf,
       valor
     });
 
     this.contasBase.update(origem.numero, 'numero', origem);
+    this.contasBase.update(destino!.numero, 'numero', destino!);
   }
 
   consultarExtrato(numeroConta: string, inicio?: string, fim?: string): any[] {
@@ -105,11 +118,16 @@ export class LocalContasService {
   }
 
   private getConta(numero: string): Conta | undefined {
-    return this.contasBase.getById(numero, 'numero');
+    const contas = this.contasBase.getAll();
+    console.log('contas', contas);
+    const conta = contas.find(c => c.numero == numero);
+
+    console.log('conta', conta, numero);
+    return conta;
   }
 
   private getClientePorConta(numero: string): Cliente | undefined {
-    return this.clientesBase.getAll().find(c => c.dadosConta?.numero === numero);
+    return this.clientesBase.getAll().find(c => c.dadosConta?.numero == numero);
   }
 
   private adicionarMovimento(conta: Conta, movimento: HistoricoMovimentacao): void {
