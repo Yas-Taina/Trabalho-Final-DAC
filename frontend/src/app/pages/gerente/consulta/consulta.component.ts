@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { LocalClientesService } from '../../../services';
 import { Cliente } from '../../../services/local/models/cliente';
 import { LocalLoginService } from '../../../services';
+import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-consulta',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule],
+  imports: [RouterModule, CommonModule, FormsModule, NgxMaskDirective],
   templateUrl: './consulta.component.html',
   styleUrls: ['./consulta.component.css']
 })
