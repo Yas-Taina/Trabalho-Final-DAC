@@ -16,7 +16,7 @@ import { ConsultaComponent } from './pages/gerente/consulta/consulta.component';
 import { MelhoresClientesComponent } from './pages/gerente/melhores-clientes/melhores-clientes.component';
 import { GerentesComponent } from './pages/adm/gerentes/gerentes.component';
 import { EditarGerentesComponent } from './pages/adm/editar-gerentes/editar-gerentes.component';
-//import { authGuard } from './guards/auth.guard';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   //public routes
@@ -37,7 +37,7 @@ export const routes: Routes = [
   {
     path: 'client/home',
     component: InicioClientComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     data: {
       requiredRole: 'CLIENTE',
     },
@@ -45,7 +45,7 @@ export const routes: Routes = [
   {
     path: 'perfil',
     component: PerfilComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     data: {
       requiredRole: 'CLIENTE',
     },
@@ -53,7 +53,7 @@ export const routes: Routes = [
   {
     path: 'depositar',
     component: DepositarComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     data: {
       requiredRole: 'CLIENTE',
     },
@@ -61,7 +61,7 @@ export const routes: Routes = [
   {
     path: 'sacar',
     component: SaqueComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     data: {
       requiredRole: 'CLIENTE',
     },
@@ -69,7 +69,7 @@ export const routes: Routes = [
   {
     path: 'extrato',
     component: ExtratoComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     data: {
       requiredRole: 'CLIENTE',
     },
@@ -77,7 +77,7 @@ export const routes: Routes = [
   {
     path: 'transferir',
     component: TransferenciaComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     data: {
       requiredRole: 'CLIENTE',
     },
@@ -87,7 +87,7 @@ export const routes: Routes = [
   {
     path: 'gerente/home',
     component: InicioManagerComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     data: {
       requiredRole: 'GERENTE',
     },
@@ -95,7 +95,7 @@ export const routes: Routes = [
   {
     path: 'gerente/clients',
     component: ClientesManagerComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     data: {
       requiredRole: 'GERENTE',
     },
@@ -103,7 +103,7 @@ export const routes: Routes = [
   {
     path: 'clients/:cpf',
     component: ConsultaComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     data: {
       requiredRole: 'GERENTE',
     },
@@ -111,7 +111,7 @@ export const routes: Routes = [
   {
     path: 'clients/consulta',
     component: ConsultaComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     data: {
       requiredRole: 'GERENTE',
     },
@@ -119,7 +119,7 @@ export const routes: Routes = [
   {
     path: 'clientes/melhores',
     component: MelhoresClientesComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     data: {
       requiredRole: 'GERENTE',
     },
@@ -129,7 +129,7 @@ export const routes: Routes = [
   {
     path: 'adm/home',
     component: InicioAdmComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     data: {
       requiredRole: 'ADMINISTRADOR',
     },
@@ -137,7 +137,7 @@ export const routes: Routes = [
   {
     path: 'adm/clients',
     component: ClientesAdmComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     data: {
       requiredRole: 'ADMINISTRADOR',
     },
@@ -145,14 +145,14 @@ export const routes: Routes = [
   {
     path: 'gerentes',
     component: GerentesComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     data: {
       requiredRole: 'ADMINISTRADOR',
     },
   },
   { path: 'adm/gerentes/novo', 
     component: EditarGerentesComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     data: {
       requiredRole: 'ADMINISTRADOR',
     }, 
@@ -160,7 +160,7 @@ export const routes: Routes = [
 
   { path: 'adm/gerentes/:cpf', 
     component: EditarGerentesComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     data: {
       requiredRole: 'ADMINISTRADOR',
     }, 

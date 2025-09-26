@@ -1,5 +1,5 @@
 import { CanActivateFn, Router } from '@angular/router';
-import { LocalLoginService, LoginService } from '../services';
+import { LocalLoginService } from '../services';
 import { inject } from '@angular/core';
 
 export const authGuard: CanActivateFn = (route, state) => {
@@ -10,7 +10,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   const requiredRole = route.data["requiredRole"] as 'CLIENTE' | 'GERENTE' | 'ADMINISTRADOR';
 
   if (!sessao) {
-    router.navigate(["/auth/login"]);
+    router.navigate(["/login"]);
     return false;
   }
 
