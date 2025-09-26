@@ -1,164 +1,146 @@
-// src/app/services/clientes.service.ts
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { AutocadastroInfo, PerfilInfo, ContaResponse, DadosClienteResponse } from '../model';
-import { LocalBaseService } from '../local.base.service';
 import { Cliente } from './models/cliente';
+import { LocalBaseService } from '../local.base.service';
+import { Gerente } from './models/gerente';
+import { Conta } from './models/conta';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class LocalClientesService extends LocalBaseService {
-  private readonly storageKey = 'dac_clientes';
-  private readStorage(): Cliente[] {
-    return this.readLocalArray<Cliente>(this.storageKey);
+export class LocalClientesService {
+  private base = new LocalBaseService<Cliente>('clientes');
+  private gerentesBase = new LocalBaseService<Gerente>('gerentes');
+  private contasBase = new LocalBaseService<Conta>('contas');
+
+  listarClientes(): Cliente[] {
+    return this.base.getAll();
   }
 
-  private writeStorage(clientes: Cliente[]): void {
-    this.writeLocalArray<Cliente>(this.storageKey, clientes);
+cadastrarCliente(cliente: Cliente): void {
+  const jaExiste = this.listarClientes().some(c => c.cpf === cliente.cpf);
+  if (jaExiste) throw new Error('Cliente já cadastrado');
+
+  const gerentes = this.gerentesBase.getAll().filter(g => g.tipo === 'GERENTE');
+  if (!gerentes.length) throw new Error('Nenhum gerente disponível');
+
+  const clientes = this.listarClientes();
+  const clientesPorGerente: Record<string, number> = {};
+  gerentes.forEach(g => {
+    clientesPorGerente[g.cpf] = clientes.filter(
+      c => c.gerenteCpf === g.cpf && (c.estado === 'AGUARDANDO' || c.estado === 'APROVADO')
+    ).length;
+  });
+
+  const menorNumeroClientes = Math.min(...Object.values(clientesPorGerente));
+  const gerentesComMenosClientes = gerentes.filter(
+    g => clientesPorGerente[g.cpf] === menorNumeroClientes
+  );
+  const gerenteEscolhido = gerentesComMenosClientes[Math.floor(Math.random() * gerentesComMenosClientes.length)];
+
+  cliente.estado = 'AGUARDANDO';
+  cliente.gerenteCpf = gerenteEscolhido.cpf;
+  this.base.add(cliente);
+}
+
+
+  aprovarCliente(cpf: string): void {
+    const cliente = this.base.getById(cpf, 'cpf');
+    if (!cliente) throw new Error('Cliente não encontrado');
+    if (cliente.estado !== 'AGUARDANDO') throw new Error('Cliente não pode ser aprovado');
+
+    const senha = (Math.floor(1000 + Math.random() * 9000)).toString();
+    const numeroConta = this.gerarNumeroContaUnico();
+
+    const conta: Conta = {
+      numero: numeroConta,
+      dataCriacao: new Date().toISOString(),
+      saldo: 0,
+      limite: cliente.salario > 2000 ? cliente.salario / 2 : 0,
+      gerenteCpf: cliente.gerenteCpf!,
+      historico: []
+    };
+
+    cliente.estado = 'APROVADO';
+    cliente.senha = senha;
+    cliente.dadosConta = conta;
+
+    this.contasBase.add(conta);
+    this.base.update(cliente.cpf, 'cpf', cliente);
   }
 
-  // GET /clientes?filtro=...
-  getClientes(filtro?: 'para_aprovar' | 'adm_relatorio_clientes' | 'melhores_clientes'): Observable<DadosClienteResponse[]> {
-    const clientesStorage = localStorage.getItem(this.storageKey);
-    // prefer local storage when available
-    if (!clientesStorage) {
-      return new Observable<DadosClienteResponse[]>((observer) => {
-        observer.next([]);
-        observer.complete();
-      });
+  recusarCliente(cpf: string, motivo: string): void {
+    const cliente = this.base.getById(cpf, 'cpf');
+    if (!cliente) throw new Error('Cliente não encontrado');
+    cliente.estado = 'RECUSADO';
+    cliente.motivoRecusa = motivo;
+    this.base.update(cliente.cpf, 'cpf', cliente);
+  }
+
+  editarPerfil(cpf: string, novo: Partial<Cliente>): void {
+    const cliente = this.base.getById(cpf, 'cpf');
+    const conta = this.contasBase.getAll().find(x => x.numero === cliente?.dadosConta?.numero);
+    if (!cliente) throw new Error('Cliente não encontrado');
+    if (!conta) throw new Error('Cliente não possui conta');
+
+    if (novo.salario && novo.salario !== cliente.salario) {
+      if (cliente.dadosConta) {
+        conta.limite = novo.salario >= 2000 ? novo.salario / 2 : 0;
+      }
     }
 
-    const clientes = JSON.parse(clientesStorage) as Cliente[];
-      return new Observable<DadosClienteResponse[]>((observer) => {
-        if (filtro === 'para_aprovar') {
-          observer.next(clientes.filter(c => c.status === 'PENDENTE'));
-        } else if (filtro === 'adm_relatorio_clientes') {
-          observer.next(clientes.filter(c => c.status === 'APROVADO'));
-        } else if (filtro === 'melhores_clientes') {
-          observer.next(clientes.filter(c => (c.dadosConta?.saldo ?? 0) >= 10000));
-        } else {
-          observer.next(clientes);
-        }
-        observer.complete();
-      });
-  }
+    const saldoPositivo = (conta?.saldo ?? 0) > 0;
 
-  // POST /clientes (autocadastro)
-  autocadastroCliente(data: AutocadastroInfo): Observable<any> {
-    return new Observable<any>((observer) => {
-      const clientes = this.readStorage();
-      const exists = clientes.find((c: Cliente) => c.cpf === data.cpf);
-      if (exists) {
-        observer.error(new Error('Cliente com este CPF já existe'));
-        observer.complete();
-        return;
+    if (!saldoPositivo) {
+      const limite = conta?.limite ?? 0;
+      const saldo = Math.abs(conta?.saldo ?? 0);
+
+      if (saldo >= limite) {
+        conta.limite = saldo;
       }
-
-      const novo: Cliente = {
-        ...data,
-        id: (Math.random() * 1e8).toFixed(0),
-        dadosConta: {} as ContaResponse,
-        status: 'PENDENTE',
-      } as Cliente;
-
-      clientes.push(novo);
-      this.writeStorage(clientes);
-
-      observer.next(novo);
-      observer.complete();
-    });
-  }
-
-  // GET /clientes/{cpf}
-  getCliente(cpf: string): Observable<DadosClienteResponse> {
-    const clientesStorage = localStorage.getItem(this.storageKey);
-    if (clientesStorage) {
-      const clientes = JSON.parse(clientesStorage) as Cliente[];
-      const cliente = clientes.find(c => c.cpf === cpf);
-      return new Observable<DadosClienteResponse>((observer) => {
-        if (cliente) {
-          observer.next(cliente as DadosClienteResponse);
-        } else {
-          observer.error(new Error('Cliente não encontrado no armazenamento local'));
-        }
-        observer.complete();
-      });
     }
 
-    return new Observable<DadosClienteResponse>((observer) => {
-      observer.error(new Error('Cliente não encontrado no armazenamento local'));
-      observer.complete();
-    });
+    cliente.dadosConta = conta;
+
+    Object.assign(cliente, novo, { cpf: cliente.cpf });
+    this.base.update(cliente.cpf, 'cpf', cliente);
+    this.contasBase.update(conta.numero, 'numero', conta);
   }
 
-  // PUT /clientes/{cpf}
-  atualizarCliente(cpf: string, data: PerfilInfo): Observable<any> {
-    return new Observable<any>((observer) => {
-      const clientes = this.readStorage();
-      const idx = clientes.findIndex(c => c.cpf === cpf);
-      if (idx === -1) {
-        observer.error(new Error('Cliente não encontrado'));
-        observer.complete();
-        return;
-      }
-
-      const updated = { ...clientes[idx], ...data } as Cliente;
-      clientes[idx] = updated;
-      this.writeStorage(clientes);
-
-      observer.next(updated);
-      observer.complete();
-    });
+  consultarClientesAguardando(gerenteCpf: string): Cliente[] {
+    return this.listarClientes().filter(c => c.gerenteCpf === gerenteCpf && c.estado === 'AGUARDANDO');
   }
 
-  // POST /clientes/{cpf}/aprovar
-  aprovarCliente(cpf: string): Observable<ContaResponse> {
-    return new Observable<ContaResponse>((observer) => {
-      const clientes = this.readStorage();
-      const idx = clientes.findIndex(c => c.cpf === cpf);
-      if (idx === -1) {
-        observer.error(new Error('Cliente não encontrado'));
-        observer.complete();
-        return;
-      }
-
-      const conta: ContaResponse = {
-        cliente: cpf,
-        numero: Math.floor(100000 + Math.random() * 900000).toString(),
-        saldo: 0,
-        limite: 1000,
-        gerente: '',
-        criacao: new Date().toISOString(),
-      };
-
-      clientes[idx].dadosConta = conta;
-      clientes[idx].status = 'APROVADO';
-      this.writeStorage(clientes);
-
-      observer.next(conta);
-      observer.complete();
-    });
+  consultarClientesDoGerente(gerenteCpf: string): Cliente[] {
+    return this.listarClientes()
+      .filter(c => c.gerenteCpf === gerenteCpf && c.estado === 'APROVADO')
+      .sort((a, b) => a.nome.localeCompare(b.nome));
   }
 
-  // POST /clientes/{cpf}/rejeitar
-  rejeitarCliente(cpf: string, motivo: string): Observable<any> {
-    return new Observable<any>((observer) => {
-      const clientes = this.readStorage();
-      const idx = clientes.findIndex(c => c.cpf === cpf);
-      if (idx === -1) {
-        observer.error(new Error('Cliente não encontrado'));
-        observer.complete();
-        return;
-      }
+  consultarTodosClientes(): Cliente[] {
+    const gerentes = this.gerentesBase.getAll().filter(g => g.tipo === 'GERENTE');
+    return this.listarClientes()
+      .filter(c => c.estado === 'APROVADO')
+      .map(c => ({ ...c, gerente: gerentes.find(g => g.cpf === c.gerenteCpf) }))
+      .sort((a, b) => a.nome.localeCompare(b.nome));
+  }
 
-      clientes[idx].status = 'REJEITADO';
-      // optionally store motivo
-      (clientes[idx] as Cliente).rejeicaoMotivo = motivo;
-      this.writeStorage(clientes);
+  consultarCliente(cpf: string): Cliente | undefined {
+    return this.base.getById(cpf, 'cpf');
+  }
 
-      observer.next({ ok: true });
-      observer.complete();
-    });
+  consultarTop3(gerenteCpf: string): Cliente[] {
+    return this.listarClientes()
+      .filter(c => c.gerenteCpf === gerenteCpf && c.estado === 'APROVADO')
+      .sort((a, b) => (b.dadosConta?.saldo || 0) - (a.dadosConta?.saldo || 0))
+      .slice(0, 3);
+  }
+
+  private gerarNumeroContaUnico(): string {
+    const contas = this.contasBase.getAll();
+    let numero: string;
+    do {
+      numero = (Math.floor(1000 + Math.random() * 9000)).toString();
+    } while (contas.some(c => c.numero === numero));
+    return numero;
   }
 }

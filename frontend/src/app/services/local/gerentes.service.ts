@@ -1,152 +1,145 @@
-import { inject, Injectable } from '@angular/core';
-import { map, Observable, of } from 'rxjs';
-import { DadoGerente, DadoGerenteInsercao, DadoGerenteAtualizacao, DadoConta, DadosClienteResponse } from '../model';
+import { Injectable } from '@angular/core';
 import { LocalBaseService } from '../local.base.service';
-import { LocalContasService } from './contas.service';
-import { LocalClientesService } from './clientes.service';
+import { Gerente } from './models/gerente';
+import { Conta } from './models/conta';
+import { Cliente } from './models/cliente';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class LocalGerentesService extends LocalBaseService {
-  private storageKey = 'dac_gerentes';
+export class LocalGerentesService {
+  private gerentesBase = new LocalBaseService<Gerente>('gerentes');
+  private contasBase = new LocalBaseService<Conta>('contas');
+  private clientesBase = new LocalBaseService<Cliente>('clientes');
 
-  readonly contasService = inject(LocalContasService);
-  readonly clientesService = inject(LocalClientesService);
+  inserirUsuario(gerente: Gerente): void {
+    const gerentes = this.gerentesBase.getAll();
+    if (gerentes.some(g => g.cpf === gerente.cpf)) throw new Error('Gerente já cadastrado');
 
-  private read(): DadoGerente[] {
-    return this.readLocalArray<DadoGerente>(this.storageKey);
+    this.gerentesBase.add(gerente);
+
+    this.redistribuirContas(gerente);
   }
 
-  private write(list: DadoGerente[]): void {
-    this.writeLocalArray<DadoGerente>(this.storageKey, list);
-  }
+  private redistribuirContas(gerenteDestino: Gerente): void {
+    const contas = this.contasBase.getAll();
+    const gerentes = this.dashboard().filter(g => g.cpf !== gerenteDestino.cpf).sort((a, b) => b.total - a.total);
 
+    const contasPorGerente = gerentes.map(g => {
+      return {
+        cpf: g.cpf,
+        contas: contas.filter(c => c.gerenteCpf === g.cpf),
+        saldoPositivo: g.saldoPositivo,
+      }
+    });
 
-  // GET /gerentes?numero=dashboard
-  getGerentes(numero?: 'dashboard'): Observable<any> {
-    const lista = this.read();
-
-    if (!lista || lista.length === 0) {
-      return of([]);
+    if (contas.length < 2) {
+      return;
     }
 
-    if (numero !== 'dashboard') {
-      return of(lista);
+    let contaParaRedistribuir = contasPorGerente[0].contas.pop();
+
+    const gerentesComMaisContas = contasPorGerente.filter(c => c.contas.length === contasPorGerente[0].contas.length);
+
+    if (gerentesComMaisContas.length > 1) {
+      contaParaRedistribuir = gerentesComMaisContas.sort((a, b) => a.saldoPositivo - b.saldoPositivo)[0].contas.pop();
     }
 
-    const contas = this.contasService.getAllContas();
+    const cliente = this.clientesBase.getAll().find(x => x.dadosConta?.numero === contaParaRedistribuir?.numero);
 
-    return this.clientesService.getClientes().pipe(
-      map(clientes => {
-        return lista.map(gerente => {
-          const cpf = gerente.cpf ?? '';
+    contaParaRedistribuir!.gerenteCpf = gerenteDestino.cpf;
+    cliente!.gerenteCpf = gerenteDestino.cpf;
+    cliente!.dadosConta = contaParaRedistribuir;
 
-          const contasDoGerente = contas.filter(c => c.gerente === cpf);
-          const clientesDoGerente = clientes.filter(c => c.gerente === cpf);
-
-          let saldoPositivo = 0;
-          let saldoNegativo = 0;
-          contasDoGerente.forEach(conta => {
-            const saldo = conta.saldo ?? 0;
-            if (saldo >= 0) saldoPositivo += saldo;
-            else saldoNegativo += saldo;
-          });
-
-          return {
-            gerente,
-            clientes: clientesDoGerente,
-            saldo_positivo: saldoPositivo,
-            saldo_negativo: saldoNegativo,
-          };
-        });
-      })
-    );
+    this.contasBase.update(contaParaRedistribuir!.numero, 'numero', contaParaRedistribuir!);
+    this.clientesBase.update(cliente!.cpf, 'cpf', cliente!);
   }
 
-  // POST /gerentes
-  inserirGerente(data: DadoGerenteInsercao): Observable<DadoGerente> {
-    return new Observable<DadoGerente>((observer) => {
-      const lista = this.read();
-      const exists = lista.find(g => g.cpf === data.cpf || g.email === data.email);
-      if (exists) {
-        observer.error(new Error('Gerente com este CPF ou email já existe'));
-        observer.complete();
-        return;
+  listarGerentes(): Gerente[] {
+    return this.gerentesBase.getAll()
+      .filter(g => g.tipo === 'GERENTE')
+      .sort((a, b) => a.nome.localeCompare(b.nome));
+  }
+
+  listarTodosGerentes(): Gerente[] {
+    return this.gerentesBase.getAll()
+      .sort((a, b) => a.nome.localeCompare(b.nome));
+  }
+
+  editarGerente(cpf: string, novo: Partial<Gerente>): void {
+    const gerente = this.gerentesBase.getById(cpf, 'cpf');
+    if (!gerente) throw new Error('Gerente não encontrado');
+    Object.assign(gerente, novo, { cpf: gerente.cpf });
+    this.gerentesBase.update(cpf, 'cpf', gerente);
+  }
+
+  removerGerente(cpf: string): void {
+
+    this.redistribuirContasRemoverGerente(cpf);
+
+    this.gerentesBase.delete(cpf, 'cpf');
+  }
+
+  private redistribuirContasRemoverGerente(gerenteAntigoCpf: string) {
+    const contas = this.contasBase.getAll();
+    const gerentes = this.dashboard().filter(g => g.cpf !== gerenteAntigoCpf).sort((a, b) => a.total - b.total);
+
+    const contasPorGerente = gerentes.map(g => {
+      return {
+        cpf: g.cpf,
+        contas: contas.filter(c => c.gerenteCpf === g.cpf),
+        saldoPositivo: g.saldoPositivo,
       }
+    });
 
-      const novo: DadoGerente = {
-        cpf: data.cpf,
-        nome: data.nome,
-        email: data.email,
-        tipo: data.tipo,
-        clientes: [],
-      } as DadoGerente;
+    const contasParaRedistribuir = contas.filter(x => x.gerenteCpf === gerenteAntigoCpf);
 
-      lista.push(novo);
-      this.write(lista);
+    const gerenteComMenosContas = contasPorGerente.filter(c => c.contas.length === contasPorGerente[0].contas.length).pop();
 
-      observer.next(novo);
-      observer.complete();
+    const clientesPraRedistribuir = this.clientesBase.getAll().filter(x => x.gerenteCpf === gerenteAntigoCpf);
+
+    contasParaRedistribuir.forEach(conta => {
+      conta.gerenteCpf = gerenteComMenosContas?.cpf!;
+    });
+
+    clientesPraRedistribuir.forEach(cliente => {
+      cliente.gerenteCpf = gerenteComMenosContas?.cpf!;
+      cliente.dadosConta!.gerenteCpf = gerenteComMenosContas?.cpf!;
+    });
+
+    for (const conta of contasParaRedistribuir) {
+      this.contasBase.update(conta!.numero, 'numero', conta!);
+    }
+
+    for (const cliente of clientesPraRedistribuir) {
+      this.clientesBase.update(cliente!.cpf, 'cpf', cliente!);
+    }
+  }
+
+  dashboard(): { cpf: string, nome: string, total: number, saldoPositivo: number, saldoNegativo: number }[] {
+    const gerentes = this.gerentesBase.getAll().filter(g => g.tipo === 'GERENTE');
+    const contas = this.contasBase.getAll();
+
+    return gerentes.map(g => {
+      const contasGerente = contas.filter(c => c.gerenteCpf === g.cpf);
+      const total = contasGerente.length;
+      const saldoPositivo = contasGerente.filter(c => c.saldo > 0).length;
+      const saldoNegativo = contasGerente.filter(c => c.saldo <= 0).length;
+
+      return { cpf: g.cpf, nome: g.nome, total, saldoPositivo, saldoNegativo };
     });
   }
 
-  // GET /gerentes/{cpf}
-  getGerente(cpf: string): Observable<DadoGerente> {
-    const lista = this.read();
-    return new Observable<DadoGerente>((observer) => {
-      const gerente = lista.find(x => x.cpf === cpf);
-      if (!gerente) {
-        observer.error(new Error('Gerente não encontrado'));
-        observer.complete();
-        return;
-      }
-      observer.next(gerente);
-      observer.complete();
+  private getGerenteMenosContas(excluirCpf: string): Gerente {
+    const gerentes = this.gerentesBase.getAll().filter(g => g.cpf !== excluirCpf && g.tipo === 'GERENTE');
+    const contas = this.contasBase.getAll();
+
+    const contasPorGerente: Record<string, number> = {};
+    gerentes.forEach(g => {
+      contasPorGerente[g.cpf] = contas.filter(c => c.gerenteCpf === g.cpf).length;
     });
-  }
 
-  // DELETE /gerentes/{cpf}
-  removerGerente(cpf: string): Observable<DadoGerente> {
-    return new Observable<DadoGerente>((observer) => {
-      const lista = this.read();
-      const idx = lista.findIndex(g => g.cpf === cpf);
-      if (idx === -1) {
-        observer.error(new Error('Gerente não encontrado'));
-        observer.complete();
-        return;
-      }
-
-      const removed = lista.splice(idx, 1)[0];
-      this.write(lista);
-
-      observer.next(removed);
-      observer.complete();
-    });
-  }
-
-  // PUT /gerentes/{cpf}
-  atualizarGerente(cpf: string, data: DadoGerenteAtualizacao): Observable<DadoGerente> {
-    return new Observable<DadoGerente>((observer) => {
-      const lista = this.read();
-      const idx = lista.findIndex(g => g.cpf === cpf);
-      if (idx === -1) {
-        observer.error(new Error('Gerente não encontrado'));
-        observer.complete();
-        return;
-      }
-
-      const updated: DadoGerente = {
-        ...lista[idx],
-        nome: data.nome ?? lista[idx].nome,
-        email: data.email ?? lista[idx].email,
-      };
-
-      lista[idx] = updated;
-      this.write(lista);
-
-      observer.next(updated);
-      observer.complete();
-    });
+    const menor = Math.min(...Object.values(contasPorGerente));
+    return gerentes.find(g => contasPorGerente[g.cpf] === menor)!;
   }
 }

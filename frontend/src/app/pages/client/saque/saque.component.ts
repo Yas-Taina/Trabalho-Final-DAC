@@ -1,54 +1,68 @@
-import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { LocalContasService } from '../../../services';
+import { LocalLoginService } from '../../../services';
+import { ClienteResponse, DadoGerente } from '../../../services';
 import { Router, RouterModule } from '@angular/router';
-import { LocalContasService, LocalLoginService, ClienteResponse } from '../../../services';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-saque',
   standalone: true,
-  imports: [RouterModule, ReactiveFormsModule, CommonModule],
+  imports: [RouterModule, CommonModule, ReactiveFormsModule],
   templateUrl: './saque.component.html',
-  styleUrl: './saque.component.css'
+  styleUrls: ['./saque.component.css']
 })
-export class SaqueComponent {
-  readonly contaService: LocalContasService = inject(LocalContasService);
-  readonly loginService: LocalLoginService = inject(LocalLoginService);
-  readonly router: Router = inject(Router);
-  readonly builder: FormBuilder = inject(FormBuilder);
+export class SaqueComponent implements OnInit {
+  saqueForm: FormGroup;
+  numeroConta: string | null = null;
 
-  saqueModel = {
-    numeroConta: '',
-    valor: 0
-  };
-
-  saqueForm = this.builder.group({
-    numeroConta: [this.saqueModel.numeroConta, [Validators.required]],
-    valor: [this.saqueModel.valor, [Validators.required, Validators.min(1.0)]],
-  });
-
-  constructor() {
-    const session = this.loginService.sessionInfo();
-    if (session?.tipo === 'CLIENTE') { 
-      const cliente = session.usuario as ClienteResponse;
-      this.saqueForm.patchValue({ numeroConta: cliente.conta ?? "" });
-    }
+  constructor(
+    private fb: FormBuilder,
+    private contasService: LocalContasService,
+    private loginService: LocalLoginService,
+    private router: Router
+  ) {
+    this.saqueForm = this.fb.group({
+      valor: [0, [Validators.required, Validators.min(0.01)]]
+    });
   }
 
-  async onSubmit() {
-  if (!this.saqueForm.valid) return;
+  ngOnInit(): void {
+    this.carregarConta();
+  }
 
-  const { numeroConta, valor } = this.saqueForm.value;
+  private isCliente(usuario: ClienteResponse | DadoGerente): usuario is ClienteResponse {
+    return (usuario as ClienteResponse).conta !== undefined;
+  }
 
-  this.contaService.sacar(numeroConta!, valor!).subscribe({
-    next: () => {
-      alert(`Saque de R$${valor?.toFixed(2)} realizado com sucesso.`);
-      this.router.navigate(['/client/home']);
-    },
-    error: (err) => {
-      alert('Erro no saque: ' + (err.error?.message || err.message || 'Erro desconhecido'));
+  private carregarConta(): void {
+    const session = this.loginService.sessionInfo();
+    if (!session || !this.isCliente(session.usuario)) {
+      alert('Sessão inválida ou usuário não é cliente');
+      return;
     }
-  });
-}
 
+    if (!session.usuario.conta) {
+      alert('Número da conta não disponível');
+      return;
+    }
+
+    this.numeroConta = session.usuario.conta;
+  }
+
+  onSubmit(): void {
+    if (!this.numeroConta) return;
+
+    const valor = this.saqueForm.value.valor;
+    try {
+      this.contasService.sacar(this.numeroConta, valor);
+      alert(`Saque de R$ ${valor.toFixed(2)} realizado com sucesso!`);
+      this.saqueForm.reset({ valor: 0 });
+
+      this.router.navigate(['/client/home']);
+    } catch (error: any) {
+      alert(error.message || 'Erro ao realizar saque');
+    }
+  }
 }

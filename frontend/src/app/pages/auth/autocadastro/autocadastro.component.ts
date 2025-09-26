@@ -1,71 +1,73 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { LocalClientesService } from '../../../services';
+import { Cliente } from '../../../services/local/models/cliente';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LocalClientesService, AutocadastroInfo } from '../../../services';
-import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-autocadastro',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgxMaskDirective],
+  imports: [RouterModule, CommonModule, ReactiveFormsModule],
   templateUrl: './autocadastro.component.html',
-  styleUrl: './autocadastro.component.css'
+  styleUrls: ['./autocadastro.component.css']
 })
-export class AutocadastroComponent {
-  readonly clienteService: LocalClientesService = inject(LocalClientesService);
-  readonly router: Router = inject(Router);
-  readonly builder: FormBuilder = inject(FormBuilder);
+export class AutocadastroComponent implements OnInit {
+  clienteForm: FormGroup;
 
-  clienteModel: AutocadastroInfo = {
-    cpf: '',
-    email: '',
-    nome: '',
-    salario: 0,
-    endereco: {
-      tipo: '',
-      logradouro: '',
-      numero: '',
-      complemento: '',
-      cep: '',
-      cidade: '',
-      estado: ''
-    }
+  constructor(
+    private fb: FormBuilder,
+    private clientesService: LocalClientesService
+  ) {
+    this.clienteForm = this.fb.group({
+      nome: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
+      cpf: ['', [Validators.required]],
+      telefone: ['', [Validators.required]],
+      salario: [0, [Validators.required, Validators.min(0)]],
+      endereco: this.fb.group({
+        tipo: ['', Validators.required],
+        logradouro: ['', Validators.required],
+        numero: ['', Validators.required],
+        complemento: [''],
+        cep: ['', Validators.required],
+        cidade: ['', Validators.required],
+        estado: ['', [Validators.required, Validators.maxLength(2)]]
+      })
+    });
   }
 
-  clienteForm = this.builder.group({
-    cpf: [this.clienteModel.cpf, [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
-    email: [this.clienteModel.email, [Validators.required, Validators.email]],
-    nome: [this.clienteModel.nome, [Validators.required, Validators.minLength(3)]],
-    salario: [this.clienteModel.salario, [Validators.required, Validators.min(0)]],
-    telefone: [this.clienteModel.telefone, [Validators.required]],
-    endereco: this.builder.group({
-      tipo: [this.clienteModel.endereco?.tipo ?? '', [Validators.required]],
-      logradouro: [this.clienteModel.endereco?.logradouro ?? '', [Validators.required]],
-      numero: [this.clienteModel.endereco?.numero ?? '', [Validators.required]],
-      complemento: [this.clienteModel.endereco?.complemento ?? ''],
-      cep: [this.clienteModel.endereco?.cep ?? '', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
-      cidade: [this.clienteModel.endereco?.cidade ?? '', [Validators.required]],
-      estado: [this.clienteModel.endereco?.estado ?? '', [Validators.required]],
-    })
-  });
+  ngOnInit(): void {}
 
-  constructor(){}
-
-  async onSubmit() {
-    console.log(this.clienteForm.value);
-    if (!this.clienteForm.valid) {
+  onSubmit(): void {
+    if (this.clienteForm.invalid) {
+      this.clienteForm.markAllAsTouched();
       return;
     }
 
-    this.clienteService.autocadastroCliente(this.clienteForm.value as AutocadastroInfo).subscribe({
-      next: () => {
-        alert('Cadastro realizado com sucesso! Aguarde a aprovação do gerente.');
-        this.router.navigate(['/login']);
-      },
-      error: (err) => {
-        alert('Erro no cadastro: ' + (err.error?.message || err.message || 'Unknown error'));
-      }
-    });
+    const novoCliente: Cliente = this.clienteForm.value;
+
+    try {
+      this.clientesService.cadastrarCliente(novoCliente);
+      alert('Cadastro enviado com sucesso! Aguarde aprovação do gerente.');
+      this.clienteForm.reset({
+        nome: '',
+        email: '',
+        cpf: '',
+        telefone: '',
+        salario: 0,
+        endereco: {
+          tipo: '',
+          logradouro: '',
+          numero: '',
+          complemento: '',
+          cep: '',
+          cidade: '',
+          estado: ''
+        }
+      });
+    } catch (error: any) {
+      alert(error.message || 'Erro ao cadastrar cliente');
+    }
   }
 }

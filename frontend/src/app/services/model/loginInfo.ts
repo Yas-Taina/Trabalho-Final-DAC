@@ -1,5 +1,5 @@
 export interface LoginInfo { 
-    email?: string;
-    senha?: string;
+    email: string;
+    senha: string;
 }
 

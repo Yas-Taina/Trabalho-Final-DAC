@@ -1,32 +1,58 @@
 import { Component, OnInit } from '@angular/core';
+import { LocalClientesService, LocalGerentesService } from '../../../services';
+import { Cliente } from '../../../services/local/models/cliente';
+import { Gerente } from '../../../services/local/models/gerente';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { DadosClienteResponse } from '../../../services/model';
-import { LocalClientesService } from '../../../services';
+
+interface ClienteExibicao {
+  cpf: string;
+  nome: string;
+  email: string;
+  salario: number;
+  conta?: string;
+  saldo?: number;
+  limite?: number;
+  gerenteCpf?: string;
+  gerente_nome?: string;
+}
+
 @Component({
-  selector: 'app-clientesadm',
+  selector: 'app-clientes-adm',
   standalone: true,
   imports: [RouterModule, CommonModule],
   templateUrl: './clientes.component.html',
-  styleUrl: './clientes.component.css'
+  styleUrls: ['./clientes.component.css']
 })
 export class ClientesAdmComponent implements OnInit {
-  clientes: DadosClienteResponse[] = [];
+  clientes: ClienteExibicao[] = [];
 
-  constructor(private clientesService: LocalClientesService) {}
+  constructor(
+    private clientesService: LocalClientesService,
+    private gerentesService: LocalGerentesService
+  ) {}
 
   ngOnInit(): void {
     this.carregarClientes();
   }
 
   carregarClientes(): void {
-    this.clientesService.getClientes().subscribe({
-      next: (data) => {
-        this.clientes = data;
-      },
-      error: (err) => {
-        console.error('Erro ao carregar clientes', err);
-      }
-    });
+    const todos: Cliente[] = this.clientesService.listarClientes();
+    this.clientes = todos
+      .filter(c => c.estado === 'APROVADO')
+      .map(c => {
+        const gerente = this.gerentesService.listarGerentes().find(g => g.cpf === c.gerenteCpf);
+        return {
+          cpf: c.cpf,
+          nome: c.nome,
+          email: c.email,
+          salario: c.salario,
+          conta: c.dadosConta?.numero,
+          saldo: c.dadosConta?.saldo,
+          limite: c.dadosConta?.limite,
+          gerenteCpf: c.gerenteCpf,
+          gerente_nome: gerente?.nome
+        };
+      });
   }
 }

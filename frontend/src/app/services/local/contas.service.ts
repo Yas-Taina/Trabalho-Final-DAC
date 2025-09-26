@@ -1,203 +1,137 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { 
-  SaldoResponse, 
-  OperacaoResponse, 
-  TransferenciaResponse, 
-  ExtratoResponse, 
-  ItemExtratoResponse, 
-  ContaResponse 
-} from '../model';
 import { LocalBaseService } from '../local.base.service';
+import { Conta } from './models/conta';
+import { HistoricoMovimentacao } from './models/historico';
+import { Cliente } from './models/cliente';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class LocalContasService extends LocalBaseService {
-  private storageKey = 'dac_contas';
+export class LocalContasService {
+  private contasBase = new LocalBaseService<Conta>('contas');
+  private clientesBase = new LocalBaseService<Cliente>('clientes');
 
-  private read(): ContaResponse[] {
-    return this.readLocalArray<ContaResponse>(this.storageKey);
+  consultarSaldo(numeroConta: string): number {
+    const conta = this.getConta(numeroConta);
+    return conta?.saldo ?? 0;
   }
 
-  private write(list: ContaResponse[]): void {
-    this.writeLocalArray<ContaResponse>(this.storageKey, list);
-  }
+  depositar(numeroConta: string, valor: number): void {
+    if (valor <= 0) throw new Error('Valor inválido para depósito');
+    const conta = this.getConta(numeroConta);
+    if (!conta) throw new Error('Conta não encontrada');
 
-  private findConta(numero: string): ContaResponse | undefined {
-    return this.read().find(c => c.numero === numero);
-  }
-
-  getAllContas(): ContaResponse[] {
-    return this.read();
-  }
-
-  private registrarMovimento(
-    conta: ContaResponse, 
-    movimento: ItemExtratoResponse
-  ): void {
-    (conta as any).movimentacoes = (conta as any).movimentacoes ?? [];
-    (conta as any).movimentacoes.push(movimento);
-  }
-
-  // GET /contas/{numero}/saldo
-  getSaldo(numero: string): Observable<SaldoResponse> {
-    return new Observable<SaldoResponse>((observer) => {
-      const conta = this.findConta(numero);
-      if (!conta) {
-        observer.error(new Error('Conta não encontrada'));
-        observer.complete();
-        return;
-      }
-
-      observer.next({
-        cliente: conta.cliente,
-        conta: conta.numero,
-        saldo: conta.saldo,
-      });
-      observer.complete();
+    conta.saldo += valor;
+    this.adicionarMovimento(conta, {
+      dataHora: new Date().toISOString(),
+      tipo: 'DEPOSITO',
+      clienteOrigemCpf: this.getClientePorConta(numeroConta)?.cpf,
+      valor
     });
+    this.contasBase.update(conta.numero, 'numero', conta);
   }
 
-  // POST /contas/{numero}/depositar
-  depositar(numero: string, valor: number): Observable<OperacaoResponse> {
-    return new Observable<OperacaoResponse>((observer) => {
-      const contas = this.read();
-      const idx = contas.findIndex(c => c.numero === numero);
-      if (idx === -1) {
-        observer.error(new Error('Conta não encontrada'));
-        observer.complete();
-        return;
-      }
+  sacar(numeroConta: string, valor: number): void {
+    if (valor <= 0) throw new Error('Valor inválido');
+    const conta = this.getConta(numeroConta);
+    if (!conta) throw new Error('Conta não encontrada');
+    if (valor > conta.saldo + conta.limite) throw new Error('Saldo insuficiente');
 
-      contas[idx].saldo = (contas[idx].saldo ?? 0) + valor;
-      this.registrarMovimento(contas[idx], {
-        data: new Date().toISOString(),
-        tipo: ItemExtratoResponse.TipoEnum.Depsito,
-        destino: numero,
-        valor,
-      });
-      this.write(contas);
-
-      observer.next({
-        conta: numero,
-        data: new Date().toISOString(),
-        saldo: contas[idx].saldo,
-      });
-      observer.complete();
+    conta.saldo -= valor;
+    this.adicionarMovimento(conta, {
+      dataHora: new Date().toISOString(),
+      tipo: 'SAQUE',
+      clienteOrigemCpf: this.getClientePorConta(numeroConta)?.cpf,
+      valor
     });
+    this.contasBase.update(conta.numero, 'numero', conta);
   }
 
-  // POST /contas/{numero}/sacar
-  sacar(numero: string, valor: number): Observable<OperacaoResponse> {
-    return new Observable<OperacaoResponse>((observer) => {
-      const contas = this.read();
-      const idx = contas.findIndex(c => c.numero === numero);
-      if (idx === -1) {
-        observer.error(new Error('Conta não encontrada'));
-        observer.complete();
-        return;
-      }
+  transferir(contaOrigemNum: string, contaDestinoNum: string, valor: number): void {
+    if (valor <= 0) throw new Error('Valor inválido');
+    const origem = this.getConta(contaOrigemNum);
+    if (!origem) throw new Error('Conta de origem não encontrada');
+    if (valor > origem.saldo + origem.limite) throw new Error('Saldo insuficiente');
 
-      const saldoAtual = contas[idx].saldo ?? 0;
-      const limite = contas[idx].limite ?? 0;
-      if (saldoAtual + limite < valor) {
-        observer.error(new Error('Saldo insuficiente'));
-        observer.complete();
-        return;
-      }
+    const destino = this.getConta(contaDestinoNum);
+    
+    if (!destino) {
+      throw new Error('Conta de destino não encontrada')
+    }
+    
+    origem.saldo -= valor;
+    destino.saldo += valor;
 
-      contas[idx].saldo = saldoAtual - valor;
-      this.registrarMovimento(contas[idx], {
-        data: new Date().toISOString(),
-        tipo: ItemExtratoResponse.TipoEnum.Saque,
-        origem: numero,
-        valor,
-      });
-      this.write(contas);
+    const clienteOrigem = this.getClientePorConta(contaOrigemNum);
+    const clienteDestino = this.getClientePorConta(contaDestinoNum);
 
-      observer.next({
-        conta: numero,
-        data: new Date().toISOString(),
-        saldo: contas[idx].saldo,
-      });
-      observer.complete();
+    this.adicionarMovimento(origem, {
+      dataHora: new Date().toISOString(),
+      tipo: 'TRANSFERENCIA',
+      clienteOrigemCpf: clienteOrigem?.cpf,
+      clienteDestinoCpf: clienteDestino?.cpf,
+      valor
     });
+
+    this.adicionarMovimento(destino!, {
+      dataHora: new Date().toISOString(),
+      tipo: 'TRANSFERENCIA',
+      clienteOrigemCpf: clienteOrigem?.cpf,
+      clienteDestinoCpf: clienteDestino?.cpf,
+      valor
+    });
+
+    this.contasBase.update(origem.numero, 'numero', origem);
+    this.contasBase.update(destino!.numero, 'numero', destino!);
   }
 
-  // POST /contas/{numero}/transferir
-  transferir(numero: string, destino: string, valor: number): Observable<TransferenciaResponse> {
-    return new Observable<TransferenciaResponse>((observer) => {
-      const contas = this.read();
-      const origemIdx = contas.findIndex(c => c.numero === numero);
-      if (origemIdx === -1) {
-        observer.error(new Error('Conta de origem não encontrada'));
-        observer.complete();
-        return;
-      }
+  consultarExtrato(numeroConta: string, inicio?: string, fim?: string): any[] {
+    const conta = this.getConta(numeroConta);
+    if (!conta) throw new Error('Conta não encontrada');
 
-      const origem = contas[origemIdx];
-      const saldoOrigem = origem.saldo ?? 0;
-      const limiteOrigem = origem.limite ?? 0;
+    let historico = conta.historico || [];
 
-      if (saldoOrigem + limiteOrigem < valor) {
-        observer.error(new Error('Saldo insuficiente'));
-        observer.complete();
-        return;
-      }
+    if (inicio) {
+      historico = historico.filter(h => new Date(h.dataHora) >= new Date(inicio));
+    }
+    if (fim) {
+      historico = historico.filter(h => new Date(h.dataHora) <= new Date(fim));
+    }
 
-      // debita origem
-      origem.saldo = saldoOrigem - valor;
-      this.registrarMovimento(origem, {
-        data: new Date().toISOString(),
-        tipo: ItemExtratoResponse.TipoEnum.Transferncia,
-        origem: numero,
-        destino,
-        valor,
-      });
-
-      // credita destino (se existir no banco)
-      const destinoIdx = contas.findIndex(c => c.numero === destino);
-      if (destinoIdx !== -1) {
-        contas[destinoIdx].saldo = (contas[destinoIdx].saldo ?? 0) + valor;
-        this.registrarMovimento(contas[destinoIdx], {
-          data: new Date().toISOString(),
-          tipo: ItemExtratoResponse.TipoEnum.Transferncia,
-          origem: numero,
-          destino,
-          valor,
-        });
-      }
-
-      this.write(contas);
-
-      observer.next({
-        conta: numero,
-        destino,
-        data: new Date().toISOString(),
-        valor,
-        saldo: origem.saldo,
-      });
-      observer.complete();
+    const agrupado: Record<string, HistoricoMovimentacao[]> = {};
+    historico.forEach(h => {
+      const dia = h.dataHora.split('T')[0];
+      if (!agrupado[dia]) agrupado[dia] = [];
+      agrupado[dia].push(h);
     });
+
+    const resultado = Object.entries(agrupado).map(([dia, movimentos]) => {
+      let saldoDia = 0;
+      movimentos.forEach(m => {
+        if (m.tipo === 'DEPOSITO') saldoDia += m.valor;
+        if (m.tipo === 'SAQUE' || m.tipo === 'TRANSFERENCIA') saldoDia -= m.valor;
+      });
+      return { dia, movimentos, saldoConsolidado: saldoDia };
+    });
+
+    return resultado;
   }
 
-  // GET /contas/{numero}/extrato
-  getExtrato(numero: string): Observable<ExtratoResponse> {
-    return new Observable<ExtratoResponse>((observer) => {
-      const conta = this.findConta(numero);
-      if (!conta) {
-        observer.error(new Error('Conta não encontrada'));
-        observer.complete();
-        return;
-      }
+  private getConta(numero: string): Conta | undefined {
+    const contas = this.contasBase.getAll();
+    console.log('contas', contas);
+    const conta = contas.find(c => c.numero == numero);
 
-      observer.next({
-        conta: conta.numero,
-        saldo: conta.saldo,
-        movimentacoes: (conta as any).movimentacoes ?? [],
-      });
-      observer.complete();
-    });
+    console.log('conta', conta, numero);
+    return conta;
+  }
+
+  private getClientePorConta(numero: string): Cliente | undefined {
+    return this.clientesBase.getAll().find(c => c.dadosConta?.numero == numero);
+  }
+
+  private adicionarMovimento(conta: Conta, movimento: HistoricoMovimentacao): void {
+    if (!conta.historico) conta.historico = [];
+    conta.historico.push(movimento);
   }
 }

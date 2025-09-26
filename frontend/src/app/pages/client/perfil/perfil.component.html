@@ -1,17 +1,17 @@
 <div class="row mainRosa justify-content-evenly">
-    <div class="col-5 d-flex flex-column justify-content-center">
-        <hr>
-        <h1 class="tituloGrande">
-            Alterar dados cadastrados
-        </h1>
-        <hr>
-    </div>
-    <div class="col-5">
+  <div class="col-5 d-flex flex-column justify-content-center">
+    <hr>
+    <h1 class="tituloGrande">
+      Alterar dados cadastrados
+    </h1>
+    <hr>
+  </div>
+  <div class="col-5">
 
     <form [formGroup]="perfilForm" (ngSubmit)="onSubmit()">
 
-        <div class="row">
-          <div class="col-12">
+      <div class="row">
+        <div class="col-12">
           <label for="nome" class="form-label">Nome</label>
           <input type="text" 
                  id="nome" 
@@ -47,8 +47,7 @@
               mask="000.000.000-00" />
           </div>        
         </div>
-
-
+      </div>
 
       <div class="row">
         <div class="col-6">

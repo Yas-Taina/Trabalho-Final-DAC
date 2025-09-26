@@ -4,7 +4,7 @@ import { DadoGerente } from "./dadoGerente";
 export interface LoginResponse { 
     token: string;
     tokenType: string;
-    tipo: "CLIENTE" | "GERENTE" | "ADMIN";
+    tipo: "CLIENTE" | "GERENTE" | "ADMINISTRADOR";
     usuario: ClienteResponse | DadoGerente;
 }
 
