@@ -37,7 +37,7 @@ export class AutocadastroComponent {
     cpf: [this.clienteModel.cpf, [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
     email: [this.clienteModel.email, [Validators.required, Validators.email]],
     nome: [this.clienteModel.nome, [Validators.required, Validators.minLength(3)]],
-    salario: [this.clienteModel.salario, [Validators.required]],
+    salario: [this.clienteModel.salario, [Validators.required, Validators.min(0)]],
     telefone: [this.clienteModel.telefone, [Validators.required]],
     endereco: this.builder.group({
       tipo: [this.clienteModel.endereco?.tipo ?? '', [Validators.required]],

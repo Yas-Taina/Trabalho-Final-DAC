@@ -13,7 +13,16 @@
       <div class="row">
         <div class="col-7">
           <label for="nome" class="form-label">Nome</label>
-          <input type="text" class="form-control" id="nome" formControlName="nome" />
+          <input type="text" 
+                 id="nome" 
+                 class="form-control" 
+                 formControlName="nome"
+                 [class.is-invalid]="form.get('nome')?.invalid && (form.get('nome')?.touched || form.get('nome')?.dirty)" />
+          <div class="invalid-feedback" *ngIf="form.get('nome')?.errors && (form.get('nome')?.touched || form.get('nome')?.dirty)">
+            <div *ngIf="form.get('nome')?.errors?.['required']">Por favor insira um nome</div>
+            <div *ngIf="form.get('nome')?.errors?.['minlength']">O nome deve ter pelo menos 2 caracteres</div>
+            <div *ngIf="form.get('nome')?.errors?.['maxlength']">O nome deve ter no máximo 100 caracteres</div>
+          </div>
         </div>
         <div class="col-5">
           <label for="cpf" class="form-label">CPF</label>
@@ -22,27 +31,47 @@
       </div>
 
       <div class="row">
-        <div class="col-7">
+        <div class="col-6">
           <label for="email" class="form-label">E-mail</label>
-          <input type="email" class="form-control" id="email" formControlName="email" />
+          <input type="email" 
+                 id="email" 
+                 class="form-control" 
+                 formControlName="email"
+                 [class.is-invalid]="form.get('email')?.invalid && (form.get('email')?.touched || form.get('email')?.dirty)" />
+          <div class="invalid-feedback" *ngIf="form.get('email')?.errors && (form.get('email')?.touched || form.get('email')?.dirty)">
+            <div *ngIf="form.get('email')?.errors?.['required']">Por favor insira um e-mail</div>
+            <div *ngIf="form.get('email')?.errors?.['email']">Por favor insira um e-mail válido</div>
+          </div>
         </div>
-        <div class="col-5">
+        <div class="col-6">
           <label for="telefone" class="form-label">Telefone</label>
-          <input type="text" class="form-control" id="telefone" formControlName="telefone" placeholder="(00)00000-0000" mask="(00)00000-0000" />
+          <input type="text" 
+                 id="telefone" 
+                 class="form-control" 
+                 formControlName="telefone" 
+                 placeholder="(00)00000-0000" 
+                 mask="(00)00000-0000"
+                 [class.is-invalid]="form.get('telefone')?.invalid && (form.get('telefone')?.touched || form.get('telefone')?.dirty)" />
+          <div class="invalid-feedback" *ngIf="form.get('telefone')?.errors && (form.get('telefone')?.touched || form.get('telefone')?.dirty)">
+            <div *ngIf="form.get('telefone')?.errors?.['required']">Por favor insira um telefone</div>
+          </div>
         </div>        
       </div>
 
       <div class="row mt-2">
         <div class="col-12">
           <label for="tipo" class="form-label">Tipo</label>
-          <select class="form-control" id="tipo" formControlName="tipo">
+          <select id="tipo" 
+                  class="form-control" 
+                  formControlName="tipo"
+                  [class.is-invalid]="form.get('tipo')?.invalid && (form.get('tipo')?.touched || form.get('tipo')?.dirty)">
             <option *ngFor="let t of tipos" [value]="t">{{ t }}</option>
           </select>
         </div>
       </div>
 
       <div class="d-flex flex-row-reverse align-items-end mt-3">
-        <button type="submit" class="btnIcon border-0 bg-transparent">
+        <button type="submit" [disabled]="form.invalid" class="btnIcon border-0 bg-transparent">
           <i class="fa-solid fa-floppy-disk"></i>
         </button>
         <a routerLink="/adm/home" routerLinkActive="active">

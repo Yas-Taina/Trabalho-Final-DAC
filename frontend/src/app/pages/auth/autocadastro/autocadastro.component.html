@@ -3,7 +3,7 @@
     <div class="col-md-4">
       <form [formGroup]="clienteForm" (ngSubmit)="onSubmit()">
       
-        <div class="row mb-3">
+        <div class="row">
           <div class="col-12">
             <label for="nome" class="form-label">Nome</label>
             <input type="text"
@@ -21,7 +21,7 @@
           </div>
         </div>
 
-        <div class="row mb-3">
+        <div class="row ">
           <div class="col-7">
             <label for="email" class="form-label">E-mail</label>
             <input type="email"
@@ -52,7 +52,7 @@
           </div>
         </div>
 
-        <div class="row mb-3">
+        <div class="row  ">
           <div class="col-6">
             <label for="telefone" class="form-label">Telefone</label>
             <input type="text"
@@ -77,12 +77,13 @@
                    [class.is-invalid]="clienteForm.get('salario')?.invalid && (clienteForm.get('salario')?.touched || clienteForm.get('salario')?.dirty)" />
             <div class="invalid-feedback" *ngIf="clienteForm.get('salario')?.errors && (clienteForm.get('salario')?.touched || clienteForm.get('salario')?.dirty)">
               <div *ngIf="clienteForm.get('salario')?.errors?.['required']">Por favor insira um salário</div>
+              <div *ngIf="clienteForm.get('salario')?.errors?.['min']">Por favor insira um salário válido</div>
             </div>
           </div>
         </div>
 
         <div formGroupName="endereco">
-          <div class="row mb-3">
+          <div class="row">
             <div class="col-4">
               <label for="tipo" class="form-label">Tipo</label>
               <input type="text"
@@ -110,7 +111,7 @@
             </div>
           </div>
 
-          <div class="row mb-3">
+          <div class="row">
             <div class="col-3">
               <label for="numero" class="form-label">Nº</label>
               <input type="text"
@@ -134,7 +135,7 @@
             </div>
           </div>
 
-          <div class="row mb-3">
+          <div class="row">
             <div class="col-4">
               <label for="cep" class="form-label">CEP</label>
               <input type="text"
