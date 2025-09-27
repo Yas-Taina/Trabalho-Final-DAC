@@ -4,6 +4,7 @@ import { Cliente } from '../../../services/local/models/cliente';
 import { Gerente } from '../../../services/local/models/gerente';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { NgxMaskPipe } from 'ngx-mask';
 
 interface ClienteExibicao {
   cpf: string;
@@ -20,7 +21,7 @@ interface ClienteExibicao {
 @Component({
   selector: 'app-clientes-adm',
   standalone: true,
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, NgxMaskPipe],
   templateUrl: './clientes.component.html',
   styleUrls: ['./clientes.component.css']
 })

@@ -3,4 +3,10 @@
     margin: 0px;
     min-width: 100vw;
     min-height: 100vh;
+    height: 100vh;
+}
+
+#homeimg {
+    height: 150px;
+    width: 150px;
 }

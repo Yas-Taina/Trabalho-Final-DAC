@@ -1,5 +1,5 @@
 <div class="row mainRosa justify-content-evenly">
-  <div class="col-4 d-flex flex-column justify-content-center">
+  <div class="col-lg-4 d-flex flex-column justify-content-center">
     <hr>    
     <h1 class="tituloGrande">
       Gerentes
@@ -7,7 +7,7 @@
     <hr>
   </div>
 
-  <div class="col-6 d-flex flex-column justify-content-center">
+  <div class="col-lg-6 d-flex flex-column justify-content-center">
     <div class="containerTabela">
       <div class="tabela">    
       <table>
@@ -22,7 +22,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let gerente of gerentes">
-            <td>{{gerente.cpf}}</td>
+            <td>{{gerente.cpf | mask: '000.000.000-00'}}</td>
             <td>{{gerente.nome}}</td>
             <td>{{gerente.email}}</td>
             <td>{{gerente.telefone}}</td>
