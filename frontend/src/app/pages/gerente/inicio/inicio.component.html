@@ -22,7 +22,7 @@
               <tr> 
                 <td>{{cliente.nome}}</td>
                 <td>{{cliente.cpf | mask: '000.000.00-00' }}</td>
-                <td>{{cliente.salario | number:'1.2-2'}}</td>
+                <td>{{cliente.salario  | currency:'BRL':'symbol':'1.2-2'}}</td>
                 <td>
                   <button class="btn btnAzul" (click)="aprovar(cliente)">Aprovar</button>
                   <button class="btn btnAzul" (click)="abrirModalRecusa(cliente)">Recusar</button>

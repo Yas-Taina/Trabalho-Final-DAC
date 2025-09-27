@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { LocalGerentesService } from '../../../services';
 import { Gerente } from '../../../services/local/models/gerente';
@@ -19,6 +19,12 @@ export class EditarGerentesComponent implements OnInit {
   editMode = false;
   mensagem: string | null = null;
 
+  confirmarSenhaValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+    const s = group.get('senha')?.value;
+    const c = group.get('confirmarSenha')?.value;
+    return s === c ? null : { senhaDiferente: true };
+  };
+
   constructor(
     private fb: FormBuilder,
     private gerentesService: LocalGerentesService,
@@ -30,8 +36,10 @@ export class EditarGerentesComponent implements OnInit {
       cpf: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       telefone: ['', Validators.required],
+      senha: ['', [Validators.minLength(4), Validators.maxLength(4)]],
+      confirmarSenha: [''],
       tipo: ['GERENTE', Validators.required]
-    });
+    }, { validators: this.confirmarSenhaValidator });
   }
 
   ngOnInit(): void {
@@ -40,7 +48,13 @@ export class EditarGerentesComponent implements OnInit {
       this.editMode = true;
       const gerente = this.gerentesService.listarGerentes().find(g => g.cpf === cpf);
       if (gerente) {
-        this.form.patchValue(gerente);
+        this.form.patchValue({
+          nome: gerente.nome,
+          cpf: gerente.cpf,
+          email: gerente.email,
+          telefone: gerente.telefone,
+          tipo: gerente.tipo
+        });
         this.form.get('cpf')?.disable();
       }
     }
@@ -52,7 +66,13 @@ export class EditarGerentesComponent implements OnInit {
       return;
     }
 
-    const dados: Gerente = { ...this.form.getRawValue() };
+    const raw = this.form.getRawValue();
+    const { confirmarSenha, senha, ...resto } = raw;
+    const dados: Gerente = { ...resto };
+    if (senha) {
+      dados.senha = senha;
+    }
+
     try {
       if (this.editMode) {
         this.gerentesService.editarGerente(dados.cpf!, dados);

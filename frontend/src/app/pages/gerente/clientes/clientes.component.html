@@ -62,8 +62,8 @@
               <td>{{cliente.nome}}</td>
               <td>{{cliente.endereco?.cidade}}</td>
               <td>{{cliente.endereco?.estado}}</td>
-              <td>{{cliente.saldo}}</td>
-              <td>{{cliente.limite}}</td>
+              <td>{{cliente.saldo | currency:'BRL':'symbol':'1.2-2'}}</td>
+              <td>{{cliente.limite | currency:'BRL':'symbol':'1.2-2'}}</td>
               <td>
                 <a [routerLink]="['/clients', cliente.cpf]" class="btnIcon">
                   <i class="fa-solid fa-magnifying-glass"></i>
