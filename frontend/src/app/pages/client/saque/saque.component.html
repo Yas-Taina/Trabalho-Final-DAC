@@ -1,12 +1,12 @@
 <div class="row mainRosa justify-content-evenly">
-  <div class="col-5 d-flex flex-column justify-content-center">
+  <div class="col-lg-5 d-flex flex-column justify-content-center">
     <hr>
     <h1 class="tituloGrande">
       Saque
     </h1>
     <hr>
   </div>
-  <div class="col-4 d-flex flex-column justify-content-center">
+  <div class="col-lg-4 d-flex flex-column justify-content-center">
     <div class="d-flex flex-row justify-content-end">
     <a routerLink="/client/home" class="btnIcon" routerLinkActive="active"><i
         class="fa-solid fa-location-arrow btnVoltar"></i>
@@ -14,10 +14,24 @@
     </div>
     <form [formGroup]="saqueForm" (ngSubmit)="onSubmit()">
       <div>
-        <label for="valor" class="form-label">Saldo a ser sacado</label>
-        <input type="number" class="form-control" id="valor" name="valor" formControlName="valor" required placeholder="R$" />
-      </div>
-      <div *ngIf="this.saqueForm.get('valor')?.invalid && (this.saqueForm.get('valor')?.touched || this.saqueForm.get('valor')?.dirty)">Por favor insira um valor válido</div>
+  <label for="valor" class="form-label">Saldo a ser depositado</label>
+  <input 
+    type="number" 
+    class="form-control" 
+    id="valor" 
+    name="valor" 
+    formControlName="valor" 
+    required 
+    placeholder="R$" 
+    [class.is-invalid]="saqueForm.get('valor')?.invalid && 
+                        (saqueForm.get('valor')?.touched || saqueForm.get('valor')?.dirty)"
+  />
+  <div class="invalid-feedback" *ngIf="saqueForm.get('valor')?.invalid && 
+                                       (saqueForm.get('valor')?.touched || saqueForm.get('valor')?.dirty)">
+    <div *ngIf="saqueForm.get('valor')?.errors?.['required']">Por favor insira um valor</div>
+    <div *ngIf="saqueForm.get('valor')?.errors?.['min']">O valor deve ser maior que zero</div>
+  </div>
+</div>
       <div class="d-flex justify-content-center">
         <button type="submit" [disabled]="saqueForm.invalid" class="btn btnAzulRosa">Confirmar</button>
       </div>

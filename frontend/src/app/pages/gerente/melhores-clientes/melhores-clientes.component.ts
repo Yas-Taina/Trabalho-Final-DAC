@@ -5,11 +5,12 @@ import { Cliente } from '../../../services/local/models/cliente';
 import { ClienteResponse, DadoGerente } from '../../../services';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { NgxMaskPipe } from 'ngx-mask';
 
 @Component({
   selector: 'app-melhores-clientes',
   standalone: true,
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, NgxMaskPipe],
   templateUrl: './melhores-clientes.component.html',
   styleUrls: ['./melhores-clientes.component.css']
 })

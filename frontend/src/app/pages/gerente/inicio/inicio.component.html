@@ -1,11 +1,11 @@
 <div class="row mainRosa justify-content-evenly">
-  <div class="col-4 d-flex flex-column justify-content-center">
+  <div class="col-lg-4 d-flex flex-column justify-content-center">
     <hr>    
     <h1 class="tituloGrande">Inicio</h1>
     <hr>
   </div>
 
-  <div class="col-6 d-flex flex-column justify-content-center">
+  <div class="col-lg-6 d-flex flex-column justify-content-center">
     <div *ngIf="clientes.length > 0">     
       <div class="containerTabela">
         <div class="tabela">
@@ -21,7 +21,7 @@
             <tbody *ngFor="let cliente of clientes">
               <tr> 
                 <td>{{cliente.nome}}</td>
-                <td>{{cliente.cpf}}</td>
+                <td>{{cliente.cpf | mask: '000.000.00-00' }}</td>
                 <td>{{cliente.salario | number:'1.2-2'}}</td>
                 <td>
                   <button class="btn btnAzul" (click)="aprovar(cliente)">Aprovar</button>

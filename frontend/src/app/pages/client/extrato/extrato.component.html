@@ -2,7 +2,7 @@
     <hr>
     <h1 class="tituloGrande">Extrato</h1>
     <hr>
-    <div class="d-flex flex-row-reverse">
+    <div class="d-flex flex-row-reverse align-items-middle">
         <a (click)="toggleFiltro()"><i class="fa-solid fa-filter btnIcon"></i></a>
         <a routerLink="/client/home"
                 class="btnIcon"
@@ -23,34 +23,45 @@
         </div>
     </div>
     <div class="d-flex flex-column" *ngFor="let dia of (extratosPorDia | keyvalue)">
-        <div style="margin: 1rem;"><h3 class="subtitulo">{{ dia.key }}</h3></div>
-        <div class="d-flex justify-content-evenly tabelaListagem"><table>
-            <thead>
-                <tr>
-                    <th>Hora</th>
-                    <th>Operação</th>
-                    <th>Origem</th>
-                    <th>Destino</th>
-                    <th>Valor</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let t of dia.value">
-                    <td>{{ t.data }}</td>
-                    <td>{{ t.tipo }}</td>
-                    <td>{{ t.origem }}</td>
-                    <td>{{ t.destino }}</td>
-                    <td 
-                    [ngClass]="{
-                        'valor-entrada': t.tipo === 'depósito' || (t.tipo === 'transferência' && t.destino),
-                        'valor-saida': t.tipo === 'saque' || (t.tipo === 'transferência' && t.origem)
-                    }">
-                    {{ t.valor | currency:'BRL':'symbol':'1.2-2' }}
-                    </td>
-                    </tr>
-            </tbody>
-        </table></div>
-        <hr>
-    </div>
+  <div class="d-flex justify-content-between align-items-center" style="margin: 1rem;">
+    <h3 class="subtitulo flex-grow-1 text-center">{{ dia.key }}</h3>
+    <span class="subtitulo">{{ dia.value.saldoConsolidado | currency:'BRL':'symbol':'1.2-2' }}</span>
+  </div>
 
+  <div class="d-flex justify-content-evenly tabelaListagem">
+    <table>
+      <thead>
+        <tr>
+          <th>Hora</th>
+          <th>Operação</th>
+          <th>Origem</th>
+          <th>Destino</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of dia.value.movimentos">
+          <td>{{ t.data }}</td>
+          <td>{{ t.tipo }}</td>
+          <td>
+            {{ t.origem && t.origem !== '-' ? (t.origem | mask:'000.000.000-00') : '-' }}
+          </td>
+          <td>
+            {{ t.destino && t.destino !== '-' ? (t.destino | mask:'000.000.000-00') : '-' }}
+          </td>
+          <td 
+            [ngClass]="{
+              'valor-entrada': t.tipo === 'deposito' 
+                               || (t.tipo === 'transferencia' && t.destino === cpfLogado),
+              'valor-saida': t.tipo === 'saque' 
+                             || (t.tipo === 'transferencia' && t.origem === cpfLogado)
+            }">
+            {{ t.valor | currency:'BRL':'symbol':'1.2-2' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <hr>
+</div>
 </div>

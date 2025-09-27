@@ -5,7 +5,7 @@ import { ClienteResponse, DadoGerente } from '../../../services';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NgxMaskDirective } from 'ngx-mask';
+import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 
 interface ExtratoLinha {
   data: string;
@@ -15,10 +15,15 @@ interface ExtratoLinha {
   valor: number;
 }
 
+interface ExtratoDia {
+  movimentos: ExtratoLinha[];
+  saldoConsolidado: number;
+}
+
 @Component({
   selector: 'app-extrato',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule, NgxMaskDirective],
+  imports: [RouterModule, CommonModule, FormsModule, NgxMaskDirective, NgxMaskPipe],
   templateUrl: './extrato.component.html',
   styleUrls: ['./extrato.component.css']
 })
@@ -26,7 +31,8 @@ export class ExtratoComponent implements OnInit {
   mostrarFiltro = false;
   dataInicio: string = '';
   dataFim: string = '';
-  extratosPorDia: Record<string, ExtratoLinha[]> = {};
+  extratosPorDia: Record<string, ExtratoDia> = {};
+  cpfLogado: string = '';
 
   constructor(
     private contasService: LocalContasService,
@@ -34,6 +40,10 @@ export class ExtratoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const session = this.loginService.sessionInfo();
+    if (session && this.isCliente(session.usuario)) {
+      this.cpfLogado = session.usuario.cpf ?? '0'; 
+    }
     this.carregarExtrato();
   }
 
@@ -64,19 +74,22 @@ export class ExtratoComponent implements OnInit {
 
     try {
       const resultado = this.contasService.consultarExtrato(numeroConta, inicio, fim);
-      const porDia: Record<string, ExtratoLinha[]> = {};
+      const porDia: Record<string, ExtratoDia> = {};
       resultado.forEach(dia => {
-        porDia[dia.dia] = dia.movimentos.map((m: any) => ({
-          data: new Date(m.dataHora).toLocaleTimeString(),
-          tipo: m.tipo.toLowerCase(),
-          origem: m.clienteOrigemCpf || '-',
-          destino: m.clienteDestinoCpf || '-',
-          valor: m.valor
-        }));
+        porDia[dia.dia] = {
+            movimentos: dia.movimentos.map((m: any) => ({
+            data: new Date(m.dataHora).toLocaleTimeString(),
+            tipo: m.tipo.toLowerCase(),
+            origem: m.clienteOrigemCpf || '-',
+            destino: m.clienteDestinoCpf || '-',
+            valor: m.valor
+          })),
+          saldoConsolidado: dia.saldoConsolidado
+        };
       });
       this.extratosPorDia = porDia;
     } catch (error: any) {
-      alert(error.message || 'Erro ao consultar extrato');
-    }
+    alert(error.message || 'Erro ao consultar extrato');
   }
+ }
 }
