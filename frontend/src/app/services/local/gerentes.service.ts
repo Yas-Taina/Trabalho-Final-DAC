@@ -37,12 +37,13 @@ export class LocalGerentesService {
       return;
     }
 
-    let contaParaRedistribuir = contasPorGerente[0].contas.pop();
+    let contaParaRedistribuir = contasPorGerente[0].contas[0];
 
     const gerentesComMaisContas = contasPorGerente.filter(c => c.contas.length === contasPorGerente[0].contas.length);
+    console.log(gerentesComMaisContas);
 
     if (gerentesComMaisContas.length > 1) {
-      contaParaRedistribuir = gerentesComMaisContas.sort((a, b) => a.saldoPositivo - b.saldoPositivo)[0].contas.pop();
+      contaParaRedistribuir = gerentesComMaisContas.sort((a, b) => a.saldoPositivo - b.saldoPositivo)[0].contas.pop()!;
     }
 
     const cliente = this.clientesBase.getAll().find(x => x.dadosConta?.numero === contaParaRedistribuir?.numero);

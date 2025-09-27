@@ -58,6 +58,7 @@ export class InicioManagerComponent {
         this.clientesService.recusarCliente(this.clienteRecusando.cpf, this.motivoRecusa);
         this.clientes = this.clientes.filter(c => c.cpf !== this.clienteRecusando!.cpf);
         alert(`Cliente ${this.clienteRecusando.nome} recusado.`);
+        alert(`Email: \nInfelizmente, seu cadastro foi recusado.\nMotivo: ${this.motivoRecusa}\nData: ${new Date().toLocaleDateString()}`);
         this.clienteRecusando = null;
         this.motivoRecusa = '';
       } catch (error: any) {

@@ -54,11 +54,11 @@ export class LocalContasService {
     if (valor > origem.saldo + origem.limite) throw new Error('Saldo insuficiente');
 
     const destino = this.getConta(contaDestinoNum);
-    
+
     if (!destino) {
       throw new Error('Conta de destino não encontrada')
     }
-    
+
     origem.saldo -= valor;
     destino.saldo += valor;
 
