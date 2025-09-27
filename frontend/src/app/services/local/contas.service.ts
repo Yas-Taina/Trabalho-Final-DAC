@@ -19,51 +19,69 @@ export class LocalContasService {
   depositar(numeroConta: string, valor: number): void {
     if (valor <= 0) throw new Error('Valor inválido para depósito');
     const conta = this.getConta(numeroConta);
+    const cliente = this.getClientePorConta(numeroConta);
+
     if (!conta) throw new Error('Conta não encontrada');
+    if (!cliente) throw new Error('Cliente não encontrado');
 
     conta.saldo += valor;
+    cliente.dadosConta = conta;
+
     this.adicionarMovimento(conta, {
       dataHora: new Date().toISOString(),
       tipo: 'DEPOSITO',
       clienteOrigemCpf: this.getClientePorConta(numeroConta)?.cpf,
       valor
     });
+
     this.contasBase.update(conta.numero, 'numero', conta);
+    this.clientesBase.update(cliente.cpf, 'cpf', cliente);
   }
 
   sacar(numeroConta: string, valor: number): void {
     if (valor <= 0) throw new Error('Valor inválido');
     const conta = this.getConta(numeroConta);
+    const cliente = this.getClientePorConta(numeroConta);
+
     if (!conta) throw new Error('Conta não encontrada');
+    if (!cliente) throw new Error('Cliente não encontrado');
+
     if (valor > conta.saldo + conta.limite) throw new Error('Saldo insuficiente');
 
     conta.saldo -= valor;
+    cliente.dadosConta = conta;
+
     this.adicionarMovimento(conta, {
       dataHora: new Date().toISOString(),
       tipo: 'SAQUE',
       clienteOrigemCpf: this.getClientePorConta(numeroConta)?.cpf,
       valor
     });
+
     this.contasBase.update(conta.numero, 'numero', conta);
+    this.clientesBase.update(cliente.cpf, 'cpf', cliente);
   }
 
   transferir(contaOrigemNum: string, contaDestinoNum: string, valor: number): void {
     if (valor <= 0) throw new Error('Valor inválido');
     const origem = this.getConta(contaOrigemNum);
-    if (!origem) throw new Error('Conta de origem não encontrada');
-    if (valor > origem.saldo + origem.limite) throw new Error('Saldo insuficiente');
-
     const destino = this.getConta(contaDestinoNum);
+    const clienteOrigem = this.getClientePorConta(contaOrigemNum);
+    const clienteDestino = this.getClientePorConta(contaDestinoNum);
 
-    if (!destino) {
-      throw new Error('Conta de destino não encontrada')
-    }
+    if (!origem) throw new Error('Conta de origem não encontrada');
+    if (!destino) throw new Error('Conta de destino não encontrada');
+    if (!clienteOrigem) throw new Error('Cliente de origem não encontrado');
+    if (!clienteDestino) throw new Error('Cliente de destino não encontrado');
+
+    if (valor > origem.saldo + origem.limite) throw new Error('Saldo insuficiente');
+    if (contaOrigemNum === contaDestinoNum) throw new Error('Não é possível transferir para a mesma conta');
 
     origem.saldo -= valor;
     destino.saldo += valor;
 
-    const clienteOrigem = this.getClientePorConta(contaOrigemNum);
-    const clienteDestino = this.getClientePorConta(contaDestinoNum);
+    clienteOrigem.dadosConta = origem;
+    clienteDestino.dadosConta = destino;
 
     this.adicionarMovimento(origem, {
       dataHora: new Date().toISOString(),
@@ -83,6 +101,9 @@ export class LocalContasService {
 
     this.contasBase.update(origem.numero, 'numero', origem);
     this.contasBase.update(destino!.numero, 'numero', destino!);
+
+    this.clientesBase.update(clienteOrigem.cpf, 'cpf', clienteOrigem);
+    this.clientesBase.update(clienteDestino.cpf, 'cpf', clienteDestino);
   }
 
   consultarExtrato(numeroConta: string, clienteCpf: string, inicio?: string, fim?: string): any[] {
