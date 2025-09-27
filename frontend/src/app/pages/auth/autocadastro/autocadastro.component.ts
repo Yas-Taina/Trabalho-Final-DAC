@@ -4,11 +4,12 @@ import { LocalClientesService } from '../../../services';
 import { Cliente } from '../../../services/local/models/cliente';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-autocadastro',
   standalone: true,
-  imports: [RouterModule, CommonModule, ReactiveFormsModule],
+  imports: [RouterModule, CommonModule, ReactiveFormsModule, NgxMaskDirective],
   templateUrl: './autocadastro.component.html',
   styleUrls: ['./autocadastro.component.css']
 })
