@@ -85,37 +85,44 @@ export class LocalContasService {
     this.contasBase.update(destino!.numero, 'numero', destino!);
   }
 
-  consultarExtrato(numeroConta: string, inicio?: string, fim?: string): any[] {
-    const conta = this.getConta(numeroConta);
-    if (!conta) throw new Error('Conta não encontrada');
+  consultarExtrato(numeroConta: string, clienteCpf: string, inicio?: string, fim?: string): any[] {
+      const conta = this.getConta(numeroConta);
+      if (!conta) throw new Error('Conta não encontrada');
 
-    let historico = conta.historico || [];
+      let historico = conta.historico || [];
 
-    if (inicio) {
-      historico = historico.filter(h => new Date(h.dataHora) >= new Date(inicio));
-    }
-    if (fim) {
-      historico = historico.filter(h => new Date(h.dataHora) <= new Date(fim));
-    }
+      if (inicio) {
+        const dataInicio = new Date(inicio + 'T00:00:00');
+        historico = historico.filter(h => new Date(h.dataHora) >= dataInicio);
+      }
+      if (fim) {
+        const dataFim = new Date(fim + 'T23:59:59');
+        historico = historico.filter(h => new Date(h.dataHora) <= dataFim);
+      }
 
-    const agrupado: Record<string, HistoricoMovimentacao[]> = {};
-    historico.forEach(h => {
-      const dia = h.dataHora.split('T')[0];
-      if (!agrupado[dia]) agrupado[dia] = [];
-      agrupado[dia].push(h);
-    });
-
-    const resultado = Object.entries(agrupado).map(([dia, movimentos]) => {
-      let saldoDia = 0;
-      movimentos.forEach(m => {
-        if (m.tipo === 'DEPOSITO') saldoDia += m.valor;
-        if (m.tipo === 'SAQUE' || m.tipo === 'TRANSFERENCIA') saldoDia -= m.valor;
+      const agrupado: Record<string, HistoricoMovimentacao[]> = {};
+      historico.forEach(h => {
+        const dia = new Date(h.dataHora).toLocaleDateString();
+        if (!agrupado[dia]) agrupado[dia] = [];
+        agrupado[dia].push(h);
       });
-      return { dia, movimentos, saldoConsolidado: saldoDia };
-    });
 
-    return resultado;
-  }
+      const resultado = Object.entries(agrupado).map(([dia, movimentos]) => {
+        let saldoDia = 0;
+        movimentos.forEach(m => {
+        if (m.tipo === 'DEPOSITO') saldoDia += m.valor;
+        if (m.tipo === 'SAQUE') saldoDia -= m.valor;
+        if (m.tipo === 'TRANSFERENCIA') {
+          if (m.clienteDestinoCpf === clienteCpf) saldoDia += m.valor;
+          else if (m.clienteOrigemCpf === clienteCpf) saldoDia -= m.valor;
+        }
+      });
+        return { dia, movimentos, saldoConsolidado: saldoDia };
+      });
+
+      return resultado;
+    }
+
 
   private getConta(numero: string): Conta | undefined {
     const contas = this.contasBase.getAll();

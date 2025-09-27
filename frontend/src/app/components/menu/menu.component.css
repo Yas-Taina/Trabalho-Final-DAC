@@ -9,36 +9,51 @@
   z-index: 1001;
 }
 
-
 .menu-btn {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  position: relative;
   width: 28px;
-  height: 20px;
+  height: 28px;
   background: none;
   border: none;
   cursor: pointer;
   padding: 0;
-  z-index: 1010; 
+  z-index: 1010;
 }
 
 .menu-btn span {
-  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
   height: 3px;
   background: var(--creme);
   border-radius: 3px;
+  transform: translate(-50%, -50%);
   transition: all 0.3s ease-in-out;
 }
 
-.menu-btn span.open:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
+.menu-btn span:nth-child(1) {
+  transform: translate(-50%, -7px);
 }
+
+.menu-btn span:nth-child(2) {
+  transform: translate(-50%, 0);
+}
+
+.menu-btn span:nth-child(3) {
+  transform: translate(-50%, 7px);
+}
+
+.menu-btn span.open:nth-child(1) {
+  transform: translate(-50%, 0) rotate(45deg);
+}
+
 .menu-btn span.open:nth-child(2) {
   opacity: 0;
 }
+
 .menu-btn span.open:nth-child(3) {
-  transform: rotate(-45deg) translate(5px, -5px);
+  transform: translate(-50%, 0) rotate(-45deg);
 }
 
 .menu-links {
@@ -53,7 +68,7 @@
   background: var(--azul);
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
-  z-index: 1000; 
+  z-index: 1000;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

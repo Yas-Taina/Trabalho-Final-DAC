@@ -73,7 +73,7 @@ export class ExtratoComponent implements OnInit {
     }
 
     try {
-      const resultado = this.contasService.consultarExtrato(numeroConta, inicio, fim);
+      const resultado = this.contasService.consultarExtrato(numeroConta, this.cpfLogado, inicio, fim);
       const porDia: Record<string, ExtratoDia> = {};
       resultado.forEach(dia => {
         porDia[dia.dia] = {
