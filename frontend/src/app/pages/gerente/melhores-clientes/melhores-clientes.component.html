@@ -24,7 +24,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let cliente of clientes">
-            <td>{{cliente.cpf}}</td>
+            <td>{{cliente.cpf | mask: '000.000.000-00'}}</td>
             <td>{{cliente.nome}}</td>
             <td>{{cliente.endereco.cidade}}</td>
             <td>{{cliente.endereco.estado}}</td>

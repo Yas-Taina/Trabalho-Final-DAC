@@ -4,11 +4,12 @@ import { RouterModule } from '@angular/router';
 import { LocalClientesService } from '../../../services';
 import { Cliente } from '../../../services/local/models/cliente';
 import { FormsModule } from '@angular/forms';
+import { NgxMaskPipe } from 'ngx-mask';
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule],
+  imports: [RouterModule, CommonModule, FormsModule, NgxMaskPipe],
   templateUrl: './inicio.component.html',
   styleUrls: ['./inicio.component.css']
 })

@@ -1,11 +1,11 @@
-<div class="row mainRosa justify-content-evenly">
-  <div class="col-5 d-flex flex-column justify-content-center">
+<div class="row mainRosa justify-content-evenly gap-1">
+  <div class="col-lg-5 d-flex flex-column justify-content-center">
     <hr>
     <h1 class="tituloGrande">Consultar Cliente</h1>
     <hr>
   </div>
 
-  <div class="col-5 d-flex flex-column justify-content-center" style="text-align: left;">
+  <div class="col-lg-5 d-flex flex-column justify-content-center" style="text-align: left;">
     <div class="row justify-content-end mb-3"> 
       <div class="col-5">
         <input 
@@ -39,7 +39,7 @@
         </div>
         <div class="col-5">
           <h5>CPF</h5>
-          <p>{{cliente.cpf}}</p>
+          <p>{{cliente.cpf | mask: '000.000.000-00'}}</p>
         </div>        
       </div>
 
@@ -57,7 +57,7 @@
       <div class="row mb-2">
         <div class="col-3">
           <h5>CEP</h5>
-          <p>{{cliente.endereco.cep}}</p>
+          <p>{{cliente.endereco.cep | mask: '00000-000'}}</p>
         </div>
         <div class="col-7">
           <h5>Cidade</h5>

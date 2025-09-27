@@ -5,12 +5,12 @@ import { FormsModule } from '@angular/forms'
 import { LocalClientesService } from '../../../services'
 import { LocalLoginService } from '../../../services'
 import { Cliente } from '../../../services/local/models/cliente'
-import { NgxMaskDirective } from 'ngx-mask'
+import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask'
 
 @Component({
   selector: 'app-clientesmanager',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule, NgxMaskDirective],
+  imports: [RouterModule, CommonModule, FormsModule, NgxMaskDirective, NgxMaskPipe],
   templateUrl: './clientes.component.html',
   styleUrl: './clientes.component.css'
 })
