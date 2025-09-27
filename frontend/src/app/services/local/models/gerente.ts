@@ -6,5 +6,5 @@ export interface Gerente {
   telefone: string;
   cpf: string;
   tipo: TipoGerente;
-  senha?: string;
+  senha: string;
 }

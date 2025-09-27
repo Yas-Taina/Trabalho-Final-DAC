@@ -29,10 +29,10 @@
             <td>{{cliente.cpf | mask: '000.000.000-00'}}</td>
             <td>{{cliente.nome}}</td>
             <td>{{cliente.email}}</td>
-            <td>{{cliente.salario}}</td>
+            <td>{{cliente.salario | currency:'BRL':'symbol':'1.2-2' }}</td>
             <td>{{cliente.conta}}</td>
-            <td>{{cliente.saldo}}</td>
-            <td>{{cliente.limite}}</td>
+            <td>{{cliente.saldo | currency:'BRL':'symbol':'1.2-2' }}</td>
+            <td>{{cliente.limite | currency:'BRL':'symbol':'1.2-2' }}</td>
             <td>{{cliente.gerenteCpf || '' | mask: '000.000.00-00'}}</td>
             <td>{{cliente.gerente_nome}}</td>
           </tr>          
