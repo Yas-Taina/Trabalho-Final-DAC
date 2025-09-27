@@ -26,14 +26,14 @@
         </thead>
         <tbody>
           <tr *ngFor="let cliente of clientes">
-            <td>{{cliente.cpf}}</td>
+            <td>{{cliente.cpf | mask: '000.000.000-00'}}</td>
             <td>{{cliente.nome}}</td>
             <td>{{cliente.email}}</td>
             <td>{{cliente.salario}}</td>
             <td>{{cliente.conta}}</td>
             <td>{{cliente.saldo}}</td>
             <td>{{cliente.limite}}</td>
-            <td>{{cliente.gerenteCpf}}</td>
+            <td>{{cliente.gerenteCpf || '' | mask: '000.000.00-00'}}</td>
             <td>{{cliente.gerente_nome}}</td>
           </tr>          
         </tbody>

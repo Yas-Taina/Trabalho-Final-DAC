@@ -22,7 +22,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let gerente of gerentes">
-            <td>{{gerente.cpf}}</td>
+            <td>{{gerente.cpf | mask: '000.000.000-00'}}</td>
             <td>{{gerente.nome}}</td>
             <td>{{gerente.email}}</td>
             <td>{{gerente.telefone}}</td>
