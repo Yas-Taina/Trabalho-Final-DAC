@@ -64,6 +64,8 @@ cadastrarCliente(cliente: Cliente): void {
     cliente.senha = senha;
     cliente.dadosConta = conta;
 
+    alert(`Cliente aprovado! Senha temporária: ${senha}`);
+
     this.contasBase.add(conta);
     this.base.update(cliente.cpf, 'cpf', cliente);
   }
