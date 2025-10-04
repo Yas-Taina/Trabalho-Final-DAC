@@ -94,6 +94,36 @@ hr{
   opacity: 1 !important;
 }
 
+/*---Imagens---*/
+
+.imgLine {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.imgLine hr {
+  position: absolute; 
+  top: 50%; 
+  transform: translateY(-50%); 
+  width: 100%; 
+  z-index: 1000; 
+  border-top: 1px solid;
+  opacity: 1 !important;
+}
+
+.imgTitle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 150px;
+  z-index: 1020; 
+}
+
 /*---Titulos, Subtitulos, Textos Especiais---*/
 
 .tituloGrande {
@@ -308,3 +338,6 @@ td {
   border: 1px solid lightgray;
   vertical-align: middle;
 }
+
+
+
