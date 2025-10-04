@@ -27,9 +27,6 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
         return;
       }
 
-      // =========================
-      // GERENTES / ADMINISTRADOR
-      // =========================
       const gerenteGenieve: Gerente = {
         cpf: '98574307084',
         nome: 'Geniéve',
@@ -66,24 +63,19 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
         senha: 'tads',
       };
 
-      // =========================
-      // CONTAS (com data criação)
-      // =========================
       const contaCatharyna: Conta = {
         numero: '1291',
-        dataCriacao: '2000-01-01T00:00:00-03:00', // 01/01/2000
+        dataCriacao: '2000-01-01T00:00:00-03:00', 
         saldo: 800,
         limite: 5000,
         gerenteCpf: gerenteGenieve.cpf,
         historico: [
-          // 2020 - Catharyna
           { dataHora: '2020-01-01T10:00:00-03:00', tipo: 'DEPOSITO', valor: 1000 },
           { dataHora: '2020-01-01T11:00:00-03:00', tipo: 'DEPOSITO', valor: 900 },
           { dataHora: '2020-01-01T12:00:00-03:00', tipo: 'SAQUE', valor: 550 },
           { dataHora: '2020-01-01T13:00:00-03:00', tipo: 'SAQUE', valor: 350 },
           { dataHora: '2020-01-10T15:00:00-03:00', tipo: 'DEPOSITO', valor: 2000 },
           { dataHora: '2020-01-15T08:00:00-03:00', tipo: 'SAQUE', valor: 500 },
-          // transferência Catharyna -> Cleuddônio
           {
             dataHora: '2020-01-20T12:00:00-03:00',
             tipo: 'TRANSFERENCIA',
@@ -96,12 +88,11 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
 
       const contaCleuddonio: Conta = {
         numero: '0950',
-        dataCriacao: '1990-10-10T00:00:00-03:00', // 10/10/1990
+        dataCriacao: '1990-10-10T00:00:00-03:00', 
         saldo: -10000,
         limite: 10000,
         gerenteCpf: gerenteGodophredo.cpf,
         historico: [
-          // 2020: receber espelho da transferência de 20/01
           {
             dataHora: '2020-01-20T12:00:00-03:00',
             tipo: 'TRANSFERENCIA',
@@ -109,7 +100,6 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
             clienteDestinoCpf: '09506382000',
             valor: 1700,
           },
-          // 2025 - Cleuddônio
           { dataHora: '2025-01-01T12:00:00-03:00', tipo: 'DEPOSITO', valor: 1000 },
           { dataHora: '2025-01-02T10:00:00-03:00', tipo: 'DEPOSITO', valor: 5000 },
           { dataHora: '2025-01-10T10:00:00-03:00', tipo: 'SAQUE', valor: 200 },
@@ -119,12 +109,11 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
 
       const contaCatianna: Conta = {
         numero: '8573',
-        dataCriacao: '2012-12-12T00:00:00-03:00', // 12/12/2012
+        dataCriacao: '2012-12-12T00:00:00-03:00', 
         saldo: -1000,
         limite: 1500,
         gerenteCpf: gerenteGyandula.cpf,
         historico: [
-          // 2025 - Catianna (horários default 12:00/13:00)
           { dataHora: '2025-05-05T12:00:00-03:00', tipo: 'DEPOSITO', valor: 1000 },
           { dataHora: '2025-05-06T13:00:00-03:00', tipo: 'SAQUE', valor: 2000 },
         ],
@@ -132,7 +121,7 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
 
       const contaCutardo: Conta = {
         numero: '5887',
-        dataCriacao: '2022-02-22T00:00:00-03:00', // 22/02/2022
+        dataCriacao: '2022-02-22T00:00:00-03:00', 
         saldo: 150000,
         limite: 0,
         gerenteCpf: gerenteGenieve.cpf,
@@ -143,7 +132,7 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
 
       const contaCoandrya: Conta = {
         numero: '7617',
-        dataCriacao: '2025-01-01T00:00:00-03:00', // 01/01/2025
+        dataCriacao: '2025-01-01T00:00:00-03:00',
         saldo: 1500,
         limite: 0,
         gerenteCpf: gerenteGodophredo.cpf,
@@ -162,12 +151,11 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
           { dataHora: '2024-03-01T09:00:00-03:00', tipo: 'DEPOSITO', valor: 1000 },
           { dataHora: '2024-03-01T14:00:00-03:00', tipo: 'SAQUE', valor: 200 },
           { dataHora: '2024-03-05T11:30:00-03:00', tipo: 'DEPOSITO', valor: 800 },
-          // Transferência Bruna -> Diego (espelhada na conta do Diego)
           {
             dataHora: '2024-04-10T16:00:00-03:00',
             tipo: 'TRANSFERENCIA',
-            clienteOrigemCpf: '21453687091',  // Bruna
-            clienteDestinoCpf: '30694125078', // Diego
+            clienteOrigemCpf: '21453687091',  
+            clienteDestinoCpf: '30694125078', 
             valor: 300
           },
         ],
@@ -180,7 +168,6 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
         limite: 3000,
         gerenteCpf: gerenteGodophredo.cpf,
         historico: [
-          // Espelho da transferência Bruna -> Diego
           {
             dataHora: '2024-04-10T16:00:00-03:00',
             tipo: 'TRANSFERENCIA',
@@ -202,12 +189,11 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
         historico: [
           { dataHora: '2025-03-01T09:15:00-03:00', tipo: 'DEPOSITO', valor: 2000 },
           { dataHora: '2025-03-02T10:20:00-03:00', tipo: 'SAQUE', valor: 500 },
-          // Transferência Elton -> Fabiana (espelhada na conta da Fabiana)
           {
             dataHora: '2025-03-15T13:00:00-03:00',
             tipo: 'TRANSFERENCIA',
-            clienteOrigemCpf: '47812536900',  // Elton
-            clienteDestinoCpf: '58963074122', // Fabiana
+            clienteOrigemCpf: '47812536900', 
+            clienteDestinoCpf: '58963074122', 
             valor: 700
           },
         ],
@@ -220,7 +206,6 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
         limite: 1000,
         gerenteCpf: gerenteGenieve.cpf,
         historico: [
-          // Espelho da transferência Elton -> Fabiana
           {
             dataHora: '2025-03-15T13:00:00-03:00',
             tipo: 'TRANSFERENCIA',
@@ -244,9 +229,6 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
         ],
       };
 
-      // =========
-      // CLIENTES
-      // =========
       const clienteCatharyna: Cliente = {
         cpf: '12912861012',
         nome: 'Catharyna',
@@ -352,7 +334,6 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
         gerenteCpf: contaCoandrya.gerenteCpf,
       };
 
-            // ======= CLIENTES (x5) =======
       const clienteBruna: Cliente = {
         cpf: '21453687091',
         nome: 'Bruna',
@@ -458,7 +439,6 @@ export class LocalInicializacaoService extends LocalBaseService<any> {
         gerenteCpf: contaHelena.gerenteCpf,
       };
 
-      // Persistência
       localStorage.setItem(
         gerentesKey,
         JSON.stringify([gerenteGenieve, gerenteGodophredo, gerenteGyandula, adminAdamantio])
