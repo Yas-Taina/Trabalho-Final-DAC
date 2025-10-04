@@ -1,4 +1,3 @@
-// src/app/services/clientes.service.ts
 import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -12,7 +11,7 @@ import { AutocadastroInfo, PerfilInfo, ContaResponse, DadosClienteResponse, Logi
 export class ClientesService extends BaseService {
   private getAuthHeaders(): HttpHeaders {
     const stored = localStorage.getItem('token');
-    const dados: LoginResponse = stored ? JSON.parse(stored) : "" // ou outro storage
+    const dados: LoginResponse = stored ? JSON.parse(stored) : "" 
     return new HttpHeaders({
       Authorization: `Bearer ${dados.token}`,
     });
