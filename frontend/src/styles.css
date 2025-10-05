@@ -237,14 +237,6 @@ hr{
   box-shadow: 0px opx 3px 1px var(--rosa);
 }
 
-.form-control:invalid{
-  border: 1px solid #a10320;
-}
-
-.form-controlinvalid{
-  border: 1px solid #204f2c;
-}
-
 .campoVazio {
   opacity: 0.7;
 }
@@ -262,6 +254,7 @@ form{
 .mainAzul .form-control {
   background-color: var(--azul);
   color: var(--creme);
+  border: 1px solid var(--creme);
 }
 
 .mainAzul input::placeholder{
