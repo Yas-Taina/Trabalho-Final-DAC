@@ -4,7 +4,7 @@ import dac.ufpr.Auth.dto.auth.AuthRequestDto;
 import dac.ufpr.Auth.dto.auth.AuthResponseDto;
 import dac.ufpr.Auth.dto.user.UserRequestDto;
 import dac.ufpr.Auth.dto.user.UserResponseDto;
-import dac.ufpr.Auth.entity.User;
+import dac.ufpr.Auth.entity.Autenticacao;
 import dac.ufpr.Auth.enums.EnRole;
 import dac.ufpr.Auth.exception.custom.BadRequestException;
 import dac.ufpr.Auth.exception.custom.InvalidCredentialsException;
@@ -47,14 +47,15 @@ public class AuthService {
 
         validarUsuario(userRequestDto);
 
-        User user = new User();
-        user.setEmail(userRequestDto.email());
-        user.setSenha(passwordEncoder.encode(userRequestDto.senha()));
-        user.setRole(EnRole.findByName(userRequestDto.role()));
+        Autenticacao autenticacao = new Autenticacao();
+        autenticacao.setEmail(userRequestDto.email());
+        autenticacao.setSenha(passwordEncoder.encode(userRequestDto.senha()));
+        autenticacao.setRole(EnRole.findByName(userRequestDto.role()));
+        autenticacao.setIdUsuario(userRequestDto.idUsuario());
 
-        repository.save(user);
+        repository.save(autenticacao);
 
-        return new UserResponseDto(user.getId(), user.getEmail());
+        return new UserResponseDto(autenticacao.getId(), autenticacao.getEmail());
     }
 
     public AuthResponseDto login(AuthRequestDto request) {
@@ -67,19 +68,19 @@ public class AuthService {
             throw new InvalidCredentialsException("Usuário/Senha incorretos");
         }
 
-        User user = repository.findByEmail(request.email()).orElseThrow(() -> new ResourceNotFoundException("Usuário"));
+        Autenticacao autenticacao = repository.findByEmail(request.email()).orElseThrow(() -> new ResourceNotFoundException("Usuário"));
 
         String token = jwtUtil.generateToken(
-                user.getEmail(),
-                user.getRole().name(),
+                autenticacao.getEmail(),
+                autenticacao.getRole().name(),
                 null
         );
 
         return new AuthResponseDto(
                 token,
                 BEARER,
-                user.getRole().name(),
-                new UserResponseDto(user.getId(), user.getEmail())
+                autenticacao.getRole().name(),
+                new UserResponseDto(autenticacao.getId(), autenticacao.getEmail())
         );
     }
 
@@ -98,7 +99,8 @@ public class AuthService {
                 || !EMAIL_PATTERN.matcher(userRequestDto.email()).matches()
                 || !StringUtils.hasText(userRequestDto.senha())
                 || Objects.isNull(userRequestDto.role())
-                || Objects.isNull(EnRole.findByName(userRequestDto.role())) ;
+                || Objects.isNull(EnRole.findByName(userRequestDto.role()))
+                || Objects.isNull(userRequestDto.idUsuario());
     }
 
 }

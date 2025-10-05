@@ -1,6 +1,5 @@
 package dac.ufpr.Auth.service;
 
-import dac.ufpr.Auth.entity.User;
 import dac.ufpr.Auth.repository.AuthRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
