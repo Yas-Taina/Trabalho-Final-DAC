@@ -30,4 +30,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<String> handleNullPointer(NullPointerException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Erro interno no servidor");
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGeneric(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Erro inesperado");
+    }
+
 }

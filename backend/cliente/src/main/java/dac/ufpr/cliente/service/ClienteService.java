@@ -29,7 +29,7 @@ public class ClienteService {
     private static final Pattern TELEFONE_PATTERN = Pattern.compile("\\d{10,11}");
     private static final Pattern CEP_PATTERN = Pattern.compile("\\d{8}");
 
-    private ClienteRepository repository;
+    private final ClienteRepository repository;
 
     public List<ClienteDto> listar() {
         return repository.findAll().stream()
