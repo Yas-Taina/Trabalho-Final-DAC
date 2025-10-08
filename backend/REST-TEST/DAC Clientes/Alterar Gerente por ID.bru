@@ -1,0 +1,28 @@
+meta {
+  name: Alterar Usuario por ID
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:8080/gerentes/44444444444
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+    {
+      "email": "joao@empresa.com",
+      "nome": "João Lima",
+      "telefone": "",
+      "salario": 0,
+      "endereco": "",
+      "CEP": "",
+      "cidade": "",
+      "estado": "789"
+    }
+}

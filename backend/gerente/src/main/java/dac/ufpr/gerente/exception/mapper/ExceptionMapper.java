@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import dac.ufpr.gerente.enums.EnStatusIntegracao;
 import dac.ufpr.gerente.exception.CustomException;
-import dac.ufpr.gerente.listener.SagaMessage;
+import dac.ufpr.gerente.listener.dto.SagaMessage;
 
 @Component
 public class ExceptionMapper {

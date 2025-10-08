@@ -5,7 +5,7 @@ import dac.ufpr.gerente.exception.custom.BadRequestException;
 import dac.ufpr.gerente.exception.custom.ResourceAlreadyExistsException;
 import dac.ufpr.gerente.exception.custom.ResourceNotFoundException;
 import dac.ufpr.gerente.mapper.GerenteMapper;
-import dac.ufpr.gerente.model.Gerente;
+import dac.ufpr.gerente.entity.Gerente;
 import dac.ufpr.gerente.repository.GerenteRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +43,7 @@ public class GerenteService {
     @Transactional
     public GerenteDto criar(GerenteDto gerentedto) {
         log.info("Criando gerente: {}", gerentedto);
-        validarGerente(gerentedto,-1L);
+        validarGerente(gerentedto, -1L);
 
         Gerente gerente = repository.save(GerenteMapper.toEntity(gerentedto));
         log.info("Gerente criado com sucesso: {}", gerente);
@@ -57,7 +57,7 @@ public class GerenteService {
         Gerente gerenteExistente = repository.findByCpf(cpf)
                 .orElseThrow(() -> new ResourceNotFoundException("Gerente"));
 
-        validarGerente(gerentedto,-1L);
+        validarGerente(gerentedto, -1L);
 
         Gerente gerenteAtualizado = repository.save(gerenteExistente);
         log.info("Gerente atualizado com sucesso: {}", gerenteAtualizado);
@@ -75,7 +75,16 @@ public class GerenteService {
         repository.deleteByCpf(cpf);
     }
 
-    // validação simples
+    private void validarGerente(GerenteDto gerenteDto, long id) {
+        if (validarDados(gerenteDto)) {
+            throw new BadRequestException("Dados inválidos.");
+        }
+
+        if (repository.existsByCpf(gerenteDto.cpf())) {
+            throw new ResourceAlreadyExistsException("Cliente já existe ou aguardando aprovação.");
+        }
+    }
+
     private boolean validarDados(GerenteDto dto) {
         return !StringUtils.hasText(dto.nome())
                 || !StringUtils.hasText(dto.senha())
@@ -86,13 +95,4 @@ public class GerenteService {
                 || !EMAIL_PATTERN.matcher(dto.email()).matches();
     }
 
-    private void validarGerente(GerenteDto gerenteDto, long id) {
-        if (validarDados(gerenteDto)) {
-            throw new BadRequestException("Dados inválidos.");
-        }
-
-        if (repository.existsByCpf(gerenteDto.cpf())) {
-            throw new ResourceAlreadyExistsException("Cliente já existe ou aguardando aprovação.");
-        }
-    }
 }

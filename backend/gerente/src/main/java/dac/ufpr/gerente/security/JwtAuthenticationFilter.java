@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -25,7 +26,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String secretKey;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request, 
+                                    HttpServletResponse response, 
+                                    FilterChain filterChain)
             throws java.io.IOException, ServletException {
         String authHeader = request.getHeader("Authorization");
 
@@ -36,8 +39,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = authHeader.substring(7);
 
         try {
-            Claims claims = Jwts.parser()
+            Claims claims = Jwts.parserBuilder()
                     .setSigningKey(secretKey.getBytes())
+                    .build()
                     .parseClaimsJws(token)
                     .getBody();
 
@@ -48,6 +52,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null,
                     authorities);
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
 
         } catch (JwtException e) {
             throw new RuntimeException("Token JWT inválido ou expirado", e);

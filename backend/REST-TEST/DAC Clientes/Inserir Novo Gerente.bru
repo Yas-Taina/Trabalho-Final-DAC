@@ -1,0 +1,29 @@
+meta {
+  name: Inserir Novo Usuario
+  type: http
+  seq: 3
+}
+
+post {
+  url: HTTP://localhost:8080/clientes
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+    {
+      "cpf": "44444444444",
+      "email": "joao@empresa.com",
+      "nome": "João Lima",
+      "telefone": "",
+      "salario": 0,
+      "endereco": "",
+      "CEP": "",
+      "cidade": "",
+      "estado": "789"
+    }
+}
