@@ -22,6 +22,7 @@ import java.util.List;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+
     @org.springframework.beans.factory.annotation.Value("${jwt.secret}")
     private String secretKey;
 
@@ -31,6 +32,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws java.io.IOException, ServletException {
         String authHeader = request.getHeader("Authorization");
+
+
+        System.out.println("Authorization Header: " + request.getHeader("Authorization"));
+        System.out.println("Método HTTP: " + request.getMethod());
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
@@ -62,4 +67,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+    
 }

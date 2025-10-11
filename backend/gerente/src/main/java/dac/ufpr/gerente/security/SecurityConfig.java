@@ -24,7 +24,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/gerente/**").authenticated())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/gerentes/**").authenticated())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(((request, response, authException) -> {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
 

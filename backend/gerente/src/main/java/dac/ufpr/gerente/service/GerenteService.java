@@ -50,6 +50,28 @@ public class GerenteService {
         return GerenteMapper.toDto(gerente);
     }
 
+    // @Transactional
+    // public GerenteDto atualizar(String cpf, GerenteDto gerentedto) {
+    // log.info("Atualizando gerente com CPF :{}. Dados do cliente:{}", cpf,
+    // gerentedto);
+
+    // Gerente gerenteExistente = repository.findByCpf(cpf)
+    // .orElseThrow(() -> new ResourceNotFoundException("Gerente"));
+
+    // validarGerente(gerentedto, -1L);
+
+    // gerenteExistente.setNome(gerentedto.nome());
+    // gerenteExistente.setEmail(gerentedto.email());
+    // gerenteExistente.setSenha(gerentedto.senha());
+    // gerenteExistente.setTipo(gerentedto.tipo());
+    // repository.save(gerenteExistente);
+    // Gerente gerenteAtualizado = repository.save(gerenteExistente);
+    // log.info("Gerente atualizado com sucesso: {}", gerenteAtualizado);
+
+    // return GerenteMapper.toDto(gerenteAtualizado);
+
+    // }
+
     @Transactional
     public GerenteDto atualizar(String cpf, GerenteDto gerentedto) {
         log.info("Atualizando gerente com CPF :{}. Dados do cliente:{}", cpf, gerentedto);
@@ -57,13 +79,18 @@ public class GerenteService {
         Gerente gerenteExistente = repository.findByCpf(cpf)
                 .orElseThrow(() -> new ResourceNotFoundException("Gerente"));
 
-        validarGerente(gerentedto, -1L);
+        // Valida apenas se os dados são coerentes, mas não bloqueia por CPF
+        validarGerente(gerentedto, gerenteExistente.getId());
+
+        gerenteExistente.setNome(gerentedto.nome());
+        gerenteExistente.setEmail(gerentedto.email());
+        gerenteExistente.setSenha(gerentedto.senha());
+        gerenteExistente.setTipo(gerentedto.tipo());
 
         Gerente gerenteAtualizado = repository.save(gerenteExistente);
         log.info("Gerente atualizado com sucesso: {}", gerenteAtualizado);
 
         return GerenteMapper.toDto(gerenteAtualizado);
-
     }
 
     @Transactional
@@ -75,13 +102,36 @@ public class GerenteService {
         repository.deleteByCpf(cpf);
     }
 
-    private void validarGerente(GerenteDto gerenteDto, long id) {
+    // private void validarGerente(GerenteDto gerenteDto, long id) {
+    // System.out.println(gerenteDto);
+    // System.out.println(validarDados(gerenteDto));
+    // if (validarDados(gerenteDto)) {
+    // throw new BadRequestException("Dados inválidos.");
+    // }
+
+    // System.out.println("existe pelo cpf: " +
+    // repository.existsByCpf(gerenteDto.cpf()));
+    // System.out.println(repository.existsByCpf(gerenteDto.cpf()));
+    // if (repository.existsByCpf(gerenteDto.cpf())) {
+    // throw new ResourceAlreadyExistsException("Cliente já existe ou aguardando
+    // aprovação.");
+    // //quero o log da ess=xceção
+    // }
+    // }
+
+    private void validarGerente(GerenteDto gerenteDto, Long idAtual) {
+        System.out.println(gerenteDto);
+        System.out.println(validarDados(gerenteDto));
         if (validarDados(gerenteDto)) {
             throw new BadRequestException("Dados inválidos.");
         }
 
-        if (repository.existsByCpf(gerenteDto.cpf())) {
-            throw new ResourceAlreadyExistsException("Cliente já existe ou aguardando aprovação.");
+        // Se for criação (idAtual == -1), verifica existência
+        if (idAtual == -1) {
+            if (repository.existsByCpf(gerenteDto.cpf())) {
+                log.warn("Tentativa de criar gerente com CPF já existente: {}", gerenteDto.cpf());
+                throw new ResourceAlreadyExistsException("Cliente já existe ou aguardando aprovação.");
+            }
         }
     }
 
