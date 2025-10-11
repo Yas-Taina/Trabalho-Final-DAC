@@ -1,17 +1,18 @@
 meta {
-  name: Inserir Novo Usuario
+  name: Inserir Novo gerente
   type: http
   seq: 3
 }
 
 post {
-  url: HTTP://localhost:8080/gerentes
+  url: HTTP://localhost:8083/gerentes
   body: json
   auth: inherit
 }
 
 headers {
   Content-Type: application/json
+  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2FvMkBlbXByZXNhLmNvbSIsInJvbGUiOiJHRVJFTlRFIiwiaWF0IjoxNzYwMTEyNjU4LCJleHAiOjE3NjAxMTYyNTh9.Ko8Tzqk31F8qCyi7F7HgBkAUN-JZrkdFFsJiRmrol2s
 }
 
 body:json {

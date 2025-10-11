@@ -1,0 +1,31 @@
+meta {
+  name: Inserir Novo cliente
+  type: http
+  seq: 3
+}
+
+post {
+  url: HTTP://localhost:8080/clientes
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2FvMkBlbXByZXNhLmNvbSIsInJvbGUiOiJHRVJFTlRFIiwiaWF0IjoxNzYwMTEyNjU4LCJleHAiOjE3NjAxMTYyNTh9.Ko8Tzqk31F8qCyi7F7HgBkAUN-JZrkdFFsJiRmrol2s
+}
+
+body:json {
+  {
+    "cpf": "12345678903",
+    "email": "joao.silva2@email.com",
+    "nome": "João Silva",
+    "telefone": "41912345678",
+    "salario": 4500.00,
+    "endereco": "Rua das Flores, 123",
+    "CEP": "80000000",
+    "cidade": "Curitiba",
+    "estado": "PR"
+  }
+  
+}

@@ -1,12 +1,12 @@
 meta {
-  name: Aprovar Cliente
+  name: Obter clientes por ID
   type: http
-  seq: 7
+  seq: 2
 }
 
 get {
-  url: http://localhost:8080/clientes/12345678903/aprovar
-  body: none
+  url: http://localhost:8080/clientes/12345678903
+  body: json
   auth: inherit
 }
 
