@@ -283,6 +283,10 @@ form{
   -webkit-text-fill-color: var(--azul);
 }
 
+.ng-invalid.is-invalid  {
+  border: 1px solid #dc3545 !important;
+}
+
 /*---Tabelas---*/
 
 th {
