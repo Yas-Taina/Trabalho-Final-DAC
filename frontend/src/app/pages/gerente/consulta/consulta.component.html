@@ -1,27 +1,34 @@
 <div class="row mainRosa justify-content-evenly gap-1">
   <div class="col-lg-5 d-flex flex-column justify-content-center">
     <div class="imgLine">
-      <hr>
-      <img src="../../../../assets/img/img1.png" alt="Imagem Decorativa" class="imgTitle"> 
-    </div>  
+      <hr />
+      <img
+        src="../../../../assets/img/img1.png"
+        alt="Imagem Decorativa"
+        class="imgTitle"
+      />
+    </div>
     <h1 class="tituloGrande">Consultar Cliente</h1>
-    <hr>
+    <hr />
   </div>
 
-  <div class="col-lg-5 d-flex flex-column justify-content-center" style="text-align: left;">
-    <div class="row justify-content-end mb-3"> 
+  <div
+    class="col-lg-5 d-flex flex-column justify-content-center"
+    style="text-align: left"
+  >
+    <div class="row justify-content-end mb-3">
       <div class="col-5">
-        <input 
+        <input
           class="form-control"
-          type="text" 
+          type="text"
           name="search"
           id="search"
           placeholder="Digite o CPF do cliente"
           [(ngModel)]="searchCpf"
           placeholder="000.000.000-00"
           mask="000.000.000-00"
-        />      
-      </div>  
+        />
+      </div>
       <div class="col-1">
         <button class="btn p-0" (click)="consultarCliente()">
           <i class="fa-solid fa-magnifying-glass btnIcon"></i>
@@ -32,65 +39,65 @@
     <div *ngIf="cliente">
       <div class="row mb-2">
         <h5>Nome</h5>
-        <p>{{cliente.nome}}</p>
+        <p>{{ cliente.nome }}</p>
       </div>
 
       <div class="row mb-2">
         <div class="col-7">
           <h5>E-mail</h5>
-          <p>{{cliente.email}}</p>
+          <p>{{ cliente.email }}</p>
         </div>
         <div class="col-5">
           <h5>CPF</h5>
-          <p>{{cliente.cpf | mask: '000.000.000-00'}}</p>
-        </div>        
+          <p>{{ cliente.cpf | mask: "000.000.000-00" }}</p>
+        </div>
       </div>
 
       <div class="row mb-2">
         <div class="col-6">
           <h5>Salário</h5>
-          <p>{{cliente.salario | currency:'BRL':'symbol':'1.2-2'}}</p>
+          <p>{{ cliente.salario | currency: "BRL" : "symbol" : "1.2-2" }}</p>
         </div>
         <div class="col-6">
           <h5>Limite</h5>
-          <p>{{cliente.dadosConta?.limite}}</p>
+          <p>{{ cliente.dadosConta?.limite }}</p>
         </div>
       </div>
 
       <div class="row mb-2">
         <div class="col-3">
           <h5>CEP</h5>
-          <p>{{cliente.endereco.cep | mask: '00000-000'}}</p>
+          <p>{{ cliente.endereco.cep | mask: "00000-000" }}</p>
         </div>
         <div class="col-7">
           <h5>Cidade</h5>
-          <p>{{cliente.endereco.cidade}}</p>
+          <p>{{ cliente.endereco.cidade }}</p>
         </div>
         <div class="col-2">
           <h5>UF</h5>
-          <p>{{cliente.endereco.estado}}</p>
+          <p>{{ cliente.endereco.estado }}</p>
         </div>
       </div>
 
       <div class="row mb-2">
         <div class="col-4">
           <h5>Tipo</h5>
-          <p>{{cliente.endereco.tipo}}</p>
+          <p>{{ cliente.endereco.tipo }}</p>
         </div>
         <div class="col-8">
           <h5>Logradouro</h5>
-          <p>{{cliente.endereco.logradouro}}</p>
+          <p>{{ cliente.endereco.logradouro }}</p>
         </div>
       </div>
 
       <div class="row mb-2">
         <div class="col-3">
           <h5>Nº</h5>
-          <p>{{cliente.endereco.numero}}</p>
+          <p>{{ cliente.endereco.numero }}</p>
         </div>
         <div class="col-9">
           <h5>Complemento</h5>
-          <p>{{cliente.endereco.complemento}}</p>
+          <p>{{ cliente.endereco.complemento }}</p>
         </div>
       </div>
     </div>

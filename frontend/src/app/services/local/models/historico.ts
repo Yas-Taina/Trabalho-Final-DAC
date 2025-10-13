@@ -1,4 +1,4 @@
-export type TipoMovimento = 'DEPOSITO' | 'SAQUE' | 'TRANSFERENCIA';
+export type TipoMovimento = "DEPOSITO" | "SAQUE" | "TRANSFERENCIA";
 
 export interface HistoricoMovimentacao {
   dataHora: string;

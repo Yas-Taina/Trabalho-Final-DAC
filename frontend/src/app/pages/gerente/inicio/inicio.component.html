@@ -1,15 +1,19 @@
 <div class="row mainRosa justify-content-evenly">
   <div class="col-lg-5 d-flex flex-column justify-content-center">
     <div class="imgLine">
-      <hr>
-      <img src="../../../../assets/img/img1.png" alt="Imagem Decorativa" class="imgTitle"> 
-    </div>      
+      <hr />
+      <img
+        src="../../../../assets/img/img1.png"
+        alt="Imagem Decorativa"
+        class="imgTitle"
+      />
+    </div>
     <h1 class="tituloGrande">Inicio</h1>
-    <hr>
+    <hr />
   </div>
 
   <div class="col-lg-6 d-flex flex-column justify-content-center">
-    <div *ngIf="clientes.length > 0">     
+    <div *ngIf="clientes.length > 0">
       <div class="containerTabela">
         <div class="tabela">
           <table>
@@ -22,15 +26,24 @@
               </tr>
             </thead>
             <tbody *ngFor="let cliente of clientes">
-              <tr> 
-                <td>{{cliente.nome}}</td>
-                <td>{{cliente.cpf | mask: '000.000.00-00' }}</td>
-                <td>{{cliente.salario  | currency:'BRL':'symbol':'1.2-2'}}</td>
+              <tr>
+                <td>{{ cliente.nome }}</td>
+                <td>{{ cliente.cpf | mask: "000.000.00-00" }}</td>
                 <td>
-                  <button class="btn btnAzul" (click)="aprovar(cliente)">Aprovar</button>
-                  <button class="btn btnAzul" (click)="abrirModalRecusa(cliente)">Recusar</button>
+                  {{ cliente.salario | currency: "BRL" : "symbol" : "1.2-2" }}
                 </td>
-              </tr>          
+                <td>
+                  <button class="btn btnAzul" (click)="aprovar(cliente)">
+                    Aprovar
+                  </button>
+                  <button
+                    class="btn btnAzul"
+                    (click)="abrirModalRecusa(cliente)"
+                  >
+                    Recusar
+                  </button>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -40,20 +53,51 @@
   </div>
 </div>
 
-<div class="modal" tabindex="-1" [ngClass]="{'d-block': clienteRecusando}" style="background-color: rgba(0,0,0,0.5);" *ngIf="clienteRecusando">
+<div
+  class="modal"
+  tabindex="-1"
+  [ngClass]="{ 'd-block': clienteRecusando }"
+  style="background-color: rgba(0, 0, 0, 0.5)"
+  *ngIf="clienteRecusando"
+>
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Recusar Cliente</h5>
-        <button type="button" class="btn-close" aria-label="Close" (click)="cancelarRecusa()"></button>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="cancelarRecusa()"
+        ></button>
       </div>
       <div class="modal-body">
-        <p>Informe o motivo da recusa para <strong>{{clienteRecusando.nome}}</strong>:</p>
-        <textarea [(ngModel)]="motivoRecusa" class="form-control" rows="3"></textarea>
+        <p>
+          Informe o motivo da recusa para
+          <strong>{{ clienteRecusando.nome }}</strong
+          >:
+        </p>
+        <textarea
+          [(ngModel)]="motivoRecusa"
+          class="form-control"
+          rows="3"
+        ></textarea>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="cancelarRecusa()">Cancelar</button>
-        <button type="button" class="btn btn-danger" (click)="confirmarRecusa()">Confirmar Recusa</button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="cancelarRecusa()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="confirmarRecusa()"
+        >
+          Confirmar Recusa
+        </button>
       </div>
     </div>
   </div>
