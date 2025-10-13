@@ -1,50 +1,85 @@
 <div class="mainAzul">
-<div class="row justify-content-center align-items-center gap-2">
-  <div class="col-lg-4 order-2 order-lg-1 d-flex flex-column justify-content-center">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
-      <div>
-        <label for="email" class="form-label">E-mail</label>
-        <input
-          type="email"
-          class="form-control"
-          id="email"
-          name="email"
-          formControlName="email"
-          [class.is-invalid]="loginForm.get('email')?.invalid && (loginForm.get('email')?.touched || loginForm.get('email')?.dirty)"
-        />
-        <div class="invalid-feedback" *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.touched || loginForm.get('email')?.dirty)">
-          Por favor insira um e-mail válido
+  <div class="row justify-content-center align-items-center gap-2">
+    <div
+      class="col-lg-4 order-2 order-lg-1 d-flex flex-column justify-content-center"
+    >
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+        <div>
+          <label for="email" class="form-label">E-mail</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            name="email"
+            formControlName="email"
+            [class.is-invalid]="
+              loginForm.get('email')?.invalid &&
+              (loginForm.get('email')?.touched || loginForm.get('email')?.dirty)
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              loginForm.get('email')?.invalid &&
+              (loginForm.get('email')?.touched || loginForm.get('email')?.dirty)
+            "
+          >
+            Por favor insira um e-mail válido
+          </div>
         </div>
-      </div>
-      <div>
-        <label for="senha" class="form-label">Senha</label>
-        <input
-          type="password"
-          class="form-control"
-          id="senha"
-          name="senha"
-          formControlName="senha"
-          [class.is-invalid]="loginForm.get('senha')?.invalid && (loginForm.get('senha')?.touched || loginForm.get('senha')?.dirty)"
-        />
-        <div class="invalid-feedback" *ngIf="loginForm.get('senha')?.invalid && (loginForm.get('senha')?.touched || loginForm.get('senha')?.dirty)">
-          Por favor insira uma senha válida
+        <div>
+          <label for="senha" class="form-label">Senha</label>
+          <input
+            type="password"
+            class="form-control"
+            id="senha"
+            name="senha"
+            formControlName="senha"
+            [class.is-invalid]="
+              loginForm.get('senha')?.invalid &&
+              (loginForm.get('senha')?.touched || loginForm.get('senha')?.dirty)
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              loginForm.get('senha')?.invalid &&
+              (loginForm.get('senha')?.touched || loginForm.get('senha')?.dirty)
+            "
+          >
+            Por favor insira uma senha válida
+          </div>
         </div>
-      </div>
-      <div class="d-flex justify-content-center">
-        <button type="submit" [disabled]="loginForm.invalid" class="btn btnCreme mt-3">LOGIN</button>
-      </div>
-    </form>
-  </div>
-  <div class="col-lg-6 d-flex flex-column justify-content-center order-1 order-lg-2">
-    <div class="imgLine">
-      <hr>
-      <img src="../../../../assets/img/img4.png" alt="Imagem Decorativa" class="imgTitle"> 
+        <div class="d-flex justify-content-center">
+          <button
+            type="submit"
+            [disabled]="loginForm.invalid"
+            class="btn btnCreme mt-3"
+          >
+            LOGIN
+          </button>
+        </div>
+      </form>
     </div>
-    <h1 class="tituloGrande">Realize Seu Login</h1>
-    <hr>
-    <p>AINDA NÃO TEM UMA CONTA? REALIZE SEU CADASTRO <a routerLink="/cadastro"
-      class="textLink"
-      routerLinkActive="active">AQUI</a></p>
+    <div
+      class="col-lg-6 d-flex flex-column justify-content-center order-1 order-lg-2"
+    >
+      <div class="imgLine">
+        <hr />
+        <img
+          src="../../../../assets/img/img4.png"
+          alt="Imagem Decorativa"
+          class="imgTitle"
+        />
+      </div>
+      <h1 class="tituloGrande">Realize Seu Login</h1>
+      <hr />
+      <p>
+        AINDA NÃO TEM UMA CONTA? REALIZE SEU CADASTRO
+        <a routerLink="/cadastro" class="textLink" routerLinkActive="active"
+          >AQUI</a
+        >
+      </p>
+    </div>
   </div>
-</div>
 </div>

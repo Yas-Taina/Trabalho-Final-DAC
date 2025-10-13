@@ -1,43 +1,64 @@
 <div class="row mainRosa justify-content-evenly">
   <div class="col-lg-5 d-flex flex-column justify-content-center">
     <div class="imgLine">
-      <hr>
-      <img src="../../../../assets/img/img1.png" alt="Imagem Decorativa" class="imgTitle"> 
-    </div>  
-    <h1 class="tituloGrande">
-      Depositar
-    </h1>
-    <hr>
+      <hr />
+      <img
+        src="../../../../assets/img/img1.png"
+        alt="Imagem Decorativa"
+        class="imgTitle"
+      />
+    </div>
+    <h1 class="tituloGrande">Depositar</h1>
+    <hr />
   </div>
   <div class="col-lg-4 d-flex flex-column justify-content-center">
     <div class="d-flex justify-content-end">
-    <a routerLink="/client/home" class="btnIcon" routerLinkActive="active"><i
-        class="fa-solid fa-location-arrow btnVoltar"></i>
-    </a>
+      <a routerLink="/client/home" class="btnIcon" routerLinkActive="active"
+        ><i class="fa-solid fa-location-arrow btnVoltar"></i>
+      </a>
     </div>
     <form [formGroup]="depositoForm" (ngSubmit)="onSubmit()">
       <div>
-  <label for="valor" class="form-label">Saldo a ser depositado</label>
-  <input 
-    type="number" 
-    class="form-control" 
-    id="valor" 
-    name="valor" 
-    formControlName="valor" 
-    required 
-    placeholder="R$" 
-    [class.is-invalid]="depositoForm.get('valor')?.invalid && 
-                        (depositoForm.get('valor')?.touched || depositoForm.get('valor')?.dirty)"
-  />
-  <div class="invalid-feedback" *ngIf="depositoForm.get('valor')?.invalid && 
-                                       (depositoForm.get('valor')?.touched || depositoForm.get('valor')?.dirty)">
-    <div *ngIf="depositoForm.get('valor')?.errors?.['required']">Por favor insira um valor</div>
-    <div *ngIf="depositoForm.get('valor')?.errors?.['min']">O valor deve ser maior que zero</div>
-  </div>
-</div>
+        <label for="valor" class="form-label">Saldo a ser depositado</label>
+        <input
+          type="number"
+          class="form-control"
+          id="valor"
+          name="valor"
+          formControlName="valor"
+          required
+          placeholder="R$"
+          [class.is-invalid]="
+            depositoForm.get('valor')?.invalid &&
+            (depositoForm.get('valor')?.touched ||
+              depositoForm.get('valor')?.dirty)
+          "
+        />
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            depositoForm.get('valor')?.invalid &&
+            (depositoForm.get('valor')?.touched ||
+              depositoForm.get('valor')?.dirty)
+          "
+        >
+          <div *ngIf="depositoForm.get('valor')?.errors?.['required']">
+            Por favor insira um valor
+          </div>
+          <div *ngIf="depositoForm.get('valor')?.errors?.['min']">
+            O valor deve ser maior que zero
+          </div>
+        </div>
+      </div>
 
       <div class="d-flex justify-content-center">
-        <button type="submit" [disabled]="depositoForm.invalid" class="btn btnAzulRosa">Confirmar</button>
+        <button
+          type="submit"
+          [disabled]="depositoForm.invalid"
+          class="btn btnAzulRosa"
+        >
+          Confirmar
+        </button>
       </div>
     </form>
   </div>

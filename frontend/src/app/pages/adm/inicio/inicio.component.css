@@ -1,10 +1,10 @@
 .dashboard {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
-  gap: 1rem; 
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
 }
 
-.dashitem{
+.dashitem {
   background-color: var(--azul);
   color: var(--creme);
   padding: 0.85rem;
@@ -15,6 +15,6 @@ h5 {
   font-size: 2rem;
 }
 
-.mainCreme{
+.mainCreme {
   padding-top: 2rem;
 }

@@ -1,15 +1,15 @@
-import { Component, inject } from '@angular/core';
-import { RouterModule, Router } from '@angular/router';
-import { LoginInfo, LocalLoginService } from '../../../services';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { Component, inject } from "@angular/core";
+import { RouterModule, Router } from "@angular/router";
+import { LoginInfo, LocalLoginService } from "../../../services";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'app-login',
+  selector: "app-login",
   standalone: true,
   imports: [RouterModule, ReactiveFormsModule, CommonModule],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  templateUrl: "./login.component.html",
+  styleUrl: "./login.component.css",
 })
 export class LoginComponent {
   readonly loginService: LocalLoginService = inject(LocalLoginService);
@@ -17,16 +17,19 @@ export class LoginComponent {
   readonly builder: FormBuilder = inject(FormBuilder);
 
   loginModel: LoginInfo = {
-    email: '',
-    senha: ''
-  }
+    email: "",
+    senha: "",
+  };
 
   loginForm = this.builder.group({
     email: [this.loginModel.email, [Validators.required, Validators.email]],
-    senha: [this.loginModel.senha, [Validators.required, Validators.minLength(4)]]
+    senha: [
+      this.loginModel.senha,
+      [Validators.required, Validators.minLength(4)],
+    ],
   });
 
-  constructor() { }
+  constructor() {}
 
   async onSubmit() {
     console.log(this.loginForm.value);
@@ -37,19 +40,20 @@ export class LoginComponent {
     this.loginService.login(this.loginForm.value as LoginInfo).subscribe({
       next: (res) => {
         console.log(res);
-        if (res.tipo === 'ADMINISTRADOR') {
-          this.router.navigate(['/adm/home']);
-        }
-        else if (res.tipo === 'GERENTE') {
-          this.router.navigate(['/gerente/home']);
-        }
-        else {
-          this.router.navigate(['/client/home']);
+        if (res.tipo === "ADMINISTRADOR") {
+          this.router.navigate(["/adm/home"]);
+        } else if (res.tipo === "GERENTE") {
+          this.router.navigate(["/gerente/home"]);
+        } else {
+          this.router.navigate(["/client/home"]);
         }
       },
       error: (err) => {
-        alert('Erro no login: ' + (err.error?.message || err.message || 'Unknown error'));
-      }
+        alert(
+          "Erro no login: " +
+            (err.error?.message || err.message || "Unknown error"),
+        );
+      },
     });
   }
 }

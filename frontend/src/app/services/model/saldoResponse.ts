@@ -1,6 +1,5 @@
-export interface SaldoResponse { 
-    cliente?: string;
-    conta?: string;
-    saldo?: number;
+export interface SaldoResponse {
+  cliente?: string;
+  conta?: string;
+  saldo?: number;
 }
-

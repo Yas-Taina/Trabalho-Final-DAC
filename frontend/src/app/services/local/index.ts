@@ -1,11 +1,17 @@
-export * from './clientes.service';
-import { LocalClientesService } from './clientes.service';
-export * from './contas.service';
-import { LocalContasService } from './contas.service';
-export * from './gerentes.service';
-import { LocalGerentesService } from './gerentes.service';
-export * from './inicializao.service';
-import { LocalInicializacaoService } from './inicializao.service';
-export * from './login.service';
-import { LocalLoginService } from './login.service';
-export const LocalAPIS = [LocalClientesService, LocalContasService, LocalGerentesService, LocalInicializacaoService, LocalLoginService];
+export * from "./clientes.service";
+import { LocalClientesService } from "./clientes.service";
+export * from "./contas.service";
+import { LocalContasService } from "./contas.service";
+export * from "./gerentes.service";
+import { LocalGerentesService } from "./gerentes.service";
+export * from "./inicializao.service";
+import { LocalInicializacaoService } from "./inicializao.service";
+export * from "./login.service";
+import { LocalLoginService } from "./login.service";
+export const LocalAPIS = [
+  LocalClientesService,
+  LocalContasService,
+  LocalGerentesService,
+  LocalInicializacaoService,
+  LocalLoginService,
+];

@@ -1,66 +1,131 @@
 <div class="row mainRosa justify-content-evenly">
   <div class="col-lg-5 d-flex flex-column justify-content-center">
     <div class="imgLine">
-      <hr>
-      <img src="../../../../assets/img/img1.png" alt="Imagem Decorativa" class="imgTitle"> 
-    </div>  
-    <h1 class="tituloGrande">
-      Alterar dados cadastrados
-    </h1>
-    <hr>
+      <hr />
+      <img
+        src="../../../../assets/img/img1.png"
+        alt="Imagem Decorativa"
+        class="imgTitle"
+      />
+    </div>
+    <h1 class="tituloGrande">Alterar dados cadastrados</h1>
+    <hr />
   </div>
   <div class="col-lg-5">
-
     <form [formGroup]="form" (ngSubmit)="salvar()">
-
       <div class="row">
         <div class="col-12">
-        <label for="nome" class="form-label">Nome</label>
-        <input type="text" class="form-control"
-               id="nome"
-               formControlName="nome"
-               minlength="2"
-               maxlength="100"
-               [class.is-invalid]="form.get('nome')?.invalid && (form.get('nome')?.touched || form.get('nome')?.dirty)" />
-        <div class="invalid-feedback" *ngIf="form.get('nome')?.invalid && (form.get('nome')?.touched || form.get('nome')?.dirty)">Por favor insira um nome</div>
+          <label for="nome" class="form-label">Nome</label>
+          <input
+            type="text"
+            class="form-control"
+            id="nome"
+            formControlName="nome"
+            minlength="2"
+            maxlength="100"
+            [class.is-invalid]="
+              form.get('nome')?.invalid &&
+              (form.get('nome')?.touched || form.get('nome')?.dirty)
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              form.get('nome')?.invalid &&
+              (form.get('nome')?.touched || form.get('nome')?.dirty)
+            "
+          >
+            Por favor insira um nome
+          </div>
         </div>
       </div>
       <div class="row">
         <div class="col-7">
           <label for="email" class="form-label">E-mail</label>
-          <input type="email" class="form-control"
-                 id="email"
-                 formControlName="email"
-                 maxlength="100"
-                 [class.is-invalid]="form.get('email')?.invalid && (form.get('email')?.touched || form.get('email')?.dirty)" />
-          <div class="invalid-feedback" *ngIf="form.get('email')?.invalid && (form.get('email')?.touched || form.get('email')?.dirty)">Por favor insira um e-mail válido</div>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            formControlName="email"
+            maxlength="100"
+            [class.is-invalid]="
+              form.get('email')?.invalid &&
+              (form.get('email')?.touched || form.get('email')?.dirty)
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              form.get('email')?.invalid &&
+              (form.get('email')?.touched || form.get('email')?.dirty)
+            "
+          >
+            Por favor insira um e-mail válido
+          </div>
         </div>
         <div class="col-5">
           <label for="cpf" class="form-label">CPF</label>
-          <input type="text" class="form-control" id="cpf" name="cpf" formControlName="cpf" required
-            placeholder="000.000.000-00" mask="000.000.000-00" readonly/>
+          <input
+            type="text"
+            class="form-control"
+            id="cpf"
+            name="cpf"
+            formControlName="cpf"
+            required
+            placeholder="000.000.000-00"
+            mask="000.000.000-00"
+            readonly
+          />
         </div>
       </div>
 
       <div class="row">
         <div class="col-6">
           <label for="telefone" class="form-label">Telefone</label>
-          <input type="text" class="form-control"
-                 id="telefone"
-                 formControlName="telefone"
-                 placeholder="(00)00000-0000"
-                 mask="(00)00000-0000"
-                 [class.is-invalid]="form.get('telefone')?.invalid && (form.get('telefone')?.touched || form.get('telefone')?.dirty)" />
-          <div class="invalid-feedback" *ngIf="form.get('telefone')?.invalid && (form.get('telefone')?.touched || form.get('telefone')?.dirty)">Por favor insira um telefone válido</div>
+          <input
+            type="text"
+            class="form-control"
+            id="telefone"
+            formControlName="telefone"
+            placeholder="(00)00000-0000"
+            mask="(00)00000-0000"
+            [class.is-invalid]="
+              form.get('telefone')?.invalid &&
+              (form.get('telefone')?.touched || form.get('telefone')?.dirty)
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              form.get('telefone')?.invalid &&
+              (form.get('telefone')?.touched || form.get('telefone')?.dirty)
+            "
+          >
+            Por favor insira um telefone válido
+          </div>
         </div>
         <div class="col-6">
           <label for="salario" class="form-label">Salário</label>
-          <input type="number" class="form-control"
-                 id="salario"
-                 formControlName="salario"
-                 placeholder="R$"
-                 [class.is-invalid]="form.get('salario')?.invalid && (form.get('salario')?.touched || form.get('salario')?.dirty)" />
-          <div class="invalid-feedback" *ngIf="form.get('salario')?.invalid && (form.get('salario')?.touched || form.get('salario')?.dirty)">Por favor insira um salário</div>
+          <input
+            type="number"
+            class="form-control"
+            id="salario"
+            formControlName="salario"
+            placeholder="R$"
+            [class.is-invalid]="
+              form.get('salario')?.invalid &&
+              (form.get('salario')?.touched || form.get('salario')?.dirty)
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              form.get('salario')?.invalid &&
+              (form.get('salario')?.touched || form.get('salario')?.dirty)
+            "
+          >
+            Por favor insira um salário
+          </div>
         </div>
       </div>
 
@@ -68,79 +133,198 @@
         <div class="row">
           <div class="col-4">
             <label for="cep" class="form-label">CEP</label>
-            <input type="text" class="form-control"
-                   id="cep"
-                   formControlName="cep"
-                   placeholder="00000-000"
-                   mask="00000-000"
-                   [class.is-invalid]="form.get('endereco.cep')?.invalid && (form.get('endereco.cep')?.touched || form.get('endereco.cep')?.dirty)" />
-            <div class="invalid-feedback" *ngIf="form.get('endereco.cep')?.invalid && (form.get('endereco.cep')?.touched || form.get('endereco.cep')?.dirty)">Por favor insira um cep válido</div>
+            <input
+              type="text"
+              class="form-control"
+              id="cep"
+              formControlName="cep"
+              placeholder="00000-000"
+              mask="00000-000"
+              [class.is-invalid]="
+                form.get('endereco.cep')?.invalid &&
+                (form.get('endereco.cep')?.touched ||
+                  form.get('endereco.cep')?.dirty)
+              "
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="
+                form.get('endereco.cep')?.invalid &&
+                (form.get('endereco.cep')?.touched ||
+                  form.get('endereco.cep')?.dirty)
+              "
+            >
+              Por favor insira um cep válido
+            </div>
           </div>
           <div class="col-6">
             <label for="cidade" class="form-label">Cidade</label>
-            <input type="text" class="form-control"
-                   id="cidade"
-                   formControlName="cidade"
-                   placeholder="Cidade"
-                   [class.is-invalid]="form.get('endereco.cidade')?.invalid && (form.get('endereco.cidade')?.touched || form.get('endereco.cidade')?.dirty)" />
-            <div class="invalid-feedback" *ngIf="form.get('endereco.cidade')?.invalid && (form.get('endereco.cidade')?.touched || form.get('endereco.cidade')?.dirty)">Por favor insira uma cidade</div>
+            <input
+              type="text"
+              class="form-control"
+              id="cidade"
+              formControlName="cidade"
+              placeholder="Cidade"
+              [class.is-invalid]="
+                form.get('endereco.cidade')?.invalid &&
+                (form.get('endereco.cidade')?.touched ||
+                  form.get('endereco.cidade')?.dirty)
+              "
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="
+                form.get('endereco.cidade')?.invalid &&
+                (form.get('endereco.cidade')?.touched ||
+                  form.get('endereco.cidade')?.dirty)
+              "
+            >
+              Por favor insira uma cidade
+            </div>
           </div>
           <div class="col-2">
             <label for="estado" class="form-label">UF</label>
-            <input type="text" class="form-control"
-                   id="estado"
-                   formControlName="estado"
-                   maxlength="2"
-                   placeholder="--"
-                   [class.is-invalid]="form.get('endereco.estado')?.invalid && (form.get('endereco.estado')?.touched || form.get('endereco.estado')?.dirty)" />
-            <div class="invalid-feedback" *ngIf="form.get('endereco.estado')?.invalid && (form.get('endereco.estado')?.touched || form.get('endereco.estado')?.dirty)">Por favor insira uma UF</div>
+            <input
+              type="text"
+              class="form-control"
+              id="estado"
+              formControlName="estado"
+              maxlength="2"
+              placeholder="--"
+              [class.is-invalid]="
+                form.get('endereco.estado')?.invalid &&
+                (form.get('endereco.estado')?.touched ||
+                  form.get('endereco.estado')?.dirty)
+              "
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="
+                form.get('endereco.estado')?.invalid &&
+                (form.get('endereco.estado')?.touched ||
+                  form.get('endereco.estado')?.dirty)
+              "
+            >
+              Por favor insira uma UF
+            </div>
           </div>
         </div>
 
         <div class="row">
           <div class="col-4">
             <label for="tipo" class="form-label">Tipo</label>
-            <input type="text" class="form-control"
-                   id="tipo"
-                   formControlName="tipo"
-                   placeholder="Rua, Avenida..."
-                   [class.is-invalid]="form.get('endereco.tipo')?.invalid && (form.get('endereco.tipo')?.touched || form.get('endereco.tipo')?.dirty)" />
-            <div class="invalid-feedback" *ngIf="form.get('endereco.tipo')?.invalid && (form.get('endereco.tipo')?.touched || form.get('endereco.tipo')?.dirty)">Por favor selecione uma opção</div>
+            <input
+              type="text"
+              class="form-control"
+              id="tipo"
+              formControlName="tipo"
+              placeholder="Rua, Avenida..."
+              [class.is-invalid]="
+                form.get('endereco.tipo')?.invalid &&
+                (form.get('endereco.tipo')?.touched ||
+                  form.get('endereco.tipo')?.dirty)
+              "
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="
+                form.get('endereco.tipo')?.invalid &&
+                (form.get('endereco.tipo')?.touched ||
+                  form.get('endereco.tipo')?.dirty)
+              "
+            >
+              Por favor selecione uma opção
+            </div>
           </div>
           <div class="col-8">
             <label for="logradouro" class="form-label">Logradouro</label>
-            <input type="text" class="form-control"
-                   id="logradouro"
-                   formControlName="logradouro"
-                   placeholder="Logradouro"
-                   [class.is-invalid]="form.get('endereco.logradouro')?.invalid && (form.get('endereco.logradouro')?.touched || form.get('endereco.logradouro')?.dirty)" />
-            <div class="invalid-feedback" *ngIf="form.get('endereco.logradouro')?.invalid && (form.get('endereco.logradouro')?.touched || form.get('endereco.logradouro')?.dirty)">Por favor insira um logradouro</div>
+            <input
+              type="text"
+              class="form-control"
+              id="logradouro"
+              formControlName="logradouro"
+              placeholder="Logradouro"
+              [class.is-invalid]="
+                form.get('endereco.logradouro')?.invalid &&
+                (form.get('endereco.logradouro')?.touched ||
+                  form.get('endereco.logradouro')?.dirty)
+              "
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="
+                form.get('endereco.logradouro')?.invalid &&
+                (form.get('endereco.logradouro')?.touched ||
+                  form.get('endereco.logradouro')?.dirty)
+              "
+            >
+              Por favor insira um logradouro
+            </div>
           </div>
         </div>
 
         <div class="row">
           <div class="col-3">
             <label for="numero" class="form-label">Nº</label>
-            <input type="text" class="form-control"
-                   id="numero"
-                   formControlName="numero"
-                   placeholder="00"
-                   [class.is-invalid]="form.get('endereco.numero')?.invalid && (form.get('endereco.numero')?.touched || form.get('endereco.numero')?.dirty)" />
-            <div class="invalid-feedback" *ngIf="form.get('endereco.numero')?.invalid && (form.get('endereco.numero')?.touched || form.get('endereco.numero')?.dirty)">Por favor insira um numero</div>
+            <input
+              type="text"
+              class="form-control"
+              id="numero"
+              formControlName="numero"
+              placeholder="00"
+              [class.is-invalid]="
+                form.get('endereco.numero')?.invalid &&
+                (form.get('endereco.numero')?.touched ||
+                  form.get('endereco.numero')?.dirty)
+              "
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="
+                form.get('endereco.numero')?.invalid &&
+                (form.get('endereco.numero')?.touched ||
+                  form.get('endereco.numero')?.dirty)
+              "
+            >
+              Por favor insira um numero
+            </div>
           </div>
           <div class="col-4">
             <label for="bairro" class="form-label">Bairro</label>
-            <input type="text" class="form-control"
-                   id="bairro"
-                   formControlName="bairro" required
-                   placeholder="Bairro"
-                   [class.is-invalid]="form.get('endereco.bairro')?.invalid && (form.get('endereco.bairro')?.touched || form.get('endereco.bairro')?.dirty)" />
-            <div class="invalid-feedback" *ngIf="form.get('endereco.bairro')?.invalid && (form.get('endereco.bairro')?.touched || form.get('endereco.bairro')?.dirty)">Por favor insira um bairro</div>
+            <input
+              type="text"
+              class="form-control"
+              id="bairro"
+              formControlName="bairro"
+              required
+              placeholder="Bairro"
+              [class.is-invalid]="
+                form.get('endereco.bairro')?.invalid &&
+                (form.get('endereco.bairro')?.touched ||
+                  form.get('endereco.bairro')?.dirty)
+              "
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="
+                form.get('endereco.bairro')?.invalid &&
+                (form.get('endereco.bairro')?.touched ||
+                  form.get('endereco.bairro')?.dirty)
+              "
+            >
+              Por favor insira um bairro
+            </div>
           </div>
           <div class="col-5">
             <label for="complemento" class="form-label">Complemento</label>
-            <input type="text" class="form-control" id="complemento" name="complemento"
-              formControlName="complemento" placeholder="Bloco, AP..." />
+            <input
+              type="text"
+              class="form-control"
+              id="complemento"
+              name="complemento"
+              formControlName="complemento"
+              placeholder="Bloco, AP..."
+            />
           </div>
         </div>
       </div>

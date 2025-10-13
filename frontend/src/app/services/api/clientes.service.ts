@@ -1,31 +1,42 @@
-import { Injectable } from '@angular/core';
-import { HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { BaseService } from '../api.base.service';
-import { AutocadastroInfo, PerfilInfo, ContaResponse, DadosClienteResponse, LoginResponse } from '../model';
-
+import { Injectable } from "@angular/core";
+import { HttpHeaders } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { BaseService } from "../api.base.service";
+import {
+  AutocadastroInfo,
+  PerfilInfo,
+  ContaResponse,
+  DadosClienteResponse,
+  LoginResponse,
+} from "../model";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ClientesService extends BaseService {
   private getAuthHeaders(): HttpHeaders {
-    const stored = localStorage.getItem('token');
-    const dados: LoginResponse = stored ? JSON.parse(stored) : "" 
+    const stored = localStorage.getItem("token");
+    const dados: LoginResponse = stored ? JSON.parse(stored) : "";
     return new HttpHeaders({
       Authorization: `Bearer ${dados.token}`,
     });
   }
 
   // GET /clientes?filtro=...
-  getClientes(filtro?: 'para_aprovar' | 'adm_relatorio_clientes' | 'melhores_clientes'): Observable<any> {
+  getClientes(
+    filtro?: "para_aprovar" | "adm_relatorio_clientes" | "melhores_clientes",
+  ): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.get<DadosClienteResponse[]>('/clientes', filtro ? { filtro } : {}, headers);
+    return this.get<DadosClienteResponse[]>(
+      "/clientes",
+      filtro ? { filtro } : {},
+      headers,
+    );
   }
 
   // POST /clientes (autocadastro)
   autocadastroCliente(data: AutocadastroInfo): Observable<any> {
-    return this.post<any>('/clientes', data);
+    return this.post<any>("/clientes", data);
   }
 
   // GET /clientes/{cpf}
