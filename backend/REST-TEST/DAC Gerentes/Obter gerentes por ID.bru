@@ -1,27 +1,15 @@
 meta {
-  name: Alterar gerente por ID
+  name: Obter gerentes por ID
   type: http
-  seq: 4
+  seq: 2
 }
 
-put {
+get {
   url: http://localhost:8083/gerentes/44444444444
-  body: json
+  body: none
   auth: inherit
 }
 
 headers {
-  Content-Type: application/json
   Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaHJpc0BiYW50YWRzIiwicm9sZSI6IkdFUkVOVEUiLCJpYXQiOjE3NjAzMTQxMTEsImV4cCI6MTc2MDMxNzcxMX0.FKGqxoOoXuTnR2Jzifig5MBhwO458FgTRu9VMr4_4Wg
-}
-
-body:json {
-  {
-    "id": 2,
-    "cpf": "44444444444",
-    "nome": "João Lima atualizado",
-    "email": "joao@empresa.com",
-    "senha": "789",
-    "tipo": "FUNC"
-  }
 }

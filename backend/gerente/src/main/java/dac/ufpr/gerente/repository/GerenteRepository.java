@@ -1,6 +1,6 @@
 package dac.ufpr.gerente.repository;
 
-import dac.ufpr.gerente.model.Gerente;
+import dac.ufpr.gerente.entity.Gerente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

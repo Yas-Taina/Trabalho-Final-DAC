@@ -1,12 +1,12 @@
 meta {
-  name: Deletar gerente por ID
+  name: Obter clientes por ID
   type: http
-  seq: 5
+  seq: 2
 }
 
-delete {
-  url: http://localhost:8083/gerentes/44444444444
-  body: none
+get {
+  url: http://localhost:8080/clientes/12345678903
+  body: json
   auth: inherit
 }
 

@@ -1,11 +1,11 @@
 meta {
-  name: Deletar gerente por ID
+  name: Rejeitar Cliente
   type: http
-  seq: 5
+  seq: 8
 }
 
-delete {
-  url: http://localhost:8083/gerentes/44444444444
+get {
+  url: http://localhost:8080/clientes/12345678903/rejeitar
   body: none
   auth: inherit
 }
