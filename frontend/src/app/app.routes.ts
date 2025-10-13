@@ -1,173 +1,175 @@
-import { Routes } from '@angular/router';
-import { AutocadastroComponent } from './pages/auth/autocadastro/autocadastro.component';
-import { HomeComponent } from './pages/auth/home/home.component';
-import { LoginComponent } from './pages/auth/login/login.component';
-import { DepositarComponent } from './pages/client/depositar/depositar.component';
-import { SaqueComponent } from './pages/client/saque/saque.component';
-import { InicioClientComponent } from './pages/client/inicio/inicio.component';
-import { PerfilComponent } from './pages/client/perfil/perfil.component';
-import { ExtratoComponent } from './pages/client/extrato/extrato.component';
-import { TransferenciaComponent } from './pages/client/transferencia/transferencia.component';
-import { InicioManagerComponent } from './pages/gerente/inicio/inicio.component';
-import { InicioAdmComponent } from './pages/adm/inicio/inicio.component';
-import { ClientesManagerComponent } from './pages/gerente/clientes/clientes.component';
-import { ClientesAdmComponent } from './pages/adm/clientes/clientes.component';
-import { ConsultaComponent } from './pages/gerente/consulta/consulta.component';
-import { MelhoresClientesComponent } from './pages/gerente/melhores-clientes/melhores-clientes.component';
-import { GerentesComponent } from './pages/adm/gerentes/gerentes.component';
-import { EditarGerentesComponent } from './pages/adm/editar-gerentes/editar-gerentes.component';
-import { authGuard } from './guards/auth.guard';
+import { Routes } from "@angular/router";
+import { AutocadastroComponent } from "./pages/auth/autocadastro/autocadastro.component";
+import { HomeComponent } from "./pages/auth/home/home.component";
+import { LoginComponent } from "./pages/auth/login/login.component";
+import { DepositarComponent } from "./pages/client/depositar/depositar.component";
+import { SaqueComponent } from "./pages/client/saque/saque.component";
+import { InicioClientComponent } from "./pages/client/inicio/inicio.component";
+import { PerfilComponent } from "./pages/client/perfil/perfil.component";
+import { ExtratoComponent } from "./pages/client/extrato/extrato.component";
+import { TransferenciaComponent } from "./pages/client/transferencia/transferencia.component";
+import { InicioManagerComponent } from "./pages/gerente/inicio/inicio.component";
+import { InicioAdmComponent } from "./pages/adm/inicio/inicio.component";
+import { ClientesManagerComponent } from "./pages/gerente/clientes/clientes.component";
+import { ClientesAdmComponent } from "./pages/adm/clientes/clientes.component";
+import { ConsultaComponent } from "./pages/gerente/consulta/consulta.component";
+import { MelhoresClientesComponent } from "./pages/gerente/melhores-clientes/melhores-clientes.component";
+import { GerentesComponent } from "./pages/adm/gerentes/gerentes.component";
+import { EditarGerentesComponent } from "./pages/adm/editar-gerentes/editar-gerentes.component";
+import { authGuard } from "./guards/auth.guard";
 
 export const routes: Routes = [
   //public routes
   {
-    path: 'home',
-    component: HomeComponent
+    path: "home",
+    component: HomeComponent,
   },
   {
-    path: 'cadastro',
-    component: AutocadastroComponent
+    path: "cadastro",
+    component: AutocadastroComponent,
   },
   {
-    path: 'login',
-    component: LoginComponent
+    path: "login",
+    component: LoginComponent,
   },
 
   //client routes
   {
-    path: 'client/home',
+    path: "client/home",
     component: InicioClientComponent,
     canActivate: [authGuard],
     data: {
-      requiredRole: 'CLIENTE',
+      requiredRole: "CLIENTE",
     },
   },
   {
-    path: 'perfil',
+    path: "perfil",
     component: PerfilComponent,
     canActivate: [authGuard],
     data: {
-      requiredRole: 'CLIENTE',
+      requiredRole: "CLIENTE",
     },
   },
   {
-    path: 'depositar',
+    path: "depositar",
     component: DepositarComponent,
     canActivate: [authGuard],
     data: {
-      requiredRole: 'CLIENTE',
+      requiredRole: "CLIENTE",
     },
   },
   {
-    path: 'sacar',
+    path: "sacar",
     component: SaqueComponent,
     canActivate: [authGuard],
     data: {
-      requiredRole: 'CLIENTE',
+      requiredRole: "CLIENTE",
     },
   },
   {
-    path: 'extrato',
+    path: "extrato",
     component: ExtratoComponent,
     canActivate: [authGuard],
     data: {
-      requiredRole: 'CLIENTE',
+      requiredRole: "CLIENTE",
     },
   },
   {
-    path: 'transferir',
+    path: "transferir",
     component: TransferenciaComponent,
     canActivate: [authGuard],
     data: {
-      requiredRole: 'CLIENTE',
+      requiredRole: "CLIENTE",
     },
   },
 
   //manager routes
   {
-    path: 'gerente/home',
+    path: "gerente/home",
     component: InicioManagerComponent,
     canActivate: [authGuard],
     data: {
-      requiredRole: 'GERENTE',
+      requiredRole: "GERENTE",
     },
   },
   {
-    path: 'gerente/clients',
+    path: "gerente/clients",
     component: ClientesManagerComponent,
     canActivate: [authGuard],
     data: {
-      requiredRole: 'GERENTE',
+      requiredRole: "GERENTE",
     },
   },
   {
-    path: 'clients/:cpf',
+    path: "clients/:cpf",
     component: ConsultaComponent,
     canActivate: [authGuard],
     data: {
-      requiredRole: 'GERENTE',
+      requiredRole: "GERENTE",
     },
   },
   {
-    path: 'clients/consulta',
+    path: "clients/consulta",
     component: ConsultaComponent,
     canActivate: [authGuard],
     data: {
-      requiredRole: 'GERENTE',
+      requiredRole: "GERENTE",
     },
   },
   {
-    path: 'clientes/melhores',
+    path: "clientes/melhores",
     component: MelhoresClientesComponent,
     canActivate: [authGuard],
     data: {
-      requiredRole: 'GERENTE',
+      requiredRole: "GERENTE",
     },
   },
 
   //adm routes
   {
-    path: 'adm/home',
+    path: "adm/home",
     component: InicioAdmComponent,
     canActivate: [authGuard],
     data: {
-      requiredRole: 'ADMINISTRADOR',
+      requiredRole: "ADMINISTRADOR",
     },
   },
   {
-    path: 'adm/clients',
+    path: "adm/clients",
     component: ClientesAdmComponent,
     canActivate: [authGuard],
     data: {
-      requiredRole: 'ADMINISTRADOR',
+      requiredRole: "ADMINISTRADOR",
     },
   },
   {
-    path: 'gerentes',
+    path: "gerentes",
     component: GerentesComponent,
     canActivate: [authGuard],
     data: {
-      requiredRole: 'ADMINISTRADOR',
+      requiredRole: "ADMINISTRADOR",
     },
   },
-  { path: 'adm/gerentes/novo', 
+  {
+    path: "adm/gerentes/novo",
     component: EditarGerentesComponent,
     canActivate: [authGuard],
     data: {
-      requiredRole: 'ADMINISTRADOR',
-    }, 
+      requiredRole: "ADMINISTRADOR",
+    },
   },
 
-  { path: 'adm/gerentes/:cpf', 
+  {
+    path: "adm/gerentes/:cpf",
     component: EditarGerentesComponent,
     canActivate: [authGuard],
     data: {
-      requiredRole: 'ADMINISTRADOR',
-    }, 
+      requiredRole: "ADMINISTRADOR",
+    },
   },
 
   //default
   { path: "", redirectTo: "home", pathMatch: "full" },
 
-  { path: '**', redirectTo: "home", pathMatch: "full" },
+  { path: "**", redirectTo: "home", pathMatch: "full" },
 ];

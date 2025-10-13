@@ -7,9 +7,9 @@
   text-align: center;
 }
 
-.grade{
-    grid-template-columns: repeat(2, 1fr); 
-    width: 100%;
+.grade {
+  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
 }
 
 .btnIco i {
@@ -20,12 +20,12 @@
   text-align: center;
 }
 
-.mainCreme{
-    padding: 5rem;
+.mainCreme {
+  padding: 5rem;
 }
 
 h3 {
-    font-size: 4rem;
+  font-size: 4rem;
 }
 
 .saldo-positivo {

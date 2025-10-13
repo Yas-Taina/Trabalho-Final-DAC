@@ -8,7 +8,6 @@ import dac.ufpr.cliente.exception.custom.ResourceNotFoundException;
 import dac.ufpr.cliente.mapper.ClienteMapper;
 import dac.ufpr.cliente.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -87,7 +86,7 @@ public class ClienteService {
                 || !TELEFONE_PATTERN.matcher(clienteDto.telefone()).matches()
                 || Objects.isNull(clienteDto.salario())
                 || !StringUtils.hasText(clienteDto.endereco())
-                || !CEP_PATTERN.matcher(clienteDto.CEP()).matches()
+                || !CEP_PATTERN.matcher(clienteDto.cep()).matches()
                 || !StringUtils.hasText(clienteDto.cidade())
                 || Objects.isNull(clienteDto.estado());
     }

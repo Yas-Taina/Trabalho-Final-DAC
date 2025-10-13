@@ -1,17 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LocalContasService } from '../../../services';
-import { LocalLoginService } from '../../../services';
-import { ClienteResponse, DadoGerente } from '../../../services';
-import { Router, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from "@angular/core";
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from "@angular/forms";
+import { LocalContasService } from "../../../services";
+import { LocalLoginService } from "../../../services";
+import { ClienteResponse, DadoGerente } from "../../../services";
+import { Router, RouterModule } from "@angular/router";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'app-saque',
+  selector: "app-saque",
   standalone: true,
   imports: [RouterModule, CommonModule, ReactiveFormsModule],
-  templateUrl: './saque.component.html',
-  styleUrls: ['./saque.component.css']
+  templateUrl: "./saque.component.html",
+  styleUrls: ["./saque.component.css"],
 })
 export class SaqueComponent implements OnInit {
   saqueForm: FormGroup;
@@ -21,10 +26,10 @@ export class SaqueComponent implements OnInit {
     private fb: FormBuilder,
     private contasService: LocalContasService,
     private loginService: LocalLoginService,
-    private router: Router
+    private router: Router,
   ) {
     this.saqueForm = this.fb.group({
-      valor: [0, [Validators.required, Validators.min(0.01)]]
+      valor: [0, [Validators.required, Validators.min(0.01)]],
     });
   }
 
@@ -32,19 +37,21 @@ export class SaqueComponent implements OnInit {
     this.carregarConta();
   }
 
-  private isCliente(usuario: ClienteResponse | DadoGerente): usuario is ClienteResponse {
+  private isCliente(
+    usuario: ClienteResponse | DadoGerente,
+  ): usuario is ClienteResponse {
     return (usuario as ClienteResponse).conta !== undefined;
   }
 
   private carregarConta(): void {
     const session = this.loginService.sessionInfo();
     if (!session || !this.isCliente(session.usuario)) {
-      alert('Sessão inválida ou usuário não é cliente');
+      alert("Sessão inválida ou usuário não é cliente");
       return;
     }
 
     if (!session.usuario.conta) {
-      alert('Número da conta não disponível');
+      alert("Número da conta não disponível");
       return;
     }
 
@@ -60,9 +67,9 @@ export class SaqueComponent implements OnInit {
       alert(`Saque de R$ ${valor.toFixed(2)} realizado com sucesso!`);
       this.saqueForm.reset({ valor: 0 });
 
-      this.router.navigate(['/client/home']);
+      this.router.navigate(["/client/home"]);
     } catch (error: any) {
-      alert(error.message || 'Erro ao realizar saque');
+      alert(error.message || "Erro ao realizar saque");
     }
   }
 }

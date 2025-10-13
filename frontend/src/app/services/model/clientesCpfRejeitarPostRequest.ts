@@ -1,4 +1,3 @@
-export interface ClientesCpfRejeitarPostRequest { 
-    motivo?: string;
+export interface ClientesCpfRejeitarPostRequest {
+  motivo?: string;
 }
-

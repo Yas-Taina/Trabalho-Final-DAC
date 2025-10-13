@@ -1,40 +1,40 @@
 /*---Declaração de fontes---*/
-@font-face{
+@font-face {
   font-family: "Open Sauce";
   font-style: normal;
   font-weight: normal;
   src: url("./assets/fonts/OpenSauceSans-Regular.ttf");
 }
 
-@font-face{
+@font-face {
   font-family: "Open Sauce";
   font-style: italic;
   font-weight: normal;
   src: url("./assets/fonts/OpenSauceSans-Italic.ttf");
 }
 
-@font-face{
+@font-face {
   font-family: "Open Sauce";
   font-style: normal;
   font-weight: bold;
   src: url("./assets/fonts/OpenSauceSans-SemiBold.ttf");
 }
 
-@font-face{
+@font-face {
   font-family: "Open Sauce";
   font-style: italic;
   font-weight: bold;
   src: url("./assets/fonts/OpenSauceSans-SemiBoldItalic.ttf");
 }
 
-@font-face{
+@font-face {
   font-family: "Metanoia";
   font-style: normal;
   font-weight: normal;
   src: url("./assets/fonts/Metanoia.ttf");
 }
 
-@font-face{
+@font-face {
   font-family: "Allura";
   font-style: normal;
   font-weight: normal;
@@ -43,10 +43,10 @@
 
 /*---Declaração de cores---*/
 :root {
-  --offwhite: #FEFAF6;
-  --creme: #FDF5E5;
-  --rosa: #FFE1E3;
-  --azul: #2A3D63;
+  --offwhite: #fefaf6;
+  --creme: #fdf5e5;
+  --rosa: #ffe1e3;
+  --azul: #2a3d63;
 }
 
 /*---Componenentes do site---*/
@@ -89,7 +89,7 @@ footer {
   min-height: 100vh;
 }
 
-hr{
+hr {
   border-top: 1px solid;
   opacity: 1 !important;
 }
@@ -105,11 +105,11 @@ hr{
 }
 
 .imgLine hr {
-  position: absolute; 
-  top: 50%; 
-  transform: translateY(-50%); 
-  width: 100%; 
-  z-index: 1000; 
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  z-index: 1000;
   border-top: 1px solid;
   opacity: 1 !important;
 }
@@ -121,7 +121,7 @@ hr{
   transform: translate(-50%, -50%);
   width: 150px;
   height: 150px;
-  z-index: 1020; 
+  z-index: 1020;
 }
 
 /*---Titulos, Subtitulos, Textos Especiais---*/
@@ -142,7 +142,7 @@ hr{
 }
 
 /*---Botões---*/
-.btn{
+.btn {
   padding: 5px 20px 5px;
   border-radius: 3px;
   cursor: pointer;
@@ -161,13 +161,13 @@ hr{
   transform: scale(0.95);
 }
 
-.btnAzulRosa{
+.btnAzulRosa {
   background-color: var(--azul);
   color: var(--rosa);
 }
 
 .btnAzul:hover,
-.btnAzulRosa:hover{
+.btnAzulRosa:hover {
   background-color: transparent;
   color: var(--azul);
   border: 2px solid var(--azul);
@@ -178,18 +178,18 @@ hr{
   color: var(--azul);
 }
 
-.btnCreme:hover{
+.btnCreme:hover {
   background-color: transparent;
   color: var(--creme);
   border: 1px solid var(--creme);
 }
 
-.btnAzul{
+.btnAzul {
   background-color: var(--azul);
   color: var(--creme);
 }
 
-.btnIcon{
+.btnIcon {
   background-color: transparent;
   border: none;
   padding: 10px;
@@ -200,7 +200,7 @@ hr{
     transform 0.2 ease;
 }
 
-.mainAzul .btnIcon{
+.mainAzul .btnIcon {
   color: var(--creme);
 }
 
@@ -209,7 +209,7 @@ hr{
   text-shadow: 0 0 0.2rem var(--azul);
 }
 
-.mainAzul .btnIcon:hover{
+.mainAzul .btnIcon:hover {
   text-shadow: 0 0 0.2rem var(--creme);
 }
 
@@ -241,14 +241,13 @@ hr{
   opacity: 0.7;
 }
 
-label{
+label {
   font-family: "Allura";
   font-size: 1.5rem;
 }
 
-form{
+form {
   text-align: left;
-
 }
 
 .mainAzul .form-control {
@@ -257,7 +256,7 @@ form{
   border: 1px solid var(--creme);
 }
 
-.mainAzul input::placeholder{
+.mainAzul input::placeholder {
   color: inherit;
   opacity: 0.8;
 }
@@ -273,7 +272,7 @@ form{
   border: 1px solid var(--azul);
 }
 
-.mainRosa input::placeholder{
+.mainRosa input::placeholder {
   color: inherit;
   opacity: 0.8;
 }
@@ -281,6 +280,10 @@ form{
 .mainRosa input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 1000px var(--rosa) inset !important;
   -webkit-text-fill-color: var(--azul);
+}
+
+.ng-invalid.is-invalid {
+  border: 1px solid #dc3545 !important;
 }
 
 /*---Tabelas---*/
@@ -295,13 +298,13 @@ td {
   padding: 0.5rem;
 }
 
-.tabelaListagem table{
- min-width: fit-content;
- width: 80vw;
- overflow-x: auto;
+.tabelaListagem table {
+  min-width: fit-content;
+  width: 80vw;
+  overflow-x: auto;
 }
 
-.containerTabela{
+.containerTabela {
   width: 100%;
   overflow-x: auto;
 }
@@ -320,17 +323,14 @@ td {
   width: 100%;
 }
 
-.tabela table thead  {
+.tabela table thead {
   background-color: var(--creme);
   vertical-align: middle;
   border: 1px solid lightgray;
 }
 
-.tabela table tbody td{
+.tabela table tbody td {
   background-color: var(--offwhite);
   border: 1px solid lightgray;
   vertical-align: middle;
 }
-
-
-

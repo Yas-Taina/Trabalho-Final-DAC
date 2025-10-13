@@ -1,4 +1,4 @@
-export type TipoGerente = 'ADMINISTRADOR' | 'GERENTE';
+export type TipoGerente = "ADMINISTRADOR" | "GERENTE";
 
 export interface Gerente {
   nome: string;

@@ -1,4 +1,4 @@
-import { HistoricoMovimentacao } from './historico';
+import { HistoricoMovimentacao } from "./historico";
 
 export interface Conta {
   numero: string;

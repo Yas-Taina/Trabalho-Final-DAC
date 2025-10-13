@@ -9,6 +9,15 @@
   z-index: 1001;
 }
 
+.navbar-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Metanoia";
+  margin: 0;
+  pointer-events: none;
+}
+
 .menu-btn {
   position: relative;
   width: 28px;

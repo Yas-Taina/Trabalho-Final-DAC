@@ -1,17 +1,22 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LocalLoginService } from '../../../services';
-import { LocalContasService } from '../../../services';
-import { ClienteResponse, DadoGerente } from '../../../services';
-import { Router, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from "@angular/core";
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from "@angular/forms";
+import { LocalLoginService } from "../../../services";
+import { LocalContasService } from "../../../services";
+import { ClienteResponse, DadoGerente } from "../../../services";
+import { Router, RouterModule } from "@angular/router";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'app-depositar',
+  selector: "app-depositar",
   standalone: true,
   imports: [RouterModule, CommonModule, ReactiveFormsModule],
-  templateUrl: './depositar.component.html',
-  styleUrls: ['./depositar.component.css']
+  templateUrl: "./depositar.component.html",
+  styleUrls: ["./depositar.component.css"],
 })
 export class DepositarComponent implements OnInit {
   depositoForm!: FormGroup;
@@ -20,16 +25,18 @@ export class DepositarComponent implements OnInit {
     private fb: FormBuilder,
     private loginService: LocalLoginService,
     private contasService: LocalContasService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
     this.depositoForm = this.fb.group({
-      valor: [null, [Validators.required, Validators.min(1)]]
+      valor: [null, [Validators.required, Validators.min(1)]],
     });
   }
 
-  private isCliente(usuario: ClienteResponse | DadoGerente): usuario is ClienteResponse {
+  private isCliente(
+    usuario: ClienteResponse | DadoGerente,
+  ): usuario is ClienteResponse {
     return (usuario as ClienteResponse).conta !== undefined;
   }
 
@@ -37,7 +44,7 @@ export class DepositarComponent implements OnInit {
     if (this.depositoForm.valid) {
       const session = this.loginService.sessionInfo();
       if (!session || !this.isCliente(session.usuario)) {
-        alert('Sessão inválida ou usuário não é cliente');
+        alert("Sessão inválida ou usuário não é cliente");
         return;
       }
 
@@ -46,12 +53,12 @@ export class DepositarComponent implements OnInit {
 
       try {
         this.contasService.depositar(numeroConta!, valor);
-        alert('Depósito realizado com sucesso!');
+        alert("Depósito realizado com sucesso!");
         this.depositoForm.reset();
 
-        this.router.navigate(['/client/home']);
+        this.router.navigate(["/client/home"]);
       } catch (error: any) {
-        alert(error.message || 'Erro ao realizar depósito');
+        alert(error.message || "Erro ao realizar depósito");
       }
     }
   }

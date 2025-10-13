@@ -2,46 +2,68 @@
   <div class="col-lg-4 d-flex flex-column justify-content-center">
     <div class="container d-flex flex-column align-items-center">
       <div class="d-grid gap-2 grade">
-        <a routerLink="/extrato" class="btn btnAzul btnIco d-flex flex-column justify-content-center align-items-center"
-           routerLinkActive="active">
+        <a
+          routerLink="/extrato"
+          class="btn btnAzul btnIco d-flex flex-column justify-content-center align-items-center"
+          routerLinkActive="active"
+        >
           <i class="fa-solid fa-file-invoice-dollar fa-2x"></i>
-          <span>Consultar<br>Extrato</span>
+          <span>Consultar<br />Extrato</span>
         </a>
-        <a routerLink="/transferir" class="btn btnAzul btnIco d-flex flex-column justify-content-center align-items-center"
-           routerLinkActive="active">
+        <a
+          routerLink="/transferir"
+          class="btn btnAzul btnIco d-flex flex-column justify-content-center align-items-center"
+          routerLinkActive="active"
+        >
           <i class="fa-solid fa-money-bill-transfer fa-2x"></i>
           <span>Transferir</span>
         </a>
-        <a routerLink="/depositar" class="btn btnAzul btnIco d-flex flex-column justify-content-center align-items-center"
-           routerLinkActive="active">
+        <a
+          routerLink="/depositar"
+          class="btn btnAzul btnIco d-flex flex-column justify-content-center align-items-center"
+          routerLinkActive="active"
+        >
           <i class="fa-solid fa-piggy-bank fa-2x"></i>
           <span>Depositar</span>
         </a>
-        <a routerLink="/sacar" class="btn btnAzul btnIco d-flex flex-column justify-content-center align-items-center"
-           routerLinkActive="active">
+        <a
+          routerLink="/sacar"
+          class="btn btnAzul btnIco d-flex flex-column justify-content-center align-items-center"
+          routerLinkActive="active"
+        >
           <i class="fa-solid fa-money-bills fa-2x"></i>
           <span>Sacar</span>
         </a>
       </div>
-      <a routerLink="/perfil" class="btn btnAzul btnText mt-2 w-100" routerLinkActive="active">
+      <a
+        routerLink="/perfil"
+        class="btn btnAzul btnText mt-2 w-100"
+        routerLinkActive="active"
+      >
         Alterar Dados Cadastrados
       </a>
-
     </div>
   </div>
 
   <div class="col-lg-8 d-flex flex-column justify-content-center">
     <div class="imgLine">
-      <hr>
-      <img src="../../../../assets/img/img3.png" alt="Imagem Decorativa" class="imgTitle"> 
-    </div>  
+      <hr />
+      <img
+        src="../../../../assets/img/img3.png"
+        alt="Imagem Decorativa"
+        class="imgTitle"
+      />
+    </div>
     <h1 class="tituloGrande">Saldo</h1>
-    <h3 class="tituloGrande"
-    [ngClass]="{
-      'saldo-positivo': (conta?.saldo ?? 0) > 0,
-      'saldo-negativo': (conta?.saldo ?? 0) < 0
-    }">
-    {{ conta?.saldo | currency:'BRL':'symbol':'1.2-2' }}</h3>
-    <hr>
+    <h3
+      class="tituloGrande"
+      [ngClass]="{
+        'saldo-positivo': (conta?.saldo ?? 0) > 0,
+        'saldo-negativo': (conta?.saldo ?? 0) < 0,
+      }"
+    >
+      {{ conta?.saldo | currency: "BRL" : "symbol" : "1.2-2" }}
+    </h3>
+    <hr />
   </div>
 </div>

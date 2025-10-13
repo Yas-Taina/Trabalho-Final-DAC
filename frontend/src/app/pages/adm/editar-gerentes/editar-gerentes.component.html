@@ -1,113 +1,214 @@
 <div class="row mainRosa justify-content-evenly">
   <div class="col-lg-5 d-flex flex-column justify-content-center">
     <div class="imgLine">
-      <hr>
-      <img src="../../../../assets/img/img1.png" alt="Imagem Decorativa" class="imgTitle"> 
-    </div> 
+      <hr />
+      <img
+        src="../../../../assets/img/img1.png"
+        alt="Imagem Decorativa"
+        class="imgTitle"
+      />
+    </div>
     <h1 class="tituloGrande">
-      {{ editMode ? 'Editar Gerente' : 'Novo Gerente' }}
+      {{ editMode ? "Editar Gerente" : "Novo Gerente" }}
     </h1>
-    <hr>
+    <hr />
   </div>
 
   <div class="col-lg-5 d-flex flex-column justify-content-center">
     <form [formGroup]="form" (ngSubmit)="salvar()">
-
       <div class="row">
         <div class="col-7">
           <label for="nome" class="form-label">Nome</label>
-          <input type="text" class="form-control" id="nome" formControlName="nome" minlength="2" maxlength="100"
-            [class.is-invalid]="form.get('nome')?.invalid && (form.get('nome')?.touched || form.get('nome')?.dirty)" />
-          <div class="invalid-feedback"
-            *ngIf="form.get('nome')?.invalid && (form.get('nome')?.touched || form.get('nome')?.dirty)">Por favor insira
-            um nome</div>
+          <input
+            type="text"
+            class="form-control"
+            id="nome"
+            formControlName="nome"
+            minlength="2"
+            maxlength="100"
+            [class.is-invalid]="
+              form.get('nome')?.invalid &&
+              (form.get('nome')?.touched || form.get('nome')?.dirty)
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              form.get('nome')?.invalid &&
+              (form.get('nome')?.touched || form.get('nome')?.dirty)
+            "
+          >
+            Por favor insira um nome
+          </div>
         </div>
         <div class="col-5">
           <label for="cpf" class="form-label">CPF</label>
-          <input type="text" class="form-control" id="cpf" formControlName="cpf" placeholder="000.000.000-00"
+          <input
+            type="text"
+            class="form-control"
+            id="cpf"
+            formControlName="cpf"
+            placeholder="000.000.000-00"
             mask="000.000.000-00"
-            [class.is-invalid]="form.get('cpf')?.invalid && (form.get('cpf')?.touched || form.get('cpf')?.dirty)" />
-          <div class="invalid-feedback"
-            *ngIf="form.get('cpf')?.invalid && (form.get('cpf')?.touched || form.get('cpf')?.dirty)">Por favor insira um
-            cpf válido</div>
+            [class.is-invalid]="
+              form.get('cpf')?.invalid &&
+              (form.get('cpf')?.touched || form.get('cpf')?.dirty)
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              form.get('cpf')?.invalid &&
+              (form.get('cpf')?.touched || form.get('cpf')?.dirty)
+            "
+          >
+            Por favor insira um cpf válido
+          </div>
         </div>
       </div>
 
       <div class="row">
         <div class="col-7">
           <label for="email" class="form-label">E-mail</label>
-          <input type="email" class="form-control" id="email" formControlName="email" maxlength="100"
-            [class.is-invalid]="form.get('email')?.invalid && (form.get('email')?.touched || form.get('email')?.dirty)" />
-          <div class="invalid-feedback"
-            *ngIf="form.get('email')?.invalid && (form.get('email')?.touched || form.get('email')?.dirty)">Por favor
-            insira um e-mail válido</div>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            formControlName="email"
+            maxlength="100"
+            [class.is-invalid]="
+              form.get('email')?.invalid &&
+              (form.get('email')?.touched || form.get('email')?.dirty)
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              form.get('email')?.invalid &&
+              (form.get('email')?.touched || form.get('email')?.dirty)
+            "
+          >
+            Por favor insira um e-mail válido
+          </div>
         </div>
         <div class="col-5">
           <label for="telefone" class="form-label">Telefone</label>
-          <input type="text" class="form-control" id="telefone" formControlName="telefone" placeholder="(00)00000-0000"
+          <input
+            type="text"
+            class="form-control"
+            id="telefone"
+            formControlName="telefone"
+            placeholder="(00)00000-0000"
             mask="(00) 00000-0000"
-            [class.is-invalid]="form.get('telefone')?.invalid && (form.get('telefone')?.touched || form.get('telefone')?.dirty)" />
-          <div class="invalid-feedback" *ngIf="form.get('telefone')?.invalid && (form.get('telefone')?.touched || form.get('telefone')?.dirty)">Por favor insira um telefone válido</div>
+            [class.is-invalid]="
+              form.get('telefone')?.invalid &&
+              (form.get('telefone')?.touched || form.get('telefone')?.dirty)
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              form.get('telefone')?.invalid &&
+              (form.get('telefone')?.touched || form.get('telefone')?.dirty)
+            "
+          >
+            Por favor insira um telefone válido
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <label for="tipo" class="form-label">Tipo</label>
+          <select class="form-control" id="tipo" formControlName="tipo">
+            <option *ngFor="let t of tipos" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <label for="senha" class="form-label">Senha</label>
+          <input
+            type="password"
+            id="senha"
+            class="form-control"
+            formControlName="senha"
+            minlength="4"
+            maxlength="4"
+            [class.is-invalid]="
+              (form.get('senha')?.invalid &&
+                (form.get('senha')?.touched || form.get('senha')?.dirty)) ||
+              (form.hasError('senhaDiferente') &&
+                (form.get('senha')?.touched || form.get('senha')?.dirty))
+            "
+          />
+
+          <div
+            class="invalid-feedback"
+            *ngIf="form.get('senha')?.errors?.['required']"
+          >
+            Insira uma senha válida
+          </div>
+          <div
+            class="invalid-feedback"
+            *ngIf="form.get('senha')?.errors?.['minlength']"
+          >
+            A senha deve ter pelo menos 4 caracteres
+          </div>
+          <div
+            class="invalid-feedback"
+            *ngIf="form.get('senha')?.errors?.['senhaDiferente']"
+          >
+            Confirme sua senha
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-12">
-            <label for="tipo" class="form-label">Tipo</label>
-            <select class="form-control" id="tipo" formControlName="tipo">
-              <option *ngFor="let t of tipos" [value]="t">{{ t }}</option>
-            </select>
+        <div class="col-6">
+          <label for="confirmarSenha" class="form-label">Confirmar Senha</label>
+          <input
+            type="password"
+            id="confirmarSenha"
+            class="form-control"
+            formControlName="confirmarSenha"
+            minlength="4"
+            maxlength="4"
+            [class.is-invalid]="
+              (form.get('confirmarSenha')?.invalid &&
+                (form.get('confirmarSenha')?.touched ||
+                  form.get('confirmarSenha')?.dirty)) ||
+              (form.hasError('senhaDiferente') &&
+                (form.get('confirmarSenha')?.touched ||
+                  form.get('confirmarSenha')?.dirty))
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="form.get('confirmarSenha')?.errors?.['required']"
+          >
+            Confirme a senha
+          </div>
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              form.hasError('senhaDiferente') &&
+              (form.get('confirmarSenha')?.touched ||
+                form.get('confirmarSenha')?.dirty)
+            "
+          >
+            As senhas não coincidem
           </div>
         </div>
+      </div>
 
-        <div class="row">
-          <div class="col-6">
-            <label for="senha" class="form-label">Senha</label>
-            <input type="password"
-                  id="senha"
-                  class="form-control"
-                  formControlName="senha"
-                  minlength="4" maxlength="4"
-                  [class.is-invalid]="(form.get('senha')?.invalid && (form.get('senha')?.touched || form.get('senha')?.dirty))
-                                        || (form.hasError('senhaDiferente') && (form.get('senha')?.touched || form.get('senha')?.dirty))" />
-
-
-                <div class="invalid-feedback" *ngIf="form.get('senha')?.errors?.['required']">
-                  Insira uma senha válida
-                </div>
-                <div class="invalid-feedback" *ngIf="form.get('senha')?.errors?.['minlength']">
-                  A senha deve ter pelo menos 4 caracteres
-                </div>
-                <div class="invalid-feedback" *ngIf="form.get('senha')?.errors?.['senhaDiferente']">
-                  Confirme sua senha
-                </div>               
-            </div>
-
-            <div class="col-6">
-              <label for="confirmarSenha" class="form-label">Confirmar Senha</label>
-              <input type="password"
-                    id="confirmarSenha"
-                    class="form-control"
-                    formControlName="confirmarSenha"
-                    minlength="4" maxlength="4"
-                    [class.is-invalid]="(form.get('confirmarSenha')?.invalid && (form.get('confirmarSenha')?.touched || form.get('confirmarSenha')?.dirty))
-                                          || (form.hasError('senhaDiferente') && (form.get('confirmarSenha')?.touched || form.get('confirmarSenha')?.dirty))" />
-              <div class="invalid-feedback" *ngIf="form.get('confirmarSenha')?.errors?.['required']">Confirme a senha</div>
-              <div class="invalid-feedback" *ngIf="form.hasError('senhaDiferente') && (form.get('confirmarSenha')?.touched || form.get('confirmarSenha')?.dirty)">
-                As senhas não coincidem
-              </div>
-            </div>
-        </div>
-
-
-        <div class="d-flex flex-row-reverse align-items-end mt-3">
-          <button type="submit" class="btnIcon border-0 bg-transparent">
-            <i class="fa-solid fa-floppy-disk"></i>
-          </button>
-          <a routerLink="/gerentes" routerLinkActive="active">
-            <i class="fa-solid fa-location-arrow btnVoltar btnIcon"></i>
-          </a>
-        </div>
+      <div class="d-flex flex-row-reverse align-items-end mt-3">
+        <button type="submit" class="btnIcon border-0 bg-transparent">
+          <i class="fa-solid fa-floppy-disk"></i>
+        </button>
+        <a routerLink="/gerentes" routerLinkActive="active">
+          <i class="fa-solid fa-location-arrow btnVoltar btnIcon"></i>
+        </a>
+      </div>
     </form>
 
     <div *ngIf="mensagem" class="alert alert-info mt-3">

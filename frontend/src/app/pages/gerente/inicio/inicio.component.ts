@@ -1,42 +1,41 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { LocalClientesService } from '../../../services';
-import { Cliente } from '../../../services/local/models/cliente';
-import { FormsModule } from '@angular/forms';
-import { NgxMaskPipe } from 'ngx-mask';
+import { CommonModule } from "@angular/common";
+import { Component } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { LocalClientesService } from "../../../services";
+import { Cliente } from "../../../services/local/models/cliente";
+import { FormsModule } from "@angular/forms";
+import { NgxMaskPipe } from "ngx-mask";
 
 @Component({
-  selector: 'app-inicio',
+  selector: "app-inicio",
   standalone: true,
   imports: [RouterModule, CommonModule, FormsModule, NgxMaskPipe],
-  templateUrl: './inicio.component.html',
-  styleUrls: ['./inicio.component.css']
+  templateUrl: "./inicio.component.html",
+  styleUrls: ["./inicio.component.css"],
 })
 export class InicioManagerComponent {
   clientes: Cliente[] = [];
   clienteRecusando: Cliente | null = null;
-  motivoRecusa: string = '';
+  motivoRecusa: string = "";
 
   constructor(private clientesService: LocalClientesService) {}
 
   ngOnInit() {
-    
-    const session = JSON.parse(localStorage.getItem('dac_token') || '{}');
+    const session = JSON.parse(localStorage.getItem("dac_token") || "{}");
     const gerenteCpf = session.usuario?.cpf;
     if (gerenteCpf) {
-      this.clientes = this.clientesService.consultarClientesAguardando(gerenteCpf);
+      this.clientes =
+        this.clientesService.consultarClientesAguardando(gerenteCpf);
     }
 
-    console.log('Token:', localStorage.getItem('dac_token'));
-    console.log('Gerente CPF:', session.usuario?.cpf);
-
+    console.log("Token:", localStorage.getItem("dac_token"));
+    console.log("Gerente CPF:", session.usuario?.cpf);
   }
 
   aprovar(cliente: Cliente) {
     try {
       this.clientesService.aprovarCliente(cliente.cpf);
-      this.clientes = this.clientes.filter(c => c.cpf !== cliente.cpf);
+      this.clientes = this.clientes.filter((c) => c.cpf !== cliente.cpf);
       alert(`Cliente ${cliente.nome} aprovado com sucesso.`);
     } catch (error: any) {
       alert(error.message);
@@ -45,22 +44,29 @@ export class InicioManagerComponent {
 
   abrirModalRecusa(cliente: Cliente) {
     this.clienteRecusando = cliente;
-    this.motivoRecusa = '';
+    this.motivoRecusa = "";
   }
 
   confirmarRecusa() {
     if (!this.motivoRecusa.trim()) {
-      alert('Informe o motivo da recusa.');
+      alert("Informe o motivo da recusa.");
       return;
     }
     if (this.clienteRecusando) {
       try {
-        this.clientesService.recusarCliente(this.clienteRecusando.cpf, this.motivoRecusa);
-        this.clientes = this.clientes.filter(c => c.cpf !== this.clienteRecusando!.cpf);
+        this.clientesService.recusarCliente(
+          this.clienteRecusando.cpf,
+          this.motivoRecusa,
+        );
+        this.clientes = this.clientes.filter(
+          (c) => c.cpf !== this.clienteRecusando!.cpf,
+        );
         alert(`Cliente ${this.clienteRecusando.nome} recusado.`);
-        alert(`Email: \nInfelizmente, seu cadastro foi recusado.\nMotivo: ${this.motivoRecusa}\nData: ${new Date().toLocaleDateString()}`);
+        alert(
+          `Email: \nInfelizmente, seu cadastro foi recusado.\nMotivo: ${this.motivoRecusa}\nData: ${new Date().toLocaleDateString()}`,
+        );
         this.clienteRecusando = null;
-        this.motivoRecusa = '';
+        this.motivoRecusa = "";
       } catch (error: any) {
         alert(error.message);
       }
@@ -69,6 +75,6 @@ export class InicioManagerComponent {
 
   cancelarRecusa() {
     this.clienteRecusando = null;
-    this.motivoRecusa = '';
+    this.motivoRecusa = "";
   }
 }

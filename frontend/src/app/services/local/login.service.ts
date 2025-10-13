@@ -1,18 +1,24 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { inject } from '@angular/core';
-import { ClienteResponse, DadoGerente, LoginInfo, LoginResponse, LogoutResponse } from '../model';
-import { LocalClientesService } from './clientes.service';
-import { LocalGerentesService } from './gerentes.service';
-import { LocalBaseService } from '../local.base.service';
-import { Cliente } from './models/cliente';
-import { Gerente } from './models/gerente';
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { inject } from "@angular/core";
+import {
+  ClienteResponse,
+  DadoGerente,
+  LoginInfo,
+  LoginResponse,
+  LogoutResponse,
+} from "../model";
+import { LocalClientesService } from "./clientes.service";
+import { LocalGerentesService } from "./gerentes.service";
+import { LocalBaseService } from "../local.base.service";
+import { Cliente } from "./models/cliente";
+import { Gerente } from "./models/gerente";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class LocalLoginService {
-  private tokenKey = 'dac_token';
+  private tokenKey = "dac_token";
   private clientesService = inject(LocalClientesService);
   private gerentesService = inject(LocalGerentesService);
 
@@ -22,22 +28,27 @@ export class LocalLoginService {
       const email = credentials.email.toLowerCase();
 
       const gerentes = this.gerentesService.listarTodosGerentes();
-      const gerente = gerentes.find((g: Gerente) => g.email!.toLowerCase() === email);
+      const gerente = gerentes.find(
+        (g: Gerente) => g.email!.toLowerCase() === email,
+      );
 
       if (gerente) {
         if (gerente?.senha !== credentials?.senha) {
-          observer.error(new Error('Credenciais inválidas'));
+          observer.error(new Error("Credenciais inválidas"));
           observer.complete();
           return;
         }
 
         console.log(gerente.tipo);
 
-        const role = (gerente.tipo!.toUpperCase() === 'ADMINISTRADOR') ? 'ADMINISTRADOR' : 'GERENTE';
+        const role =
+          gerente.tipo!.toUpperCase() === "ADMINISTRADOR"
+            ? "ADMINISTRADOR"
+            : "GERENTE";
 
         const res: LoginResponse = {
           token: Math.random().toString(36).slice(2),
-          tokenType: 'Bearer',
+          tokenType: "Bearer",
           tipo: role,
           usuario: {
             cpf: gerente.cpf,
@@ -55,19 +66,21 @@ export class LocalLoginService {
       }
 
       const clientes: Cliente[] = this.clientesService.listarClientes();
-      const cliente = clientes.find((c: Cliente) => c.email!.toLowerCase() === email);
+      const cliente = clientes.find(
+        (c: Cliente) => c.email!.toLowerCase() === email,
+      );
 
       if (cliente) {
         if (cliente?.senha !== credentials?.senha) {
-          observer.error(new Error('Credenciais inválidas'));
+          observer.error(new Error("Credenciais inválidas"));
           observer.complete();
           return;
         }
 
         const res: LoginResponse = {
           token: Math.random().toString(36).slice(2),
-          tokenType: 'Bearer',
-          tipo: 'CLIENTE',
+          tokenType: "Bearer",
+          tipo: "CLIENTE",
           usuario: {
             cpf: cliente.cpf,
             nome: cliente.nome,
@@ -86,10 +99,9 @@ export class LocalLoginService {
         return;
       }
 
-      observer.error(new Error('Credenciais inválidas'));
+      observer.error(new Error("Credenciais inválidas"));
       observer.complete();
     });
-
   }
 
   // POST /logout
@@ -115,7 +127,6 @@ export class LocalLoginService {
       observer.next({} as LogoutResponse);
       observer.complete();
     });
-
   }
 
   isLoggedIn(): boolean {
@@ -124,6 +135,6 @@ export class LocalLoginService {
 
   sessionInfo(): LoginResponse | null {
     const sessionData = localStorage.getItem(this.tokenKey);
-    return sessionData ? JSON.parse(sessionData) as LoginResponse : null;
+    return sessionData ? (JSON.parse(sessionData) as LoginResponse) : null;
   }
 }

@@ -23,74 +23,60 @@ public class SagaAutocadastroListener {
     public void onSagamessage(SagaMessage<?> message) {
         log.info("Mensagem recebida para tópico: {}. Payload: {}", SAGA_AUTOCADASTRO_QUEUE, message);
 
-
-        if (CLIENTE_CREATE_QUEUE.equals(message.getStep()) && EnStatusIntegracao.SUCESSO.equals(message.getStatus())) {
-            SagaMessage<?> next = new SagaMessage<>(
-                    message.getSagaId(),
-                    AUTH_CREATE_QUEUE,
-                    EnStatusIntegracao.INICIADO,
-                    null,
-                    message.getData(),
-                    null
-            );
-            rabbitTemplate.convertAndSend(AUTH_CREATE_QUEUE, next);
+        if (EnStatusIntegracao.SUCESSO.equals(message.getStatus())) {
+            switch (message.getStep()) {
+                case CLIENTE_CREATE_QUEUE -> enviarAuth(message);
+                case AUTH_CREATE_QUEUE -> enviarConta(message);
+                case CONTA_CREATE_QUEUE -> log.info("Saga finalizada!");
+            }
         }
 
-        else if (AUTH_CREATE_QUEUE.equals(message.getStep()) && EnStatusIntegracao.SUCESSO.equals(message.getStatus())) {
-            SagaMessage<?> next = new SagaMessage<>(
-                    message.getSagaId(),
-                    CONTA_CREATE_QUEUE,
-                    EnStatusIntegracao.INICIADO,
-                    null,
-                    message.getData(),
-                    null
-            );
-            rabbitTemplate.convertAndSend(CONTA_CREATE_QUEUE, next);
+        if (EnStatusIntegracao.FALHA.equals(message.getStatus())) {
+            switch (message.getStep()) {
+                case AUTH_CREATE_QUEUE -> compensarAuth(message);
+                case CONTA_CREATE_QUEUE -> compensarConta(message);
+            }
         }
+    }
 
-        else if (CONTA_CREATE_QUEUE.equals(message.getStep()) && EnStatusIntegracao.SUCESSO.equals(message.getStatus())) {
-            SagaMessage<?> next = new SagaMessage<>(
-                    message.getSagaId(),
-                    GERENTE_ASSIGN_QUEUE,
-                    EnStatusIntegracao.INICIADO,
-                    null,
-                    message.getData(),
-                    null
-            );
-            rabbitTemplate.convertAndSend(GERENTE_ASSIGN_QUEUE, next);
-        }
+    private void enviarAuth(SagaMessage<?> message) {
 
-        else if (GERENTE_ASSIGN_QUEUE.equals(message.getStep()) && EnStatusIntegracao.SUCESSO.equals(message.getStatus())) {
-            log.info("[sagaId={}] SAGA concluída com sucesso", message.getSagaId());
-        }
 
-        else if (AUTH_CREATE_QUEUE.equals(message.getStep()) && EnStatusIntegracao.FALHA.equals(message.getStatus())) {
-            log.error("[sagaId={}] Falha ao criar autenticação. Compensando CLIENTE...", message.getSagaId());
-            SagaMessage<?> compensation = new SagaMessage<>(
-                    message.getSagaId(),
-                    CLIENTE_DELETE_QUEUE,
-                    EnStatusIntegracao.INICIADO,
-                    null,
-                    message.getData(),
-                    null
-            );
-            rabbitTemplate.convertAndSend(CLIENTE_DELETE_QUEUE, compensation);
-        }
+        SagaMessage<?> next = new SagaMessage<>(
+                message.getSagaId(),
+                AUTH_CREATE_QUEUE,
+                EnStatusIntegracao.INICIADO,
+                null,
+                message.getData(),
+                null
+        );
 
-        else if (CONTA_CREATE_QUEUE.equals(message.getStep()) && EnStatusIntegracao.FALHA.equals(message.getStatus())) {
-            log.error("[sagaId={}] Falha ao criar conta. Compensando AUTH + CLIENTE...", message.getSagaId());
+        rabbitTemplate.convertAndSend(AUTH_CREATE_QUEUE, next);
+    }
 
-            rabbitTemplate.convertAndSend(AUTH_DELETE_QUEUE, message);
-            rabbitTemplate.convertAndSend(CLIENTE_DELETE_QUEUE, message);
-        }
+    private void enviarConta(SagaMessage<?> message) {
 
-        else if (GERENTE_ASSIGN_QUEUE.equals(message.getStep()) && EnStatusIntegracao.FALHA.equals(message.getStatus())) {
-            log.error("[sagaId={}] Falha ao atribuir gerente. Compensando CONTA + AUTH + CLIENTE...", message.getSagaId());
+        SagaMessage<?> next = new SagaMessage<>(
+                message.getSagaId(),
+                CONTA_CREATE_QUEUE,
+                EnStatusIntegracao.INICIADO,
+                null,
+                message.getData(),
+                null
+        );
 
-            rabbitTemplate.convertAndSend(CONTA_DELETE_QUEUE, message);
-            rabbitTemplate.convertAndSend(AUTH_DELETE_QUEUE, message);
-            rabbitTemplate.convertAndSend(CLIENTE_DELETE_QUEUE, message);
-        }
+        rabbitTemplate.convertAndSend(CONTA_CREATE_QUEUE, next);
+    }
+
+    private void compensarAuth(SagaMessage<?> message) {
+        log.info("[sagaId={}] Compensando AUTH...", message.getSagaId());
+        rabbitTemplate.convertAndSend(CLIENTE_DELETE_QUEUE, message);
+    }
+
+    private void compensarConta(SagaMessage<?> message) {
+        log.info("[sagaId={}] Compensando CONTA...", message.getSagaId());
+        rabbitTemplate.convertAndSend(AUTH_DELETE_QUEUE, message);
+        rabbitTemplate.convertAndSend(CLIENTE_DELETE_QUEUE, message);
     }
 
 }

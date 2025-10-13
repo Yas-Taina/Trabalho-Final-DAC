@@ -1,7 +1,7 @@
-import { Endereco } from './endereco';
-import { Conta } from './conta';
+import { Endereco } from "./endereco";
+import { Conta } from "./conta";
 
-export type EstadoCliente = 'AGUARDANDO' | 'APROVADO' | 'RECUSADO';
+export type EstadoCliente = "AGUARDANDO" | "APROVADO" | "RECUSADO";
 
 export interface Cliente {
   nome: string;
@@ -12,7 +12,7 @@ export interface Cliente {
   salario: number;
   estado: EstadoCliente;
   dadosConta?: Conta;
-  senha?: string; 
+  senha?: string;
   gerenteCpf?: string;
   motivoRecusa?: string;
 }

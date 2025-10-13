@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { LocalClientesService, LocalGerentesService } from '../../../services';
-import { Cliente } from '../../../services/local/models/cliente';
-import { Gerente } from '../../../services/local/models/gerente';
-import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { NgxMaskPipe } from 'ngx-mask';
+import { Component, OnInit } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { CommonModule } from "@angular/common";
+import { NgxMaskPipe } from "ngx-mask";
+import { LocalClientesService, LocalGerentesService } from "../../../services";
+import { Cliente } from "../../../services/local/models/cliente";
+import { Gerente } from "../../../services/local/models/gerente";
 
 interface ClienteExibicao {
   cpf: string;
@@ -15,45 +15,65 @@ interface ClienteExibicao {
   saldo?: number;
   limite?: number;
   gerenteCpf?: string;
-  gerente_nome?: string;
+  gerenteNome?: string;
 }
 
 @Component({
-  selector: 'app-clientes-adm',
+  selector: "app-clientes-adm",
   standalone: true,
   imports: [RouterModule, CommonModule, NgxMaskPipe],
-  templateUrl: './clientes.component.html',
-  styleUrls: ['./clientes.component.css']
+  templateUrl: "./clientes.component.html",
+  styleUrls: ["./clientes.component.css"],
 })
 export class ClientesAdmComponent implements OnInit {
   clientes: ClienteExibicao[] = [];
 
   constructor(
-    private clientesService: LocalClientesService,
-    private gerentesService: LocalGerentesService
+    private readonly clientesService: LocalClientesService,
+    private readonly gerentesService: LocalGerentesService,
   ) {}
 
   ngOnInit(): void {
     this.carregarClientes();
   }
 
-  carregarClientes(): void {
-    const todos: Cliente[] = this.clientesService.listarClientes();
-    this.clientes = todos
-      .filter(c => c.estado === 'APROVADO')
-      .map(c => {
-        const gerente = this.gerentesService.listarGerentes().find(g => g.cpf === c.gerenteCpf);
-        return {
-          cpf: c.cpf,
-          nome: c.nome,
-          email: c.email,
-          salario: c.salario,
-          conta: c.dadosConta?.numero,
-          saldo: c.dadosConta?.saldo,
-          limite: c.dadosConta?.limite,
-          gerenteCpf: c.gerenteCpf,
-          gerente_nome: gerente?.nome
-        };
-      });
+  private carregarClientes(): void {
+    const gerentesMap = this.criarMapaGerentes(
+      this.gerentesService.listarGerentes(),
+    );
+    this.clientes = this.clientesService
+      .listarClientes()
+      .filter((cliente) => cliente.estado === "APROVADO")
+      .map((cliente) => this.mapearClienteParaExibicao(cliente, gerentesMap));
+  }
+
+  private criarMapaGerentes(gerentes: Gerente[]): Record<string, Gerente> {
+    return gerentes.reduce(
+      (map, gerente) => {
+        map[gerente.cpf] = gerente;
+        return map;
+      },
+      {} as Record<string, Gerente>,
+    );
+  }
+
+  private mapearClienteParaExibicao(
+    cliente: Cliente,
+    gerentesMap: Record<string, Gerente>,
+  ): ClienteExibicao {
+    const gerente = cliente.gerenteCpf
+      ? gerentesMap[cliente.gerenteCpf]
+      : undefined;
+    return {
+      cpf: cliente.cpf,
+      nome: cliente.nome,
+      email: cliente.email,
+      salario: cliente.salario,
+      conta: cliente.dadosConta?.numero,
+      saldo: cliente.dadosConta?.saldo,
+      limite: cliente.dadosConta?.limite,
+      gerenteCpf: cliente.gerenteCpf,
+      gerenteNome: gerente?.nome,
+    };
   }
 }

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { LocalGerentesService } from '../../../services';
-import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from "@angular/core";
+import { LocalGerentesService } from "../../../services";
+import { RouterModule } from "@angular/router";
+import { CommonModule } from "@angular/common";
 
 interface DashboardData {
   gerente: string;
@@ -11,11 +11,11 @@ interface DashboardData {
 }
 
 @Component({
-  selector: 'app-inicio-adm',
+  selector: "app-inicio-adm",
   standalone: true,
   imports: [RouterModule, CommonModule],
-  templateUrl: './inicio.component.html',
-  styleUrls: ['./inicio.component.css']
+  templateUrl: "./inicio.component.html",
+  styleUrls: ["./inicio.component.css"],
 })
 export class InicioAdmComponent implements OnInit {
   dashboards: DashboardData[] = [];
@@ -23,13 +23,12 @@ export class InicioAdmComponent implements OnInit {
   constructor(private gerentesService: LocalGerentesService) {}
 
   ngOnInit(): void {
-    const dadosGerentes = this.gerentesService.dashboard(); 
-    this.dashboards = dadosGerentes.map(d => ({
+    const dadosGerentes = this.gerentesService.dashboard();
+    this.dashboards = dadosGerentes.map((d) => ({
       gerente: d.nome,
       clientes: d.total,
       saldo_positivo: d.saldoPositivo,
-      saldo_negativo: d.saldoNegativo
+      saldo_negativo: d.saldoNegativo,
     }));
   }
 }
-

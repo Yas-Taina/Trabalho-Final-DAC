@@ -1,53 +1,60 @@
 <div class="row mainRosa justify-content-evenly">
   <div class="col-lg-4 d-flex flex-column justify-content-center">
     <div class="imgLine">
-      <hr>
-      <img src="../../../../assets/img/img1.png" alt="Imagem Decorativa" class="imgTitle"> 
-    </div>  
-    <h1 class="tituloGrande">
-      Clientes
-    </h1>
-    <hr>
+      <hr />
+      <img
+        src="../../../../assets/img/img1.png"
+        alt="Imagem Decorativa"
+        class="imgTitle"
+      />
+    </div>
+    <h1 class="tituloGrande">Clientes</h1>
+    <hr />
   </div>
 
   <div class="col-lg-6 d-flex flex-column justify-content-center">
     <div class="containerTabela">
-      <div class="tabela"> 
-      <table>
-        <thead>
-          <tr>
-            <th>CPF</th>
-            <th>Nome</th>
-            <th>E-mail</th>
-            <th>Salário</th>
-            <th>Conta</th>
-            <th>Saldo</th>
-            <th>Limite</th>
-            <th>Gerente</th>
-            <th>Nome do Gerente</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let cliente of clientes">
-            <td>{{cliente.cpf | mask: '000.000.000-00'}}</td>
-            <td>{{cliente.nome}}</td>
-            <td>{{cliente.email}}</td>
-            <td>{{cliente.salario | currency:'BRL':'symbol':'1.2-2' }}</td>
-            <td>{{cliente.conta}}</td>
-            <td>{{cliente.saldo | currency:'BRL':'symbol':'1.2-2' }}</td>
-            <td>{{cliente.limite | currency:'BRL':'symbol':'1.2-2' }}</td>
-            <td>{{cliente.gerenteCpf || '' | mask: '000.000.00-00'}}</td>
-            <td>{{cliente.gerente_nome}}</td>
-          </tr>          
-        </tbody>
-      </table>
+      <div class="tabela">
+        <table>
+          <thead>
+            <tr>
+              <th>CPF</th>
+              <th>Nome</th>
+              <th>E-mail</th>
+              <th>Salário</th>
+              <th>Conta</th>
+              <th>Saldo</th>
+              <th>Limite</th>
+              <th>Gerente</th>
+              <th>Nome do Gerente</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cliente of clientes">
+              <td>{{ cliente.cpf | mask: "000.000.000-00" }}</td>
+              <td>{{ cliente.nome }}</td>
+              <td>{{ cliente.email }}</td>
+              <td>
+                {{ cliente.salario | currency: "BRL" : "symbol" : "1.2-2" }}
+              </td>
+              <td>{{ cliente.conta }}</td>
+              <td>
+                {{ cliente.saldo | currency: "BRL" : "symbol" : "1.2-2" }}
+              </td>
+              <td>
+                {{ cliente.limite | currency: "BRL" : "symbol" : "1.2-2" }}
+              </td>
+              <td>{{ cliente.gerenteCpf || "" | mask: "000.000.00-00" }}</td>
+              <td>{{ cliente.gerenteNome }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    </div>   
     <div class="d-flex justify-content-end">
-    <a routerLink="/adm/home"
-        class="btnIcon"
-        routerLinkActive="active"><i class="fa-solid fa-location-arrow btnVoltar"></i>
-    </a>
+      <a routerLink="/adm/home" class="btnIcon" routerLinkActive="active"
+        ><i class="fa-solid fa-location-arrow btnVoltar"></i>
+      </a>
     </div>
   </div>
 </div>

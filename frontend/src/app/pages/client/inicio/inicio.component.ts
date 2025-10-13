@@ -1,45 +1,47 @@
-import { Component, OnInit } from '@angular/core';
-import { LocalContasService } from '../../../services';
-import { LocalLoginService } from '../../../services';
-import { ClienteResponse, DadoGerente } from '../../../services';
-import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { NgxMaskDirective } from 'ngx-mask';
+import { Component, OnInit } from "@angular/core";
+import { LocalContasService } from "../../../services";
+import { LocalLoginService } from "../../../services";
+import { ClienteResponse, DadoGerente } from "../../../services";
+import { RouterModule } from "@angular/router";
+import { CommonModule } from "@angular/common";
+import { ReactiveFormsModule } from "@angular/forms";
+import { NgxMaskDirective } from "ngx-mask";
 
 @Component({
-  selector: 'app-inicio',
+  selector: "app-inicio",
   standalone: true,
   imports: [RouterModule, CommonModule, ReactiveFormsModule],
-  templateUrl: './inicio.component.html',
-  styleUrl: './inicio.component.css'
+  templateUrl: "./inicio.component.html",
+  styleUrl: "./inicio.component.css",
 })
 export class InicioClientComponent implements OnInit {
-    conta: { saldo: number } | null = null;
+  conta: { saldo: number } | null = null;
 
   constructor(
     private contasService: LocalContasService,
-    private loginService: LocalLoginService
+    private loginService: LocalLoginService,
   ) {}
 
   ngOnInit(): void {
     this.carregarSaldo();
   }
 
-  private isCliente(usuario: ClienteResponse | DadoGerente): usuario is ClienteResponse {
+  private isCliente(
+    usuario: ClienteResponse | DadoGerente,
+  ): usuario is ClienteResponse {
     return (usuario as ClienteResponse).conta !== undefined;
   }
 
   private carregarSaldo(): void {
     const session = this.loginService.sessionInfo();
     if (!session || !this.isCliente(session.usuario)) {
-      alert('Sessão inválida ou usuário não é cliente');
+      alert("Sessão inválida ou usuário não é cliente");
       return;
     }
 
     const numeroConta = session.usuario.conta;
     if (!numeroConta) {
-      alert('Número da conta não disponível');
+      alert("Número da conta não disponível");
       return;
     }
 
@@ -47,7 +49,7 @@ export class InicioClientComponent implements OnInit {
       const saldo = this.contasService.consultarSaldo(numeroConta);
       this.conta = { saldo };
     } catch (error: any) {
-      alert(error.message || 'Erro ao consultar saldo');
+      alert(error.message || "Erro ao consultar saldo");
     }
   }
 }
