@@ -6,7 +6,11 @@
     http://www.liquibase.org/xml/ns/dbchangelog
     https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <include file="db/changelog/scripts/create_cliente_schema.sql" />
-    <include file="db/changelog/scripts/create_cliente_table.sql" />
+    <changeSet id="1" author="veiga">
+        <sql>CREATE SCHEMA IF NOT EXISTS cliente;</sql>
+    </changeSet>
+
+    <include file="/db/changelog/scripts/V1__create_cliente_table.sql" />
+    <include file="/db/changelog/scripts/V2__insert_default_data.sql" />
 
 </databaseChangeLog>

@@ -2,7 +2,6 @@ package dac.ufpr.cliente.mapper;
 
 import dac.ufpr.cliente.dto.ClienteDto;
 import dac.ufpr.cliente.entity.Cliente;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,7 +16,7 @@ public class ClienteMapper {
                 dto.telefone(),
                 dto.salario(),
                 dto.endereco(),
-                dto.CEP(),
+                dto.cep(),
                 dto.cidade(),
                 dto.estado()
         );
@@ -32,7 +31,7 @@ public class ClienteMapper {
                 entity.getTelefone(),
                 entity.getSalario(),
                 entity.getEndereco(),
-                entity.getCEP(),
+                entity.getCep(),
                 entity.getCidade(),
                 entity.getEstado()
         );
@@ -45,7 +44,7 @@ public class ClienteMapper {
         entity.setTelefone(dto.telefone());
         entity.setSalario(dto.salario());
         entity.setEndereco(dto.endereco());
-        entity.setCEP(dto.CEP());
+        entity.setCep(dto.cep());
         entity.setCidade(dto.cidade());
         entity.setEstado(dto.estado());
     }

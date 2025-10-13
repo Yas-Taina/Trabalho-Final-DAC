@@ -190,3 +190,5 @@ dist
 .history
 .ionide
 
+/backend/data/mongo/
+
