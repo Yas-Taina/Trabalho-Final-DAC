@@ -27,7 +27,7 @@ export class LoginService extends BaseService {
   // POST /logout
   logout(): Observable<LogoutResponse> {
     const stored = localStorage.getItem('token');
-    const dados: LoginResponse = stored ? JSON.parse(stored) : "" // ou outro storage
+    const dados: LoginResponse = stored ? JSON.parse(stored) : ""
     const headers =  new HttpHeaders({
       Authorization: `Bearer ${dados.token}`,
     });
