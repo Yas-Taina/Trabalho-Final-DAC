@@ -1,0 +1,16 @@
+meta {
+  name: login
+  type: http
+  seq: 3
+}
+
+get {
+  url: HTTP://localhost:8082/
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: bearear eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaHJpc0BiYW50YWRzIiwicm9sZSI6IkdFUkVOVEUiLCJpYXQiOjE3NjA1Njg3NzUsImV4cCI6MTc2MDU3MjM3NX0.XVsto-hpNJ595WSoQdKqq7UoZlPcllSRXz2OJDPeKZY
+}
