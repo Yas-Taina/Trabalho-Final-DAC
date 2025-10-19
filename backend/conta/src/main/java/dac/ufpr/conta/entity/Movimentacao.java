@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor; 
 import lombok.Setter; 
 @Entity 
-@Table(name = "movimento", schema = "conta_cmd",
+@Table(name = "movimento", schema = "conta",
        indexes = {
            @Index(name = "idx_mov_conta_id", columnList = "conta_id"),
            @Index(name = "idx_mov_data", columnList = "data_hora")

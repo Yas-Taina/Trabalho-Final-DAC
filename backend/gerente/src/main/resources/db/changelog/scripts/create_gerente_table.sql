@@ -4,6 +4,5 @@ CREATE TABLE if not exists gerente.gerente (
 	email varchar(255) NULL,
 	nome varchar(255) NULL,
 	senha varchar(255) NULL,
-	tipo varchar(255) NULL,
-	CONSTRAINT gerente_pkey PRIMARY KEY (id)
+	tipo varchar(255) NULL
 );

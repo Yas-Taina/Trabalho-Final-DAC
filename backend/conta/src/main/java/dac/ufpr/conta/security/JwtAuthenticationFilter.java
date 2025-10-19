@@ -1,41 +1,35 @@
-package dac.ufpr.gerente.security;
-
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
+package dac.ufpr.conta.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.util.List;
-
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-
-    @org.springframework.beans.factory.annotation.Value("${JWT_SECRET_KEY}")
+    @Value("${JWT_SECRET_KEY}")
     private String secretKey;
 
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, 
-                                    HttpServletResponse response, 
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
                                     FilterChain filterChain)
             throws java.io.IOException, ServletException {
         String authHeader = request.getHeader("Authorization");
-
-
-        System.out.println("Authorization Header: " + request.getHeader("Authorization"));
-        System.out.println("Método HTTP: " + request.getMethod());
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
@@ -55,17 +49,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null,
-                    authorities);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-
         } catch (JwtException e) {
-            throw new RuntimeException("Token JWT inválido ou expirado", e);
+            throw new RuntimeException("Token JWT inválido ou expirado");
         }
 
         filterChain.doFilter(request, response);
     }
-    
+
 }
