@@ -1,5 +1,5 @@
-import { ClienteResponse } from "./clienteResponse";
-import { DadoGerente } from "./dadoGerente";
+import { ClienteResponse } from "../cliente/clienteResponse";
+import { DadoGerente } from "../gerente/dadoGerente";
 
 export interface LoginResponse {
   token: string;

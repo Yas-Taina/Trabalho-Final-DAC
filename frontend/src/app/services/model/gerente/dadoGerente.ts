@@ -1,4 +1,4 @@
-import { DadosClienteResponse } from "./dadosClienteResponse";
+import { DadosClienteResponse } from "../cliente/dadosClienteResponse";
 
 export type TipoGerente = "ADMINISTRADOR" | "GERENTE";
 
