@@ -1,57 +1,42 @@
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root'
 })
-export class BaseService {
-  private readonly apiUrl =
-    "https://virtserver.swaggerhub.com/RAZERANTHOM/bantads/1.0.1";
+export class BaseService<T> {
+  protected http = inject(HttpClient);
+  private readonly GATEWAY_URL = 'http://localhost:3000/api';
+  private readonly SERVICES = {
+    AUTH: `${this.GATEWAY_URL}/auth`,
+    CLIENTE: `${this.GATEWAY_URL}/clientes`,
+    CONTA: `${this.GATEWAY_URL}/contas`,
+    GERENTE: `${this.GATEWAY_URL}/gerentes`,
+  };
+  protected serviceUrl = '';
 
-  constructor(protected http: HttpClient) {}
-
-  protected get<T>(
-    endpoint: string,
-    params?: any,
-    headers?: HttpHeaders,
-  ): Observable<T> {
-    return this.http.get<T>(`${this.apiUrl}${endpoint}`, {
-      headers,
-      params: this.buildParams(params),
-    });
+  constructor(serviceName: keyof BaseService<T>['SERVICES']) {
+    this.serviceUrl = this.SERVICES[serviceName];
   }
 
-  protected post<T>(
-    endpoint: string,
-    body?: any,
-    headers?: HttpHeaders,
-  ): Observable<T> {
-    return this.http.post<T>(`${this.apiUrl}${endpoint}`, body, { headers });
+  getAll(): Observable<T[]> {
+    return this.http.get<T[]>(this.serviceUrl);
   }
 
-  protected put<T>(
-    endpoint: string,
-    body?: any,
-    headers?: HttpHeaders,
-  ): Observable<T> {
-    return this.http.put<T>(`${this.apiUrl}${endpoint}`, body, { headers });
+  getById(id: number | string): Observable<T> {
+    return this.http.get<T>(`${this.serviceUrl}/${id}`);
   }
 
-  protected delete<T>(endpoint: string, headers?: HttpHeaders): Observable<T> {
-    return this.http.delete<T>(`${this.apiUrl}${endpoint}`, { headers });
+  create(data: Partial<T>): Observable<T> {
+    return this.http.post<T>(this.serviceUrl, data);
   }
 
-  private buildParams(params?: any): HttpParams {
-    let httpParams = new HttpParams();
-    if (params) {
-      Object.keys(params).forEach((key) => {
-        if (params[key] !== null && params[key] !== undefined) {
-          httpParams = httpParams.set(key, params[key]);
-        }
-      });
-    }
+  update(id: number | string, data: Partial<T>): Observable<T> {
+    return this.http.put<T>(`${this.serviceUrl}/${id}`, data);
+  }
 
-    return httpParams;
+  delete(id: number | string): Observable<void> {
+    return this.http.delete<void>(`${this.serviceUrl}/${id}`);
   }
 }

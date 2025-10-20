@@ -1,54 +1,34 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { HttpHeaders } from '@angular/common/http';
 import { BaseService } from '../api.base.service';
-import { DadoGerente, DadoGerenteInsercao, DadoGerenteAtualizacao, LoginResponse } from '../model';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Gerente } from '../local/models/gerente';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class GerentesService extends BaseService {
-  private getAuthHeaders(): HttpHeaders {
-    const stored = localStorage.getItem('token');
-    const dados: LoginResponse = stored ? JSON.parse(stored) : "";
-
-    return new HttpHeaders({
-      Authorization: `Bearer ${dados.token}`,
-    });
+export class GerenteService extends BaseService<Gerente> {
+  constructor() {
+    super('GERENTE');
   }
 
-  // GET /gerentes?numero=dashboard
-  getGerentes(numero?: 'dashboard'): Observable<any> {
-    const headers = this.getAuthHeaders();
-
-    return this.get<any>('/gerentes', numero ? { numero } : {}, headers);
+  getTodosGerentes(): Observable<Gerente[]> {
+    return this.http.get<Gerente[]>(this.serviceUrl);
   }
 
-  // POST /gerentes
-  inserirGerente(data: DadoGerenteInsercao): Observable<DadoGerente> {
-    const headers = this.getAuthHeaders();
-
-    return this.post<DadoGerente>('/gerentes', data, headers);
+  obterGerenteByCpf(cpf: string): Observable<Gerente> {
+    return this.http.get<Gerente>(`${this.serviceUrl}/${cpf}`);
   }
 
-  // GET /gerentes/{cpf}
-  getGerente(cpf: string): Observable<DadoGerente> {
-    const headers = this.getAuthHeaders();
-
-    return this.get<DadoGerente>(`/gerentes/${cpf}`, {}, headers);
+  inserirGerente(dto: Gerente): Observable<Gerente> {
+    return this.http.post<Gerente>(this.serviceUrl, dto);
   }
 
-  // DELETE /gerentes/{cpf}
-  removerGerente(cpf: string): Observable<DadoGerente> {
-    const headers = this.getAuthHeaders();
-
-    return this.delete<DadoGerente>(`/gerentes/${cpf}`, headers);
+  alterarGerente(cpf: string, dto: Gerente): Observable<Gerente> {
+    return this.http.put<Gerente>(`${this.serviceUrl}/${cpf}`, dto);
   }
 
-  // PUT /gerentes/{cpf}
-  atualizarGerente(cpf: string, data: DadoGerenteAtualizacao): Observable<DadoGerente> {
-    const headers = this.getAuthHeaders();
-    
-    return this.put<DadoGerente>(`/gerentes/${cpf}`, data, headers);
+  removerGerente(cpf: string): Observable<void> {
+    return this.http.delete<void>(`${this.serviceUrl}/${cpf}`);
   }
 }
