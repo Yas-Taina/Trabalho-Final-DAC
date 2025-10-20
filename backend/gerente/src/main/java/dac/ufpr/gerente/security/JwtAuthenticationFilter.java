@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -21,13 +22,20 @@ import java.util.List;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @org.springframework.beans.factory.annotation.Value("${jwt.secret}")
+
+    @org.springframework.beans.factory.annotation.Value("${JWT_SECRET_KEY}")
     private String secretKey;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request, 
+                                    HttpServletResponse response, 
+                                    FilterChain filterChain)
             throws java.io.IOException, ServletException {
         String authHeader = request.getHeader("Authorization");
+
+
+        System.out.println("Authorization Header: " + request.getHeader("Authorization"));
+        System.out.println("Método HTTP: " + request.getMethod());
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
@@ -36,8 +44,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = authHeader.substring(7);
 
         try {
-            Claims claims = Jwts.parser()
+            Claims claims = Jwts.parserBuilder()
                     .setSigningKey(secretKey.getBytes())
+                    .build()
                     .parseClaimsJws(token)
                     .getBody();
 
@@ -49,10 +58,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null,
                     authorities);
 
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
         } catch (JwtException e) {
             throw new RuntimeException("Token JWT inválido ou expirado", e);
         }
 
         filterChain.doFilter(request, response);
     }
+    
 }

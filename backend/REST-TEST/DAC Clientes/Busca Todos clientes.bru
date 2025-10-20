@@ -1,0 +1,19 @@
+meta {
+  name: Busca Todos clientes
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:8080/clientes?filtro=ativo
+  body: json
+  auth: inherit
+}
+
+params:query {
+  filtro: ativo
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaHJpc0BiYW50YWRzIiwicm9sZSI6IkdFUkVOVEUiLCJpYXQiOjE3NjAzMTQxMTEsImV4cCI6MTc2MDMxNzcxMX0.FKGqxoOoXuTnR2Jzifig5MBhwO458FgTRu9VMr4_4Wg
+}

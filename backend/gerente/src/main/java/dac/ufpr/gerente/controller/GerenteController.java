@@ -23,12 +23,12 @@ public class GerenteController {
     }
 
     @GetMapping("/{cpf}")
-    public ResponseEntity<GerenteDto> obterGerenteByCpf(@PathVariable String cpf) {
+    public ResponseEntity<GerenteDto> buscarPorCpf(@PathVariable String cpf) {
         return ResponseEntity.ok(service.buscarPorCpf(cpf));
     }
 
     @PostMapping
-    public ResponseEntity<GerenteDto> inserirGerente(@RequestBody @Valid GerenteDto dto,
+    public ResponseEntity<GerenteDto> criar(@RequestBody @Valid GerenteDto dto,
                                                      UriComponentsBuilder uriBuilder) {
         GerenteDto criado = service.criar(dto);
         var location = uriBuilder.path("/gerentes/{cpf}").buildAndExpand(criado.cpf()).toUri();
@@ -38,13 +38,13 @@ public class GerenteController {
     
 
     @PutMapping("/{cpf}")
-    public ResponseEntity<GerenteDto> alterarGerente(@PathVariable String cpf,
+    public ResponseEntity<GerenteDto> atualizar(@PathVariable String cpf,
                                                      @RequestBody @Valid GerenteDto dto) {
         return ResponseEntity.ok(service.atualizar(cpf, dto));
     }
 
     @DeleteMapping("/{cpf}")
-    public ResponseEntity<Void> removerGerente(@PathVariable String cpf) {
+    public ResponseEntity<Void> remover(@PathVariable String cpf) {
         service.remover(cpf);
         return ResponseEntity.noContent().build();
     }

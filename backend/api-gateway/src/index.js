@@ -1,16 +1,18 @@
 import express from "express";
-import authRoutes from "./routes/auth.js";
-import clientesRoutes from "./routes/cliente.js";
-import contasRoutes from "./routes/conta.js";
-import gerentesRoutes from "./routes/gerente.js";
+import { SERVICES } from "./config/services.js";
+import { createServiceProxy } from "./utils/proxyHelper.js";
 
 const app = express();
 app.use(express.json());
 
-app.use("/api/auth", authRoutes);
-app.use("/api/clientes", clientesRoutes);
-app.use("/api/contas", contasRoutes);
-app.use("/api/gerentes", gerentesRoutes);
+const router = express.Router();
+
+app.use("/api/clientes", createServiceProxy(SERVICES.CLIENTE, "/api/clientes"));
+app.use("/api/auth", createServiceProxy(SERVICES.AUTH, "/api/auth"));
+app.use("/api/contas", createServiceProxy(SERVICES.CONTA, "/api/contas"));
+app.use("/api/gerentes", createServiceProxy(SERVICES.GERENTE, "/api/gerentes"));
+app.use("/api/sagas", createServiceProxy(SERVICES.SAGA, "/api/sagas"));
+
 
 app.use((err, req, res, next) => {
   console.error("❌ Erro no gateway:", err.message);

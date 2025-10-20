@@ -14,7 +14,7 @@ import lombok.Setter;
 @Entity
 @Table(
     name = "conta",
-    schema = "conta_cmd",
+    schema = "conta",
     uniqueConstraints = @UniqueConstraint(name = "uk_conta_numero", columnNames = "numero_conta"),
     indexes = {
         @Index(name = "idx_conta_numero", columnList = "numero_conta")

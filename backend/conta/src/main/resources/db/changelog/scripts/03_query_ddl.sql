@@ -1,16 +1,16 @@
 -- 03_query_ddl.sql (schema conta_query)
-CREATE TABLE conta_query.conta_view (
+CREATE TABLE if not exists conta_query.conta_view (
   numero_conta VARCHAR(10) PRIMARY KEY,
-  cliente_id UUID NOT NULL,
-  gerente_id UUID NOT NULL,
+  cliente_id int4 NOT NULL,
+  gerente_id int4 NOT NULL,
   saldo NUMERIC(18,2) NOT NULL,
   limite NUMERIC(18,2) NOT NULL,
   nome_cliente TEXT,   -- opcional: preenchido por composição via gateway, pode ficar null aqui
   cidade TEXT, estado TEXT
 );
 
-CREATE TABLE conta_query.movimento_view (
-  id UUID PRIMARY KEY,
+CREATE TABLE if not exists conta_query.movimento_view (
+  id int4 PRIMARY KEY,
   numero_conta VARCHAR(10) NOT NULL,
   data_hora TIMESTAMP NOT NULL,
   tipo VARCHAR(20) NOT NULL,
@@ -21,8 +21,8 @@ CREATE TABLE conta_query.movimento_view (
 );
 
 -- Resumo por gerente para tela do admin
-CREATE TABLE conta_query.gerente_resumo (
-  gerente_id UUID PRIMARY KEY,
+CREATE TABLE if not exists conta_query.gerente_resumo (
+  gerente_id int4 PRIMARY KEY,
   qtde_clientes INT NOT NULL,
   soma_saldos_positivos NUMERIC(18,2) NOT NULL,
   soma_saldos_negativos NUMERIC(18,2) NOT NULL

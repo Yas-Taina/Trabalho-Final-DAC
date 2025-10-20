@@ -1,11 +1,15 @@
 meta {
-  name: Deletar Usuario por ID
+  name: Deletar gerente por ID
   type: http
   seq: 5
 }
 
 delete {
-  url: http://localhost:8080/gerentes/44444444444
+  url: http://localhost:8083/gerentes/44444444444
   body: none
   auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaHJpc0BiYW50YWRzIiwicm9sZSI6IkdFUkVOVEUiLCJpYXQiOjE3NjAzMTQxMTEsImV4cCI6MTc2MDMxNzcxMX0.FKGqxoOoXuTnR2Jzifig5MBhwO458FgTRu9VMr4_4Wg
 }

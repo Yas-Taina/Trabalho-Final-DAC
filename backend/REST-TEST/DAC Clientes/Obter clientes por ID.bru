@@ -1,0 +1,15 @@
+meta {
+  name: Obter clientes por ID
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8080/clientes/12345678903
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaHJpc0BiYW50YWRzIiwicm9sZSI6IkdFUkVOVEUiLCJpYXQiOjE3NjAzMTQxMTEsImV4cCI6MTc2MDMxNzcxMX0.FKGqxoOoXuTnR2Jzifig5MBhwO458FgTRu9VMr4_4Wg
+}

@@ -24,7 +24,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/gerente/**").authenticated())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/gerentes/**").authenticated())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(((request, response, authException) -> {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
 
@@ -35,7 +35,7 @@ public class SecurityConfig {
                             response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403
                             response.setContentType("application/json");
                             response.getWriter()
-                                    .write("{\"error\": \"O usuário não tem permissão para efetuar esta operação\"}");
+                                    .write("{\"error\": \"O usuário não tEm permissão para efetuar esta operação\"}");
                         })))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

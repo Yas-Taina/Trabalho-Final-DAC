@@ -3,6 +3,7 @@ package dac.ufpr.gerente.listener;
 import dac.ufpr.gerente.dto.GerenteDto;
 import dac.ufpr.gerente.enums.EnStatusIntegracao;
 import dac.ufpr.gerente.exception.mapper.ExceptionMapper;
+import dac.ufpr.gerente.listener.dto.SagaMessage;
 import dac.ufpr.gerente.service.GerenteService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

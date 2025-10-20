@@ -5,6 +5,8 @@ import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.List;
 
+import dac.ufpr.conta.dto.ContaDto;
+import dac.ufpr.conta.mapper.ContaMapper;
 import org.springframework.stereotype.Service;
 
 import dac.ufpr.conta.entity.Conta;
@@ -27,6 +29,13 @@ public class ContaService {
     private final ContaRepository     contaRepo;
     private final MovimentoRepository movRepo;
     private final EventPublisher      publisher;
+
+    public List<ContaDto> listar() {
+        List<Conta> contas = contaRepo.findAll();
+        return contas.stream()
+                .map(ContaMapper::toDto)
+                .toList();
+    }
 
     @Transactional
     public void depositar(String numeroConta, BigDecimal valor, Long usuarioIdDono) {
