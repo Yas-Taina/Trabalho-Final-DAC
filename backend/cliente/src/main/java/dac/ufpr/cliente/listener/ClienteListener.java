@@ -32,27 +32,28 @@ public class ClienteListener {
         try {
             ClienteDto dto = service.criar(message.getData());
 
-            SagaMessage<ClienteDto> response = new SagaMessage<>(
-                    message.getSagaId(),
-                    CLIENTE_CREATE_QUEUE,
-                    EnStatusIntegracao.SUCESSO,
-                    null,
-                    dto,
-                    HttpStatus.CREATED.value()
-            );
+        SagaMessage<ClienteDto> response = new SagaMessage<>(
+            message.getSagaId(),
+            CLIENTE_CREATE_QUEUE,
+            EnStatusIntegracao.SUCESSO,
+            null,
+            dto,
+            HttpStatus.CREATED.value(),
+            message.getGerenteId()
+        );
 
-            rabbitTemplate.convertAndSend(SAGA_AUTOCADASTRO_QUEUE, response);
+        rabbitTemplate.convertAndSend(SAGA_AUTOCADASTRO_QUEUE, response);
         } catch (Exception e) {
             log.error("Erro ao processar mensagem para tópico: {}. Erro: ", CLIENTE_CREATE_QUEUE, e);
 
-            SagaMessage<?> response = ExceptionMapper.mapExceptionToSagaMessage(
-                    message.getSagaId(),
-                    CLIENTE_CREATE_QUEUE,
-                    message.getData(),
-                    e
-            );
+        SagaMessage<?> response = ExceptionMapper.mapExceptionToSagaMessage(
+            message.getSagaId(),
+            CLIENTE_CREATE_QUEUE,
+            message.getData(),
+            e
+        );
 
-            rabbitTemplate.convertAndSend(SAGA_AUTOCADASTRO_QUEUE, response);
+        rabbitTemplate.convertAndSend(SAGA_AUTOCADASTRO_QUEUE, response);
         }
     }
 

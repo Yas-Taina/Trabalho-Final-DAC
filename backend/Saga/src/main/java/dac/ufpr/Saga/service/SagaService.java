@@ -23,7 +23,8 @@ public class SagaService {
                 EnStatusIntegracao.INICIADO,
                 null,
                 dto,
-                null
+        null,
+        null
         );
 
         rabbitTemplate.convertAndSend(CLIENTE_CREATE_QUEUE, message);

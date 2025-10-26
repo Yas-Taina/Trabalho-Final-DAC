@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import dac.ufpr.conta.dto.ContaDto;
 import dac.ufpr.conta.mapper.ContaMapper;
@@ -35,6 +37,31 @@ public class ContaService {
         return contas.stream()
                 .map(ContaMapper::toDto)
                 .toList();
+    }
+
+    public Long findGerenteWithFewestClientes() {
+        List<Conta> contas = contaRepo.findAll();
+        if (contas.isEmpty()) return null;
+
+        Map<Long, Integer> counts = new HashMap<>();
+        for (Conta c : contas) {
+            Long gid = c.getGerenteId();
+            if (gid == null) continue;
+            counts.put(gid, counts.getOrDefault(gid, 0) + 1);
+        }
+
+        if (counts.isEmpty()) return null;
+
+        Long chosen = null;
+        int min = Integer.MAX_VALUE;
+        for (Map.Entry<Long, Integer> e : counts.entrySet()) {
+            if (e.getValue() < min) {
+                min = e.getValue();
+                chosen = e.getKey();
+            }
+        }
+
+        return chosen;
     }
 
     @Transactional

@@ -29,4 +29,10 @@ public class RabbitMqConfig {
     public Declarable clienteQueue() {
         return new Queue(SAGA_AUTOCADASTRO_QUEUE);
     }
+
+    @Bean
+    public Declarable gerenteAssignQueue() {
+        return new Queue(GERENTE_ASSIGN_QUEUE);
+    }
+
 }

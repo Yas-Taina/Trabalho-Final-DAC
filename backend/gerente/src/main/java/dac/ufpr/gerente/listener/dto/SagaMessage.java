@@ -15,4 +15,5 @@ public class SagaMessage<T> {
     private String error;
     private T data;
     private int httpStatus; 
+    private Long gerenteId;
 }

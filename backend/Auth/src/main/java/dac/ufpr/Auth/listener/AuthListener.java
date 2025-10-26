@@ -39,21 +39,22 @@ public class AuthListener {
                     EnStatusIntegracao.SUCESSO,
                     null,
                     dto,
-                    HttpStatus.CREATED.value()
+            HttpStatus.CREATED.value(),
+            message.getGerenteId()
             );
 
             rabbitTemplate.convertAndSend(SAGA_AUTOCADASTRO_QUEUE, response);
         } catch (Exception e) {
             log.error("Erro ao processar mensagem para tópico: {}. Erro: ", AUTH_CREATE_QUEUE, e);
 
-            SagaMessage<?> response = ExceptionMapper.mapExceptionToSagaMessage(
-                    message.getSagaId(),
-                    AUTH_CREATE_QUEUE,
-                    message.getData(),
-                    e
-            );
+        SagaMessage<?> response = ExceptionMapper.mapExceptionToSagaMessage(
+            message.getSagaId(),
+            AUTH_CREATE_QUEUE,
+            message.getData(),
+            e
+        );
 
-            rabbitTemplate.convertAndSend(SAGA_AUTOCADASTRO_QUEUE, response);
+        rabbitTemplate.convertAndSend(SAGA_AUTOCADASTRO_QUEUE, response);
         }
     }
 }

@@ -25,6 +25,8 @@ public class SagaAutocadastroListener {
 
         if (EnStatusIntegracao.SUCESSO.equals(message.getStatus())) {
             switch (message.getStep()) {
+                // first assign gerente from conta service
+                case GERENTE_ASSIGN_QUEUE -> enviarCliente(message);
                 case CLIENTE_CREATE_QUEUE -> enviarAuth(message);
                 case AUTH_CREATE_QUEUE -> enviarConta(message);
                 case CONTA_CREATE_QUEUE -> log.info("Saga finalizada!");
@@ -40,32 +42,46 @@ public class SagaAutocadastroListener {
     }
 
     private void enviarAuth(SagaMessage<?> message) {
-
-
-        SagaMessage<?> next = new SagaMessage<>(
+    SagaMessage<Object> next = new SagaMessage<>(
                 message.getSagaId(),
                 AUTH_CREATE_QUEUE,
                 EnStatusIntegracao.INICIADO,
                 null,
-                message.getData(),
-                null
+        message.getData(),
+        message.getHttpStatus(),
+        message.getGerenteId()
         );
 
         rabbitTemplate.convertAndSend(AUTH_CREATE_QUEUE, next);
     }
 
     private void enviarConta(SagaMessage<?> message) {
-
-        SagaMessage<?> next = new SagaMessage<>(
+    SagaMessage<Object> next = new SagaMessage<>(
                 message.getSagaId(),
                 CONTA_CREATE_QUEUE,
                 EnStatusIntegracao.INICIADO,
                 null,
-                message.getData(),
-                null
+        message.getData(),
+        message.getHttpStatus(),
+        message.getGerenteId()
         );
 
         rabbitTemplate.convertAndSend(CONTA_CREATE_QUEUE, next);
+    }
+
+    private void enviarCliente(SagaMessage<?> message) {
+
+    SagaMessage<Object> next = new SagaMessage<>(
+        message.getSagaId(),
+        GERENTE_ASSIGN_QUEUE,
+        EnStatusIntegracao.INICIADO,
+        null,
+        message.getData(),
+        message.getHttpStatus(),
+        message.getGerenteId()
+    );
+
+    rabbitTemplate.convertAndSend(GERENTE_ASSIGN_QUEUE, next);
     }
 
     private void compensarAuth(SagaMessage<?> message) {
