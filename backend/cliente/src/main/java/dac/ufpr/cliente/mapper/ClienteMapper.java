@@ -2,7 +2,10 @@ package dac.ufpr.cliente.mapper;
 
 import dac.ufpr.cliente.dto.ClienteDto;
 import dac.ufpr.cliente.entity.Cliente;
+import dac.ufpr.cliente.enums.EnStatusCliente;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 public class ClienteMapper {
@@ -18,16 +21,19 @@ public class ClienteMapper {
                 dto.endereco(),
                 dto.cep(),
                 dto.cidade(),
-                dto.estado()
+                dto.estado(),
+                EnStatusCliente.PENDENTE,
+                null,
+                LocalDateTime.now()
         );
     }
 
     public static ClienteDto toDto(Cliente entity) {
         return new ClienteDto(
                 entity.getId(),
-                entity.getNome(),
                 entity.getCpf(),
                 entity.getEmail(),
+                entity.getNome(),
                 entity.getTelefone(),
                 entity.getSalario(),
                 entity.getEndereco(),

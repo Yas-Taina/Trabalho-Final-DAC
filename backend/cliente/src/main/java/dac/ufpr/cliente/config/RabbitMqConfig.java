@@ -11,9 +11,11 @@ public class RabbitMqConfig {
 
     // Filas Cliente
     public static final String CLIENTE_CREATE_QUEUE = "cliente.create.queue";
+    public static final String CLIENTE_APPROVAL_QUEUE = "cliente.approval.queue";
 
     // Fila Saga
     public static final String SAGA_AUTOCADASTRO_QUEUE = "saga.autocadastro.queue";
+    public static final String SAGA_CLIENTE_APPROVAL_QUEUE = "saga.cliente.approval.queue";
 
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {

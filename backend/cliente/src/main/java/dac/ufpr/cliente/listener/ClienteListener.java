@@ -1,5 +1,6 @@
 package dac.ufpr.cliente.listener;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dac.ufpr.cliente.dto.ClienteDto;
 import dac.ufpr.cliente.enums.EnStatusIntegracao;
 import dac.ufpr.cliente.exception.mapper.ExceptionMapper;
@@ -13,8 +14,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import static dac.ufpr.cliente.config.RabbitMqConfig.CLIENTE_CREATE_QUEUE;
-import static dac.ufpr.cliente.config.RabbitMqConfig.SAGA_AUTOCADASTRO_QUEUE;
+import static dac.ufpr.cliente.config.RabbitMqConfig.*;
 
 @Component
 @RequiredArgsConstructor
@@ -24,9 +24,10 @@ public class ClienteListener {
 
     private final ClienteService service;
     private final RabbitTemplate rabbitTemplate;
+    private final ObjectMapper objectMapper;
 
     @RabbitListener(queues = CLIENTE_CREATE_QUEUE)
-    public void listen(SagaMessage<ClienteDto> message) {
+    public void listenCreate(SagaMessage<ClienteDto> message) {
         log.info("Mensagem recebida para tópico: {}. Payload: {}", CLIENTE_CREATE_QUEUE, message);
 
         try {
@@ -54,6 +55,38 @@ public class ClienteListener {
         );
 
         rabbitTemplate.convertAndSend(SAGA_AUTOCADASTRO_QUEUE, response);
+        }
+    }
+
+    @RabbitListener(queues = CLIENTE_APPROVAL_QUEUE)
+    public void listenApproval(SagaMessage<String> message) {
+        log.info("Mensagem recebida para tópico: {}. Payload: {}", CLIENTE_APPROVAL_QUEUE, message);
+
+        try {
+
+            ClienteDto dto = service.aprovarCliente(message.getData());
+
+            SagaMessage<ClienteDto> response = new SagaMessage<>(
+                    message.getSagaId(),
+                    CLIENTE_APPROVAL_QUEUE,
+                    EnStatusIntegracao.SUCESSO,
+                    null,
+                    dto,
+                    HttpStatus.OK.value()
+            );
+
+            rabbitTemplate.convertAndSend(SAGA_CLIENTE_APPROVAL_QUEUE, response);
+        } catch (Exception e) {
+            log.error("Erro ao processar mensagem para tópico: {}. Erro: ", CLIENTE_APPROVAL_QUEUE, e);
+
+            SagaMessage<?> response = ExceptionMapper.mapExceptionToSagaMessage(
+                    message.getSagaId(),
+                    CLIENTE_APPROVAL_QUEUE,
+                    message.getData(),
+                    e
+            );
+
+            rabbitTemplate.convertAndSend(SAGA_CLIENTE_APPROVAL_QUEUE, response);
         }
     }
 

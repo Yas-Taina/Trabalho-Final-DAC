@@ -2,17 +2,23 @@ package dac.ufpr.cliente.service;
 
 import dac.ufpr.cliente.dto.ClienteDto;
 import dac.ufpr.cliente.entity.Cliente;
+import dac.ufpr.cliente.enums.EnStatusCliente;
 import dac.ufpr.cliente.exception.custom.BadRequestException;
 import dac.ufpr.cliente.exception.custom.ResourceAlreadyExistsException;
 import dac.ufpr.cliente.exception.custom.ResourceNotFoundException;
 import dac.ufpr.cliente.mapper.ClienteMapper;
 import dac.ufpr.cliente.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -42,8 +48,9 @@ public class ClienteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário"));
     }
 
-    public ClienteDto criar(ClienteDto clienteDto) {
-        log.info("Criando cliente: {}", clienteDto);
+    public ClienteDto criar(ClienteDto dto) {
+        log.info("Criando cliente: {}", dto);
+        ClienteDto clienteDto = normalizarDados(dto);
 
         validarCliente(clienteDto, -1L);
 
@@ -53,8 +60,9 @@ public class ClienteService {
         return ClienteMapper.toDto(cliente);
     }
 
-    public ClienteDto atualizar(String cpf, ClienteDto clienteDto) {
-        log.info("Atualizando cliente com cpf: {}. Dados do cliente: {}", cpf, clienteDto);
+    public ClienteDto atualizar(String cpf, ClienteDto dto) {
+        log.info("Atualizando cliente com cpf: {}. Dados do cliente: {}", cpf, dto);
+        ClienteDto clienteDto = normalizarDados(dto);
 
         Cliente clienteExistente = repository.findByCpf(cpf)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário"));
@@ -69,9 +77,39 @@ public class ClienteService {
         return ClienteMapper.toDto(clienteAtualizado);
     }
 
+    public ClienteDto aprovarCliente(String cpf) {
+        log.info("Aprovando cliente com CPF: {}", cpf);
+
+        Cliente cliente = repository.findByCpf(cpf)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário"));
+
+        cliente.setStatus(EnStatusCliente.APROVADO);
+        cliente.setDataAlteracao(LocalDateTime.now());
+
+        repository.save(cliente);
+        log.info("Cliente aprovado com sucesso: {}", cliente);
+        return ClienteMapper.toDto(cliente);
+    }
+
+    public ClienteDto rejeitarCliente(ClienteDto dto) {
+        log.info("Reprovando cliente com CPF: {}", dto.cpf());
+
+        Cliente cliente = repository.findByCpf(dto.cpf())
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário"));
+
+        cliente.setStatus(EnStatusCliente.REJEITADO);
+        cliente.setMotivoRejeicao(dto.motivoRejeicao());
+        cliente.setDataAlteracao(LocalDateTime.now());
+
+        repository.save(cliente);
+        log.info("Cliente rejeitado com sucesso: {}", cliente);
+        return ClienteMapper.toDto(cliente);
+    }
+
     private void validarCliente(ClienteDto clienteDto, long id) {
-        if (validarDados(clienteDto)) {
-            throw new BadRequestException("Dados inválidos.");
+        List<String> erros = validarDados(clienteDto);
+        if (CollectionUtils.isNotEmpty(erros)) {
+            throw new BadRequestException("Dados inválidos: " + String.join("; ", erros));
         }
 
         if (repository.existsByCpfAndIdNot(clienteDto.cpf(), id)) {
@@ -79,16 +117,69 @@ public class ClienteService {
         }
     }
 
-    private boolean validarDados(ClienteDto clienteDto) {
-        return !StringUtils.hasText(clienteDto.nome())
-                || !CPF_PATTERN.matcher(clienteDto.cpf()).matches()
-                || !EMAIL_PATTERN.matcher(clienteDto.email()).matches()
-                || !TELEFONE_PATTERN.matcher(clienteDto.telefone()).matches()
-                || Objects.isNull(clienteDto.salario())
-                || !StringUtils.hasText(clienteDto.endereco())
-                || !CEP_PATTERN.matcher(clienteDto.cep()).matches()
-                || !StringUtils.hasText(clienteDto.cidade())
-                || Objects.isNull(clienteDto.estado());
+    public static List<String> validarDados(ClienteDto clienteDto) {
+        List<String> erros = new ArrayList<>();
+
+        if (!StringUtils.hasText(clienteDto.nome())) {
+            erros.add("Nome é obrigatório");
+        }
+
+        if (!StringUtils.hasText(clienteDto.cpf()) || !CPF_PATTERN.matcher(clienteDto.cpf()).matches()) {
+            erros.add("CPF inválido. Deve conter 11 números");
+        }
+
+        if (!StringUtils.hasText(clienteDto.email()) || !EMAIL_PATTERN.matcher(clienteDto.email()).matches()) {
+            erros.add("Email inválido. Ex: exemplo@email.com");
+        }
+
+        if (!StringUtils.hasText(clienteDto.telefone()) || !TELEFONE_PATTERN.matcher(clienteDto.telefone()).matches()) {
+            erros.add("Telefone inválido. Deve conter 10 ou 11 números");
+        }
+
+        if (clienteDto.salario() == null || clienteDto.salario().compareTo(BigDecimal.ZERO) < 0) {
+            erros.add("Salário inválido");
+        }
+
+        if (!StringUtils.hasText(clienteDto.endereco())) {
+            erros.add("Endereço é obrigatório");
+        }
+
+        if (!StringUtils.hasText(clienteDto.cep()) || !CEP_PATTERN.matcher(clienteDto.cep()).matches()) {
+            erros.add("CEP inválido. Deve conter 8 números");
+        }
+
+        if (!StringUtils.hasText(clienteDto.cidade())) {
+            erros.add("Cidade é obrigatória");
+        }
+
+        if (!StringUtils.hasText(clienteDto.estado())) {
+            erros.add("Estado é obrigatório");
+        }
+
+        return erros;
+    }
+
+    private ClienteDto normalizarDados(ClienteDto dto) {
+        if (dto == null) return null;
+
+        String cpf = dto.cpf() != null ? dto.cpf().replaceAll("\\D", "") : null;
+        String telefone = dto.telefone() != null ? dto.telefone().replaceAll("\\D", "") : null;
+        String cep = dto.cep() != null ? dto.cep().replaceAll("\\D", "") : null;
+
+        return new ClienteDto(
+                dto.id(),
+                cpf,
+                dto.email() != null ? dto.email().trim() : null,
+                dto.nome() != null ? dto.nome().trim() : null,
+                telefone,
+                dto.salario(),
+                dto.endereco() != null ? dto.endereco().trim() : null,
+                cep,
+                dto.cidade() != null ? dto.cidade().trim() : null,
+                dto.estado() != null ? dto.estado().trim() : null,
+                null,
+                null
+        );
     }
 
 }

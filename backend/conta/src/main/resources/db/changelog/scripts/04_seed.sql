@@ -1,17 +1,11 @@
--- 04_seed.sql  —  Seeds do MS Conta (schema: conta)
-
 BEGIN;
 
 -- Limpa tabelas e reinicia IDENTITY
 TRUNCATE TABLE conta.movimento RESTART IDENTITY CASCADE;
 TRUNCATE TABLE conta.conta     RESTART IDENTITY CASCADE;
 
--- =========================================
--- Contas (clienteId e gerenteId são IDs "externos" fictícios)
--- Mapas usados:
---   Clientes  -> IDs: 1=Catharyna, 2=Cleuddônio, 3=Catianna, 4=Cutardo, 5=Coândrya
---   Gerentes  -> IDs: 101=Geniéve, 102=Godophredo, 103=Gyândula
--- =========================================
+-- Contas (mesmas do seed original)
+
 INSERT INTO conta.conta
   (numero_conta, cliente_id, gerente_id, data_criacao, saldo, limite, versao)
 VALUES
@@ -19,83 +13,357 @@ VALUES
   ('0950', 2, 102, '1990-10-10 00:00:00', -10000.00,  10000.00, 0),  -- Cleuddônio / Godophredo
   ('8573', 3, 103, '2012-12-12 00:00:00',  -1000.00,   1500.00, 0),  -- Catianna / Gyândula
   ('5887', 4, 101, '2022-02-22 00:00:00', 150000.00,      0.00, 0),  -- Cutardo / Geniéve
-  ('7617', 5, 102, '2025-01-01 00:00:00',   1500.00,      0.00, 0);  -- Coândrya / Godophredo
+  ('7617', 5, 102, '2025-01-01 00:00:00',   1500.00,      0.00, 0);
 
--- =========================================
--- Movimentos
+-- Movimentos (expandidos x10 -> aproximadamente 160 movimentos)
 -- Regras:
 --   - DEPOSITO: origem_conta = número da própria conta, destino_conta = NULL
 --   - SAQUE:    origem_conta = número da própria conta, destino_conta = NULL
 --   - TRANSFERENCIA: duas linhas (uma na origem e outra na destino)
--- =========================================
 
--- -------- Conta 1291 (Catharyna) --------
-INSERT INTO conta.movimento
-  (conta_id, data_hora, tipo, origem_conta, destino_conta, valor)
-VALUES
-  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
-    '2020-01-01 10:00:00', 'DEPOSITO', '1291', NULL, 1000.00),
-  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
-    '2020-01-01 11:00:00', 'DEPOSITO', '1291', NULL,  900.00),
-  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
-    '2020-01-01 12:00:00', 'SAQUE',    '1291', NULL,  550.00),
-  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
-    '2020-01-01 13:00:00', 'SAQUE',    '1291', NULL,  350.00),
-  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
-    '2020-01-10 15:00:00', 'DEPOSITO', '1291', NULL, 2000.00),
-  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
-    '2020-01-15 08:00:00', 'SAQUE',    '1291', NULL,  500.00);
-
--- Transferência 20/01/2020 12:00 de 1291 -> 0950 (duas entradas)
--- Origem (1291): saída
-INSERT INTO conta.movimento
-  (conta_id, data_hora, tipo, origem_conta, destino_conta, valor)
-VALUES
-  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
-    '2020-01-20 12:00:00', 'TRANSFERENCIA', '1291', '0950', 1700.00);
-
--- Destino (0950): entrada
+-- -------- Conta 0950 --------
 INSERT INTO conta.movimento
   (conta_id, data_hora, tipo, origem_conta, destino_conta, valor)
 VALUES
   ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
-    '2020-01-20 12:00:00', 'TRANSFERENCIA', '1291', '0950', 1700.00);
+    '2020-01-20 12:00:00', 'TRANSFERENCIA', '1291', '0950', 1700.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2020-01-27 12:03:00', 'TRANSFERENCIA', '1291', '0950', 1734.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2020-02-03 12:06:00', 'TRANSFERENCIA', '1291', '0950', 1768.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2020-02-10 12:09:00', 'TRANSFERENCIA', '1291', '0950', 1802.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2020-02-17 12:12:00', 'TRANSFERENCIA', '1291', '0950', 1836.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2020-02-24 12:15:00', 'TRANSFERENCIA', '1291', '0950', 1870.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2020-03-02 12:18:00', 'TRANSFERENCIA', '1291', '0950', 1904.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2020-03-09 12:21:00', 'TRANSFERENCIA', '1291', '0950', 1938.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2020-03-16 12:24:00', 'TRANSFERENCIA', '1291', '0950', 1972.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2020-03-23 12:27:00', 'TRANSFERENCIA', '1291', '0950', 2006.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-01-01 12:00:00', 'DEPOSITO', '0950', NULL, 1000.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-01-08 12:03:00', 'DEPOSITO', '0950', NULL, 1020.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-01-15 12:06:00', 'DEPOSITO', '0950', NULL, 1040.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-01-22 12:09:00', 'DEPOSITO', '0950', NULL, 1060.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-01-29 12:12:00', 'DEPOSITO', '0950', NULL, 1080.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-02-05 12:15:00', 'DEPOSITO', '0950', NULL, 1100.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-02-12 12:18:00', 'DEPOSITO', '0950', NULL, 1120.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-02-19 12:21:00', 'DEPOSITO', '0950', NULL, 1140.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-02-26 12:24:00', 'DEPOSITO', '0950', NULL, 1160.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-03-05 12:27:00', 'DEPOSITO', '0950', NULL, 1180.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-01-02 10:00:00', 'DEPOSITO', '0950', NULL, 5000.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-01-09 10:03:00', 'DEPOSITO', '0950', NULL, 5100.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-01-16 10:06:00', 'DEPOSITO', '0950', NULL, 5200.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-01-23 10:09:00', 'DEPOSITO', '0950', NULL, 5300.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-01-30 10:12:00', 'DEPOSITO', '0950', NULL, 5400.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-02-06 10:15:00', 'DEPOSITO', '0950', NULL, 5500.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-02-13 10:18:00', 'DEPOSITO', '0950', NULL, 5600.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-02-20 10:21:00', 'DEPOSITO', '0950', NULL, 5700.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-02-27 10:24:00', 'DEPOSITO', '0950', NULL, 5800.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-03-06 10:27:00', 'DEPOSITO', '0950', NULL, 5900.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-01-10 10:00:00', 'SAQUE', '0950', NULL, 200.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-01-17 10:03:00', 'SAQUE', '0950', NULL, 204.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-01-24 10:06:00', 'SAQUE', '0950', NULL, 208.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-01-31 10:09:00', 'SAQUE', '0950', NULL, 212.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-02-07 10:12:00', 'SAQUE', '0950', NULL, 216.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-02-14 10:15:00', 'SAQUE', '0950', NULL, 220.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-02-21 10:18:00', 'SAQUE', '0950', NULL, 224.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-02-28 10:21:00', 'SAQUE', '0950', NULL, 228.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-03-07 10:24:00', 'SAQUE', '0950', NULL, 232.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-03-14 10:27:00', 'SAQUE', '0950', NULL, 236.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-02-05 10:00:00', 'DEPOSITO', '0950', NULL, 7000.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-02-12 10:03:00', 'DEPOSITO', '0950', NULL, 7140.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-02-19 10:06:00', 'DEPOSITO', '0950', NULL, 7280.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-02-26 10:09:00', 'DEPOSITO', '0950', NULL, 7420.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-03-05 10:12:00', 'DEPOSITO', '0950', NULL, 7560.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-03-12 10:15:00', 'DEPOSITO', '0950', NULL, 7700.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-03-19 10:18:00', 'DEPOSITO', '0950', NULL, 7840.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-03-26 10:21:00', 'DEPOSITO', '0950', NULL, 7980.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-04-02 10:24:00', 'DEPOSITO', '0950', NULL, 8120.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
+    '2025-04-09 10:27:00', 'DEPOSITO', '0950', NULL, 8260.00 );
 
--- -------- Conta 0950 (Cleuddônio) --------
+-- -------- Conta 1291 --------
 INSERT INTO conta.movimento
   (conta_id, data_hora, tipo, origem_conta, destino_conta, valor)
 VALUES
-  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
-    '2025-01-01 12:00:00', 'DEPOSITO', '0950', NULL, 1000.00),
-  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
-    '2025-01-02 10:00:00', 'DEPOSITO', '0950', NULL, 5000.00),
-  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
-    '2025-01-10 10:00:00', 'SAQUE',    '0950', NULL,  200.00),
-  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),
-    '2025-02-05 10:00:00', 'DEPOSITO', '0950', NULL, 7000.00);
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-01 10:00:00', 'DEPOSITO', '1291', NULL, 1000.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-08 10:03:00', 'DEPOSITO', '1291', NULL, 1020.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-15 10:06:00', 'DEPOSITO', '1291', NULL, 1040.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-22 10:09:00', 'DEPOSITO', '1291', NULL, 1060.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-29 10:12:00', 'DEPOSITO', '1291', NULL, 1080.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-05 10:15:00', 'DEPOSITO', '1291', NULL, 1100.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-12 10:18:00', 'DEPOSITO', '1291', NULL, 1120.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-19 10:21:00', 'DEPOSITO', '1291', NULL, 1140.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-26 10:24:00', 'DEPOSITO', '1291', NULL, 1160.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-03-04 10:27:00', 'DEPOSITO', '1291', NULL, 1180.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-01 11:00:00', 'DEPOSITO', '1291', NULL, 900.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-08 11:03:00', 'DEPOSITO', '1291', NULL, 918.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-15 11:06:00', 'DEPOSITO', '1291', NULL, 936.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-22 11:09:00', 'DEPOSITO', '1291', NULL, 954.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-29 11:12:00', 'DEPOSITO', '1291', NULL, 972.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-05 11:15:00', 'DEPOSITO', '1291', NULL, 990.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-12 11:18:00', 'DEPOSITO', '1291', NULL, 1008.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-19 11:21:00', 'DEPOSITO', '1291', NULL, 1026.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-26 11:24:00', 'DEPOSITO', '1291', NULL, 1044.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-03-04 11:27:00', 'DEPOSITO', '1291', NULL, 1062.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-01 12:00:00', 'SAQUE', '1291', NULL, 550.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-08 12:03:00', 'SAQUE', '1291', NULL, 561.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-15 12:06:00', 'SAQUE', '1291', NULL, 572.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-22 12:09:00', 'SAQUE', '1291', NULL, 583.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-29 12:12:00', 'SAQUE', '1291', NULL, 594.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-05 12:15:00', 'SAQUE', '1291', NULL, 605.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-12 12:18:00', 'SAQUE', '1291', NULL, 616.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-19 12:21:00', 'SAQUE', '1291', NULL, 627.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-26 12:24:00', 'SAQUE', '1291', NULL, 638.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-03-04 12:27:00', 'SAQUE', '1291', NULL, 649.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-01 13:00:00', 'SAQUE', '1291', NULL, 350.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-08 13:03:00', 'SAQUE', '1291', NULL, 357.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-15 13:06:00', 'SAQUE', '1291', NULL, 364.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-22 13:09:00', 'SAQUE', '1291', NULL, 371.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-29 13:12:00', 'SAQUE', '1291', NULL, 378.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-05 13:15:00', 'SAQUE', '1291', NULL, 385.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-12 13:18:00', 'SAQUE', '1291', NULL, 392.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-19 13:21:00', 'SAQUE', '1291', NULL, 399.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-26 13:24:00', 'SAQUE', '1291', NULL, 406.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-03-04 13:27:00', 'SAQUE', '1291', NULL, 413.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-10 15:00:00', 'DEPOSITO', '1291', NULL, 2000.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-17 15:03:00', 'DEPOSITO', '1291', NULL, 2040.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-24 15:06:00', 'DEPOSITO', '1291', NULL, 2080.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-31 15:09:00', 'DEPOSITO', '1291', NULL, 2120.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-07 15:12:00', 'DEPOSITO', '1291', NULL, 2160.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-14 15:15:00', 'DEPOSITO', '1291', NULL, 2200.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-21 15:18:00', 'DEPOSITO', '1291', NULL, 2240.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-28 15:21:00', 'DEPOSITO', '1291', NULL, 2280.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-03-06 15:24:00', 'DEPOSITO', '1291', NULL, 2320.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-03-13 15:27:00', 'DEPOSITO', '1291', NULL, 2360.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-15 08:00:00', 'SAQUE', '1291', NULL, 500.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-22 08:03:00', 'SAQUE', '1291', NULL, 510.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-29 08:06:00', 'SAQUE', '1291', NULL, 520.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-05 08:09:00', 'SAQUE', '1291', NULL, 530.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-12 08:12:00', 'SAQUE', '1291', NULL, 540.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-19 08:15:00', 'SAQUE', '1291', NULL, 550.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-26 08:18:00', 'SAQUE', '1291', NULL, 560.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-03-04 08:21:00', 'SAQUE', '1291', NULL, 570.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-03-11 08:24:00', 'SAQUE', '1291', NULL, 580.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-03-18 08:27:00', 'SAQUE', '1291', NULL, 590.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-20 12:00:00', 'TRANSFERENCIA', '1291', '0950', 1700.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-01-27 12:03:00', 'TRANSFERENCIA', '1291', '0950', 1734.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-03 12:06:00', 'TRANSFERENCIA', '1291', '0950', 1768.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-10 12:09:00', 'TRANSFERENCIA', '1291', '0950', 1802.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-17 12:12:00', 'TRANSFERENCIA', '1291', '0950', 1836.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-02-24 12:15:00', 'TRANSFERENCIA', '1291', '0950', 1870.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-03-02 12:18:00', 'TRANSFERENCIA', '1291', '0950', 1904.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-03-09 12:21:00', 'TRANSFERENCIA', '1291', '0950', 1938.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-03-16 12:24:00', 'TRANSFERENCIA', '1291', '0950', 1972.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),
+    '2020-03-23 12:27:00', 'TRANSFERENCIA', '1291', '0950', 2006.00 );
 
--- -------- Conta 8573 (Catianna) --------
-INSERT INTO conta.movimento
-  (conta_id, data_hora, tipo, origem_conta, destino_conta, valor)
-VALUES
-  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
-    '2025-05-05 12:00:00', 'DEPOSITO', '8573', NULL, 1000.00),
-  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
-    '2025-05-06 12:00:00', 'SAQUE',    '8573', NULL, 2000.00);
-
--- -------- Conta 5887 (Cutardo) --------
+-- -------- Conta 5887 --------
 INSERT INTO conta.movimento
   (conta_id, data_hora, tipo, origem_conta, destino_conta, valor)
 VALUES
   ((SELECT id FROM conta.conta WHERE numero_conta = '5887'),
-    '2025-06-01 12:00:00', 'DEPOSITO', '5887', NULL, 150000.00);
+    '2025-06-01 12:00:00', 'DEPOSITO', '5887', NULL, 150000.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '5887'),
+    '2025-06-08 12:03:00', 'DEPOSITO', '5887', NULL, 153000.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '5887'),
+    '2025-06-15 12:06:00', 'DEPOSITO', '5887', NULL, 156000.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '5887'),
+    '2025-06-22 12:09:00', 'DEPOSITO', '5887', NULL, 159000.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '5887'),
+    '2025-06-29 12:12:00', 'DEPOSITO', '5887', NULL, 162000.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '5887'),
+    '2025-07-06 12:15:00', 'DEPOSITO', '5887', NULL, 165000.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '5887'),
+    '2025-07-13 12:18:00', 'DEPOSITO', '5887', NULL, 168000.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '5887'),
+    '2025-07-20 12:21:00', 'DEPOSITO', '5887', NULL, 171000.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '5887'),
+    '2025-07-27 12:24:00', 'DEPOSITO', '5887', NULL, 174000.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '5887'),
+    '2025-08-03 12:27:00', 'DEPOSITO', '5887', NULL, 177000.00 );
 
--- -------- Conta 7617 (Coândrya) --------
+-- -------- Conta 7617 --------
 INSERT INTO conta.movimento
   (conta_id, data_hora, tipo, origem_conta, destino_conta, valor)
 VALUES
   ((SELECT id FROM conta.conta WHERE numero_conta = '7617'),
-    '2025-07-01 12:00:00', 'DEPOSITO', '7617', NULL, 1500.00);
+    '2025-07-01 12:00:00', 'DEPOSITO', '7617', NULL, 1500.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '7617'),
+    '2025-07-08 12:03:00', 'DEPOSITO', '7617', NULL, 1530.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '7617'),
+    '2025-07-15 12:06:00', 'DEPOSITO', '7617', NULL, 1560.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '7617'),
+    '2025-07-22 12:09:00', 'DEPOSITO', '7617', NULL, 1590.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '7617'),
+    '2025-07-29 12:12:00', 'DEPOSITO', '7617', NULL, 1620.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '7617'),
+    '2025-08-05 12:15:00', 'DEPOSITO', '7617', NULL, 1650.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '7617'),
+    '2025-08-12 12:18:00', 'DEPOSITO', '7617', NULL, 1680.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '7617'),
+    '2025-08-19 12:21:00', 'DEPOSITO', '7617', NULL, 1710.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '7617'),
+    '2025-08-26 12:24:00', 'DEPOSITO', '7617', NULL, 1740.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '7617'),
+    '2025-09-02 12:27:00', 'DEPOSITO', '7617', NULL, 1770.00 );
+
+-- -------- Conta 8573 --------
+INSERT INTO conta.movimento
+  (conta_id, data_hora, tipo, origem_conta, destino_conta, valor)
+VALUES
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-05-05 12:00:00', 'DEPOSITO', '8573', NULL, 1000.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-05-12 12:03:00', 'DEPOSITO', '8573', NULL, 1020.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-05-19 12:06:00', 'DEPOSITO', '8573', NULL, 1040.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-05-26 12:09:00', 'DEPOSITO', '8573', NULL, 1060.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-06-02 12:12:00', 'DEPOSITO', '8573', NULL, 1080.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-06-09 12:15:00', 'DEPOSITO', '8573', NULL, 1100.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-06-16 12:18:00', 'DEPOSITO', '8573', NULL, 1120.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-06-23 12:21:00', 'DEPOSITO', '8573', NULL, 1140.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-06-30 12:24:00', 'DEPOSITO', '8573', NULL, 1160.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-07-07 12:27:00', 'DEPOSITO', '8573', NULL, 1180.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-05-06 12:00:00', 'SAQUE', '8573', NULL, 2000.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-05-13 12:03:00', 'SAQUE', '8573', NULL, 2040.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-05-20 12:06:00', 'SAQUE', '8573', NULL, 2080.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-05-27 12:09:00', 'SAQUE', '8573', NULL, 2120.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-06-03 12:12:00', 'SAQUE', '8573', NULL, 2160.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-06-10 12:15:00', 'SAQUE', '8573', NULL, 2200.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-06-17 12:18:00', 'SAQUE', '8573', NULL, 2240.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-06-24 12:21:00', 'SAQUE', '8573', NULL, 2280.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-07-01 12:24:00', 'SAQUE', '8573', NULL, 2320.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),
+    '2025-07-08 12:27:00', 'SAQUE', '8573', NULL, 2360.00 );
 
 COMMIT;
-

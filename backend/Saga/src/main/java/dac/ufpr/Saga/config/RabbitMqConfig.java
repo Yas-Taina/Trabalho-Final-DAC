@@ -13,12 +13,18 @@ public class RabbitMqConfig {
 
     public static final String CLIENTE_CREATE_QUEUE = "cliente.create.queue";
     public static final String AUTH_CREATE_QUEUE = "auth.create.queue";
-    public static final String CONTA_CREATE_QUEUE = "conta.create.queue";
-    public static final String GERENTE_ASSIGN_QUEUE = "gerente.assign.queue";
+    public static final String CONTA_GERENTE_ASSIGN_QUEUE = "gerente.assign.queue";
 
     public static final String CLIENTE_DELETE_QUEUE = "cliente.delete.queue";
     public static final String AUTH_DELETE_QUEUE = "auth.delete.queue";
     public static final String CONTA_DELETE_QUEUE = "conta.delete.queue";
+
+
+    public static final String SAGA_CLIENTE_APPROVAL_QUEUE = "saga.cliente.approval.queue";
+    public static final String AUTH_UPDATE_QUEUE = "auth.update.queue";
+    public static final String CONTA_CREATE_QUEUE = "conta.create.queue";
+    public static final String CLIENTE_APPROVAL_QUEUE = "cliente.approval.queue";
+
 
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {
