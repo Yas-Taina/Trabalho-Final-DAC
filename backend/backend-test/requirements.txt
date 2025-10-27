@@ -1,0 +1,7 @@
+requests==2.32.3
+pytest==8.3.5
+PyJWT==2.10.1
+python-dotenv==1.0.1
+fastapi==0.115.14
+fastapi-cli==0.0.7
+Faker==37.4.0
