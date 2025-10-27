@@ -67,15 +67,14 @@ public class SagaAutocadastroListener {
     }
 
     private void enviarAuth(SagaMessage<?> message) {
-
-
-        SagaMessage<?> next = new SagaMessage<>(
+    SagaMessage<Object> next = new SagaMessage<>(
                 message.getSagaId(),
                 AUTH_CREATE_QUEUE,
                 EnStatusIntegracao.INICIADO,
                 null,
-                message.getData(),
-                null
+        message.getData(),
+        message.getHttpStatus(),
+        message.getGerenteId()
         );
 
         rabbitTemplate.convertAndSend(AUTH_CREATE_QUEUE, next);
@@ -88,11 +87,27 @@ public class SagaAutocadastroListener {
                 CLIENTE_CREATE_QUEUE,
                 EnStatusIntegracao.INICIADO,
                 null,
-                message.getData(),
-                null
+        message.getData(),
+        message.getHttpStatus(),
+        message.getGerenteId()
         );
 
         rabbitTemplate.convertAndSend(CLIENTE_CREATE_QUEUE, next);
+    }
+
+    private void enviarCliente(SagaMessage<?> message) {
+
+    SagaMessage<Object> next = new SagaMessage<>(
+        message.getSagaId(),
+        GERENTE_ASSIGN_QUEUE,
+        EnStatusIntegracao.INICIADO,
+        null,
+        message.getData(),
+        message.getHttpStatus(),
+        message.getGerenteId()
+    );
+
+    rabbitTemplate.convertAndSend(GERENTE_ASSIGN_QUEUE, next);
     }
 
     private void compensarAuth(SagaMessage<?> message) {
