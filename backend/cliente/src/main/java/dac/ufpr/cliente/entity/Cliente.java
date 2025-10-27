@@ -1,5 +1,8 @@
 package dac.ufpr.cliente.entity;
 
+import dac.ufpr.cliente.config.listener.AuditEntityListener;
+import dac.ufpr.cliente.enums.EnStatusCliente;
+import dac.ufpr.cliente.enums.EnStatusIntegracao;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -38,4 +42,12 @@ public class Cliente {
     String cidade;
 
     String estado;
+
+    @Enumerated(EnumType.STRING)
+    EnStatusCliente status;
+
+    String motivoRejeicao;
+
+    LocalDateTime dataAlteracao;
+
 }

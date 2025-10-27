@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        body { font-family: Arial, sans-serif; color: #333; }
+        .erro { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+<h2>Falha no Autocadastro ❌</h2>
+<p>Olá <b th:text="${nome}">Nome</b>,</p>
+<p>Ocorreu um <span class="erro">erro interno</span> durante o seu autocadastro no BANTADS.</p>
+<p>Sua solicitação <b>não foi concluída</b></p>
+</body>
+</html>

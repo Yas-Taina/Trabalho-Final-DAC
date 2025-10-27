@@ -25,6 +25,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Value("${JWT_SECRET_KEY}")
     private String secretKey;
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        String method = request.getMethod();
+
+        if (path.contains("/autocadastro") && method.equals("POST")) {
+            return true;
+        }
+
+        return false;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

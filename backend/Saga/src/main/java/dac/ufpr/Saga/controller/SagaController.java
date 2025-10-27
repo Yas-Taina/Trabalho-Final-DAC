@@ -16,9 +16,15 @@ public class SagaController {
 
     private final SagaService service;
 
-    @PostMapping
+    @PostMapping("/autocadastro")
     public ResponseEntity<Void> iniciarSagaAutocadastro(@RequestBody ClienteDto dto) {
         service.iniciarSagaAutocadastro(dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/cliente/{cpf}/aprovar")
+    public ResponseEntity<Void> aprovarCliente(@RequestBody String cpf) {
+        service.aprovarCliente(cpf);
         return ResponseEntity.ok().build();
     }
 }

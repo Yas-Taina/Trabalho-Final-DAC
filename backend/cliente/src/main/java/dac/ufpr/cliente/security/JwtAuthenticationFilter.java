@@ -1,13 +1,13 @@
 package dac.ufpr.cliente.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.io.IOException;
 import java.util.List;
 
 @Component
@@ -23,12 +24,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Value("${JWT_SECRET_KEY}")
     private String secretKey;
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        String method = request.getMethod();
+
+        //TODO: POST
+        if (path.contains("/clientes")) {
+            return true;
+        }
+
+        return false;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
-            throws java.io.IOException, ServletException {
+            throws IOException, ServletException {
+
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -53,11 +67,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        } catch (JwtException e) {
-            throw new RuntimeException("Token JWT inválido ou expirado");
-        }
+            filterChain.doFilter(request, response);
 
-        filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException e) {
+            handleJwtError(response, HttpServletResponse.SC_UNAUTHORIZED, "Token expirado. Faça login novamente.");
+        } catch (SignatureException e) {
+            handleJwtError(response, HttpServletResponse.SC_UNAUTHORIZED, "Assinatura do token inválida.");
+        } catch (MalformedJwtException e) {
+            handleJwtError(response, HttpServletResponse.SC_BAD_REQUEST, "Token malformado.");
+        } catch (JwtException e) {
+            handleJwtError(response, HttpServletResponse.SC_UNAUTHORIZED, "Token JWT inválido ou expirado.");
+        }
     }
 
+    private void handleJwtError(HttpServletResponse response, int status, String message) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        String json = String.format(
+                "{\"timestamp\":\"%s\",\"status\":%d,\"erro\":\"%s\",\"mensagem\":\"%s\"}",
+                java.time.LocalDateTime.now(),
+                status,
+                HttpStatus.valueOf(status).getReasonPhrase(),
+                message
+        );
+        response.getWriter().write(json);
+    }
 }
