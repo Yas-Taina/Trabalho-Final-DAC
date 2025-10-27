@@ -1,0 +1,7 @@
+.DS_Store
+api_*
+token_test.json
+cache_test.json
+bd_*.json
+json_schemas.txt
+__pycache__
