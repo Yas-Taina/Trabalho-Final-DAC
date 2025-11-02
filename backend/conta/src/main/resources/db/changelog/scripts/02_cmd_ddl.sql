@@ -5,6 +5,7 @@ CREATE TABLE if not exists conta.conta (
   cliente_id int NOT NULL,        -- ID vindo do MS Cliente (sem FK cross-service)
   gerente_id  int NOT NULL,
   data_criacao TIMESTAMP NOT NULL,
+  data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   saldo NUMERIC(18,2) NOT NULL DEFAULT 0,
   limite NUMERIC(18,2) NOT NULL DEFAULT 0,
   versao BIGINT NOT NULL DEFAULT 0 -- otimista

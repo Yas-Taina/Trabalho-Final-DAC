@@ -5,25 +5,26 @@ meta {
 }
 
 put {
-  url: http://localhost:8080/clientes/12345678901
+  url: http://localhost:8080/clientes/12345473906
   body: json
   auth: inherit
 }
 
 headers {
   Content-Type: application/json
-  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaHJpc0BiYW50YWRzIiwicm9sZSI6IkdFUkVOVEUiLCJpYXQiOjE3NjAzMTQxMTEsImV4cCI6MTc2MDMxNzcxMX0.FKGqxoOoXuTnR2Jzifig5MBhwO458FgTRu9VMr4_4Wg
+  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaHJpc0BiYW50YWRzIiwicm9sZSI6IkdFUkVOVEUiLCJpYXQiOjE3NjE2MDQyODYsImV4cCI6MTc2MTYwNzg4Nn0.rvy0NqWQ234HMq72lRsSUS3nwRuV7GgJjawvITSeans
 }
 
 body:json {
   {
-    "cpf": "12345678901",
-    "email": "joao.silva@atualizado.com",
+    "id":1,
+    "cpf": "12345473906",
+    "email": "joao.s123lva@atualizado.com",
     "nome": "João da Silva",
-    "telefone": "41998765432",
+    "telefone": "555555555",
     "salario": 5000.00,
     "endereco": "Av. Brasil, 500",
-    "CEP": "80000123",
+    "cep": "80000123",
     "cidade": "Curitiba",
     "estado": "PR"
   }
