@@ -24,7 +24,8 @@ public class ClienteMapper {
                 dto.estado(),
                 EnStatusCliente.PENDENTE,
                 null,
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                -1L
         );
     }
 

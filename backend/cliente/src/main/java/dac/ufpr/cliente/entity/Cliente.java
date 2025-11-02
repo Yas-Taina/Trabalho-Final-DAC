@@ -47,6 +47,8 @@ public class Cliente {
 
     String motivoRejeicao;
 
-    LocalDateTime dataAlteracao;
+    LocalDateTime data_alteracao;
+
+    long gerente_id;
 
 }
