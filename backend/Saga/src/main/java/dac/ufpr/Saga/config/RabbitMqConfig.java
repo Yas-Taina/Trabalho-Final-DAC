@@ -41,4 +41,14 @@ public class RabbitMqConfig {
         return new Queue(CONTA_GERENTE_ASSIGN_QUEUE);
     }
 
+    @Bean
+    public Declarable sagaClienteApprovalQueue() {
+        return new Queue(SAGA_CLIENTE_APPROVAL_QUEUE);
+    }
+
+    @Bean
+    public Declarable clienteApprovalQueue() {
+        return new Queue(CLIENTE_APPROVAL_QUEUE);
+    }
+
 }

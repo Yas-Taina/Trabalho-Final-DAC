@@ -27,5 +27,10 @@ public class RabbitMqConfig {
         return new Queue(CLIENTE_CREATE_QUEUE);
     }
 
+    @Bean
+    public Declarable clienteApprovalQueue() {
+        return new Queue(CLIENTE_APPROVAL_QUEUE);
+    }
+
 
 }
