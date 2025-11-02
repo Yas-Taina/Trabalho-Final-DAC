@@ -39,7 +39,9 @@ public class ClienteMapper {
                 entity.getEndereco(),
                 entity.getCep(),
                 entity.getCidade(),
-                entity.getEstado()
+                entity.getEstado(),
+                entity.getStatus(),
+                entity.getMotivoRejeicao()
         );
     }
 

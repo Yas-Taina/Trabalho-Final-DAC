@@ -23,8 +23,8 @@ public class SagaService {
                 EnStatusIntegracao.INICIADO,
                 null,
                 dto,
-        null,
-        null
+                null,
+                null
         );
 
         rabbitTemplate.convertAndSend(CONTA_GERENTE_ASSIGN_QUEUE, message);
@@ -32,12 +32,13 @@ public class SagaService {
 
     public void aprovarCliente(String cpf) {
 
-        SagaMessage<String> message = new SagaMessage<>(
+        SagaMessage<String> message = new SagaMessage<String>(
                 java.util.UUID.randomUUID().toString(),
                 CLIENTE_APPROVAL_QUEUE,
                 EnStatusIntegracao.INICIADO,
                 null,
                 cpf,
+                null,
                 null
         );
 
