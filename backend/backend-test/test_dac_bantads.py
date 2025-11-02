@@ -22,7 +22,7 @@ URL = os.getenv("URL")
 ARQUIVO_TOKEN = os.getenv("ARQUIVO_TOKEN")
 ARQUIVO_CACHE = os.getenv("ARQUIVO_CACHE")
 EMAIL_AUTOCADASTRO1 = os.getenv("EMAIL_AUTOCADASTRO1")
-EMAIL_AUTOCADASTRO2 = os.getenv("EMAIL_AUTOCADASTRO1")
+EMAIL_AUTOCADASTRO2 = os.getenv("EMAIL_AUTOCADASTRO2") # TODO: avisar o professor. erro no original, apontando também pro autocadastro1
 
 ###############################################
 # Dados para teste
@@ -338,7 +338,7 @@ def test_r01_autocadastro1():
 
     USUARIO1["cpf"] = cpf
     USUARIO1["email"] = email
-    USUARIO1["nome"] = "Usuário 1"
+    USUARIO1["telefone"] = "41999999999" # TODO: avisar o professor. erro no original, telefone não estava sendo passado, quebrando a requisição
     USUARIO1["salario"] = 5000.0 # para gerar limite
     # print(f"    >>>> Cadastrando usuário {USUARIO1} ... em {URL}/clientes")
     resp = requests.post(URL + "/clientes", 
@@ -370,6 +370,7 @@ def test_r01_autocadastro2():
 
     USUARIO1["cpf"] = cpf
     USUARIO1["email"] = email
+    USUARIO1["telefone"] = "41999988999" # TODO: avisar o professor. erro no original, telefone não estava sendo passado, quebrando a requisição
     USUARIO1["nome"] = "Usuário 2"
     USUARIO1["salario"] = 450.0  # para não gerar limite
     resp = requests.post(URL + "/clientes", 
