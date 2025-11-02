@@ -8,5 +8,6 @@
 
     <include file="db/changelog/scripts/create_gerente_schema.sql" />
     <include file="db/changelog/scripts/create_gerente_table.sql" />
+    <include file="db/changelog/scripts/create_gerente_table.sql" />
 
 </databaseChangeLog>

@@ -5,27 +5,25 @@ meta {
 }
 
 post {
-  url: HTTP://localhost:8081/clientes
+  url: HTTP://localhost:3000/api/clientes
   body: json
   auth: inherit
 }
 
 headers {
   Content-Type: application/json
-  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaHJpc0BiYW50YWRzIiwicm9sZSI6IkdFUkVOVEUiLCJpYXQiOjE3NjE2MDQyODYsImV4cCI6MTc2MTYwNzg4Nn0.rvy0NqWQ234HMq72lRsSUS3nwRuV7GgJjawvITSeans
 }
 
 body:json {
   {
-    "cpf": "12345473906",
-    "email": "joao.fildsaa3@email.com",
-    "nome": "João Silvr",
+    "cpf": "95612621587",
+    "email": "auto3@gmail.com",
+    "nome": "Usuário 1",
     "telefone": "41912245678",
-    "salario": 4500.00,
-    "endereco": "Rua das Flores, 123",
-    "cep": "80000000",
+    "salario": 5000.00,
+    "endereco": "Rua das Palmeiras, 100",
+    "cep": "80050490",
     "cidade": "Curitiba",
     "estado": "PR"
   }
-  
 }
