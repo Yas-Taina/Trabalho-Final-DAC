@@ -31,6 +31,7 @@ public class ClienteListener {
         log.info("Mensagem recebida para tópico: {}. Payload: {}", CLIENTE_CREATE_QUEUE, message);
 
         try {
+            System.out.println("ENTROU NO LISTENER DE CRIAÇÃO DE CLIENTE, CHAMANDO SERVIÇO" + message.getGerenteId());
             ClienteDto dto = service.criar(message.getData());
 
         SagaMessage<ClienteDto> response = new SagaMessage<>(

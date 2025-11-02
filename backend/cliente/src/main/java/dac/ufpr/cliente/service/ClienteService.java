@@ -84,7 +84,7 @@ public class ClienteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário"));
 
         cliente.setStatus(EnStatusCliente.APROVADO);
-        cliente.setDataAlteracao(LocalDateTime.now());
+        cliente.setData_alteracao(LocalDateTime.now());
 
         repository.save(cliente);
         log.info("Cliente aprovado com sucesso: {}", cliente);
@@ -99,7 +99,7 @@ public class ClienteService {
 
         cliente.setStatus(EnStatusCliente.REJEITADO);
         cliente.setMotivoRejeicao(dto.motivoRejeicao());
-        cliente.setDataAlteracao(LocalDateTime.now());
+        cliente.setData_alteracao(LocalDateTime.now());
 
         repository.save(cliente);
         log.info("Cliente rejeitado com sucesso: {}", cliente);

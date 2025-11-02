@@ -8,5 +8,9 @@ CREATE TABLE IF NOT EXISTS cliente.cliente (
     endereco VARCHAR(100),
     cep VARCHAR(8),
     cidade VARCHAR(100),
-    estado VARCHAR(2)
+    estado VARCHAR(2),
+    motivo_rejeicao VARCHAR(255),
+    data_alteracao TIMESTAMP default now(), 
+    status VARCHAR(20),
+    gerente_id BIGINT
 );
