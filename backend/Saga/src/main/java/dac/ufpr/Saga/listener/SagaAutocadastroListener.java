@@ -34,7 +34,7 @@ public class SagaAutocadastroListener {
 
         if (EnStatusIntegracao.SUCESSO.equals(message.getStatus())) {
             switch (message.getStep()) {
-                case CONTA_GERENTE_ASSIGN_QUEUE -> enviarCliente(message);
+                case CONTA_GERENTE_ASSIGN_QUEUE -> enviarCliente2(message);
                 case CLIENTE_CREATE_QUEUE -> enviarAuth(message);
                 case AUTH_CREATE_QUEUE -> log.info("Saga finalizada!");
             }
@@ -80,20 +80,20 @@ public class SagaAutocadastroListener {
         rabbitTemplate.convertAndSend(AUTH_CREATE_QUEUE, next);
     }
 
-    // private void enviarCliente(SagaMessage<?> message) {
+    private void enviarCliente2(SagaMessage<?> message) {
 
-    //     SagaMessage<?> next = new SagaMessage<>(
-    //             message.getSagaId(),
-    //             CLIENTE_CREATE_QUEUE,
-    //             EnStatusIntegracao.INICIADO,
-    //             null,
-    //     message.getData(),
-    //     message.getHttpStatus(),
-    //     message.getGerenteId()
-    //     );
+        SagaMessage<?> next = new SagaMessage<>(
+                message.getSagaId(),
+                CLIENTE_CREATE_QUEUE,
+                EnStatusIntegracao.INICIADO,
+                null,
+                message.getData(),
+                message.getHttpStatus(),
+                message.getGerenteId()
+        );
 
-    //     rabbitTemplate.convertAndSend(CLIENTE_CREATE_QUEUE, next);
-    // }
+        rabbitTemplate.convertAndSend(CLIENTE_CREATE_QUEUE, next);
+    }
 
     private void enviarCliente(SagaMessage<?> message) {
 
