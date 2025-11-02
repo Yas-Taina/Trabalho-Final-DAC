@@ -38,7 +38,7 @@ public class RabbitMqConfig {
 
     @Bean
     public Declarable gerenteAssignQueue() {
-        return new Queue(GERENTE_ASSIGN_QUEUE);
+        return new Queue(CONTA_GERENTE_ASSIGN_QUEUE);
     }
 
 }

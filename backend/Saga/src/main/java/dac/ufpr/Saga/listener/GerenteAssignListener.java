@@ -25,9 +25,9 @@ public class GerenteAssignListener {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @RabbitListener(queues = GERENTE_ASSIGN_QUEUE)
+    @RabbitListener(queues = CONTA_GERENTE_ASSIGN_QUEUE)
     public void listen(SagaMessage<?> message) {
-        log.info("Mensagem recebida para tópico: {}. Payload: {}", GERENTE_ASSIGN_QUEUE, message);
+        log.info("Mensagem recebida para tópico: {}. Payload: {}", CONTA_GERENTE_ASSIGN_QUEUE, message);
 
         try {
             // Call Conta service endpoint that returns gerente with fewest clients
@@ -57,10 +57,10 @@ public class GerenteAssignListener {
             rabbitTemplate.convertAndSend(CLIENTE_CREATE_QUEUE, next);
 
         } catch (Exception e) {
-            log.error("Erro ao processar mensagem para o tópico: {}. Erro:", GERENTE_ASSIGN_QUEUE, e);
+            log.error("Erro ao processar mensagem para o tópico: {}. Erro:", CONTA_GERENTE_ASSIGN_QUEUE, e);
             SagaMessage<?> error = new SagaMessage<>(
                     message.getSagaId(),
-                    GERENTE_ASSIGN_QUEUE,
+                    CONTA_GERENTE_ASSIGN_QUEUE,
                     EnStatusIntegracao.FALHA,
                     e.getMessage(),
                     message.getData(),

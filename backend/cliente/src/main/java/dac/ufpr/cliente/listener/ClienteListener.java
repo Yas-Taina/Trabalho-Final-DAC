@@ -72,7 +72,8 @@ public class ClienteListener {
                     EnStatusIntegracao.SUCESSO,
                     null,
                     dto,
-                    HttpStatus.OK.value()
+                    HttpStatus.OK.value(),
+                    message.getGerenteId()
             );
 
             rabbitTemplate.convertAndSend(SAGA_CLIENTE_APPROVAL_QUEUE, response);

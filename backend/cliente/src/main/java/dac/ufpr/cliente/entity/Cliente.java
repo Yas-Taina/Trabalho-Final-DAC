@@ -1,6 +1,5 @@
 package dac.ufpr.cliente.entity;
 
-import dac.ufpr.cliente.config.listener.AuditEntityListener;
 import dac.ufpr.cliente.enums.EnStatusCliente;
 import dac.ufpr.cliente.enums.EnStatusIntegracao;
 import jakarta.persistence.*;
