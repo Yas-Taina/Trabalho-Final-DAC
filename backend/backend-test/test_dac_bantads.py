@@ -363,6 +363,7 @@ def test_r01_autocadastro2():
 
     USUARIO1["cpf"] = cpf
     USUARIO1["email"] = email
+    USUARIO1["nome"] = "Usuário 1"
     USUARIO1["telefone"] = "41999988999" # TODO: avisar o professor. erro no original, telefone não estava sendo passado, quebrando a requisição
     USUARIO1["nome"] = "Usuário 2"
     USUARIO1["salario"] = 450.0  # para não gerar limite
