@@ -1,17 +1,22 @@
 import express from "express";
 import { SERVICES } from "./config/services.js";
 import { createServiceProxy } from "./utils/proxyHelper.js";
+import { validateTokenMiddleware } from "./middlewares/validateTokenMiddleware.js";
 
 const app = express();
 app.use(express.json());
 
 const router = express.Router();
 
+app.use(validateTokenMiddleware);
+
+
+app.use("/api/clientes", sagaMiddleware);
+
 app.use("/api/clientes", createServiceProxy(SERVICES.CLIENTE, "/api/clientes"));
-app.use("/api/auth", createServiceProxy(SERVICES.AUTH, "/api/auth"));
+app.use("/api", createServiceProxy(SERVICES.AUTH, "/api"));
 app.use("/api/contas", createServiceProxy(SERVICES.CONTA, "/api/contas"));
 app.use("/api/gerentes", createServiceProxy(SERVICES.GERENTE, "/api/gerentes"));
-app.use("/api/sagas", createServiceProxy(SERVICES.SAGA, "/api/sagas"));
 
 
 app.use((err, req, res, next) => {

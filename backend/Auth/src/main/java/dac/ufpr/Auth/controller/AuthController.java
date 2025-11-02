@@ -7,10 +7,7 @@ import dac.ufpr.Auth.dto.user.UserResponseDto;
 import dac.ufpr.Auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,6 +23,19 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@RequestBody AuthRequestDto authRequest) {
-         return ResponseEntity.ok(service.login(authRequest));
+        return ResponseEntity.ok(service.login(authRequest));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authorizationHeader) {
+        service.logout(authorizationHeader);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/token/validate")
+    public ResponseEntity<Boolean> isTokenValid(@RequestParam("token") String token) {
+        boolean isValid = service.isTokenValid(token);
+        return ResponseEntity.ok(isValid);
+    }
+
 }

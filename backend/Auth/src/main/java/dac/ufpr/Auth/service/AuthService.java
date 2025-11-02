@@ -11,7 +11,9 @@ import dac.ufpr.Auth.exception.custom.InvalidCredentialsException;
 import dac.ufpr.Auth.exception.custom.ResourceAlreadyExistsException;
 import dac.ufpr.Auth.exception.custom.ResourceNotFoundException;
 import dac.ufpr.Auth.repository.AuthRepository;
+import dac.ufpr.Auth.security.TokenService;
 import dac.ufpr.Auth.security.utils.JwtUtils;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +43,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthRepository repository;
     private final JwtUtils jwtUtil;
+    private final TokenService tokenService;
 
     @Transactional
     public UserResponseDto register(UserRequestDto userRequestDto) {
@@ -82,6 +85,15 @@ public class AuthService {
                 autenticacao.getRole().name(),
                 new UserResponseDto(autenticacao.getId(), autenticacao.getEmail())
         );
+    }
+
+    public void logout(String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        tokenService.invalidateToken(token);
+    }
+
+    public boolean isTokenValid(String token) {
+        return !tokenService.isTokenRevoked(token);
     }
 
     private void validarUsuario(UserRequestDto userRequestDto) {
