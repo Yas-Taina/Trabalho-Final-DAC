@@ -1,0 +1,1 @@
+import { DadoGerente } from './dado-gerente.model'; import { DadoConta } from './dado-conta.model'; export interface ItemDashboardResponse { gerente: DadoGerente; clientes: DadoConta[]; saldo_positivo: number; saldo_negativo: number; }

@@ -1,0 +1,1 @@
+import { ClienteParaAprovarResponse } from './cliente-para-aprovar-response.model'; export type ParaAprovarResponse = ClienteParaAprovarResponse[];
