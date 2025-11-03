@@ -1,0 +1,1 @@
+import { ItemDashboardResponse } from './item-dashboard-response.model'; export type DashboardResponse = ItemDashboardResponse[];

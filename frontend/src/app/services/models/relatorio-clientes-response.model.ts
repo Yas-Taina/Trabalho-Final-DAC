@@ -1,0 +1,1 @@
+import { DadosClienteResponse } from './dados-cliente-response.model'; export type RelatorioClientesResponse = DadosClienteResponse[];
