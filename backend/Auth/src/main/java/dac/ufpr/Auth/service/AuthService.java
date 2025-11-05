@@ -27,6 +27,8 @@ import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.Map;
+import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -74,10 +76,14 @@ public class AuthService {
         Autenticacao autenticacao = repository.findByEmail(request.email()).orElseThrow(() -> new ResourceNotFoundException("Usuário"));
         log.info("Autenticacao encontrada: email={}, cpf={}", autenticacao.getEmail(), autenticacao.getCpf());
 
+        // Adiciona o ID do usuário como claim extra no token
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("userId", autenticacao.getId());
+        
         String token = jwtUtil.generateToken(
                 autenticacao.getEmail(),
                 autenticacao.getRole().name(),
-                null
+                extraClaims
         );
 
         return new AuthResponseDto(

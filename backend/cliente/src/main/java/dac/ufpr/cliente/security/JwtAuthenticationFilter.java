@@ -17,6 +17,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -60,10 +62,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             String username = claims.getSubject();
             String role = claims.get("role", String.class);
+            String userId = claims.get("userId", String.class);
 
             List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
+            // Criar um objeto com os detalhes do usuário
+            Map<String, Object> details = new HashMap<>();
+            details.put("userId", userId);
+            
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
+            authentication.setDetails(details);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
