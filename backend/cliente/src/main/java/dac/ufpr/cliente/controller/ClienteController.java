@@ -18,9 +18,9 @@ public class ClienteController {
     private final ClienteService service;
 
     @GetMapping
-    // @PreAuthorize("hasRole('ROLE_ADMINISTADOR')")
-    public ResponseEntity<List<ClienteDto>> listar() {
-        return ResponseEntity.ok(service.listar());
+    // @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<ClienteDto>> listar(@RequestParam(required = false) String filter) {
+        return ResponseEntity.ok(service.listar(filter));
     }
 
     @GetMapping("/{cpf}")

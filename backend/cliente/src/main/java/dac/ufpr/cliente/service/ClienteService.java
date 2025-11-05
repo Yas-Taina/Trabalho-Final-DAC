@@ -42,6 +42,12 @@ public class ClienteService {
                 .toList();
     }
 
+    public List<ClienteDto> listar(String filtro) {
+        return repository.().stream()
+                .map(ClienteMapper::toDto)
+                .toList();
+    }
+
     public ClienteDto consultarPorCpf(String cpf) {
         return repository.findByCpf(cpf)
                 .map(ClienteMapper::toDto)
