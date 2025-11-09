@@ -1,1 +1,4 @@
-export interface LoginInfo { email: string; senha: string; }
+export interface LoginInfo {
+  email: string;
+  senha: string;
+}

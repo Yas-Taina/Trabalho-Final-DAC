@@ -44,8 +44,8 @@
               <td>
                 {{ cliente.limite | currency: "BRL" : "symbol" : "1.2-2" }}
               </td>
-              <td>{{ cliente.gerenteCpf || "" | mask: "000.000.00-00" }}</td>
-              <td>{{ cliente.gerenteNome }}</td>
+              <td>{{ cliente.gerente || "" | mask: "000.000.00-00" }}</td>
+              <td>{{ cliente.gerente_nome }}</td>
             </tr>
           </tbody>
         </table>

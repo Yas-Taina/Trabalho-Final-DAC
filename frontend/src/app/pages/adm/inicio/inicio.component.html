@@ -8,27 +8,33 @@
         class="imgTitle"
       />
     </div>
-    <h1 class="tituloGrande">Início</h1>
+    <h1 class="tituloGrande">Dashboard de Gerentes</h1>
     <hr />
   </div>
 
-  <div class="dashboard">
+  <div *ngIf="loading" class="text-center my-4">
+    <p>Carregando dados do dashboard...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger text-center my-4">
+    {{ errorMessage }}
+  </div>
+
+  <div class="dashboard" *ngIf="!loading && !errorMessage">
     <div class="dashitem" *ngFor="let dashboard of dashboards">
-      <div>
-        <h5>{{ dashboard.gerente }}</h5>
-      </div>
-      <div>
-        <h6>Clientes:</h6>
-        <p>{{ dashboard.clientes }}</p>
-      </div>
-      <div>
-        <h6>Saldos Positivos:</h6>
-        <p>{{ dashboard.saldo_positivo }}</p>
-      </div>
-      <div>
-        <h6>Saldos Negativos:</h6>
-        <p>{{ dashboard.saldo_negativo }}</p>
-      </div>
+      <h4>{{ dashboard.gerenteNome }}</h4>
+      <p><strong>CPF:</strong> {{ dashboard.gerenteCpf }}</p>
+      <p><strong>Email:</strong> {{ dashboard.gerenteEmail }}</p>
+      <hr />
+      <p><strong>Total de Clientes:</strong> {{ dashboard.clientesTotal }}</p>
+      <p>
+        <strong>Saldo Positivo:</strong>
+        {{ dashboard.saldo_positivo | currency:'BRL':'symbol':'1.2-2' }}
+      </p>
+      <p>
+        <strong>Saldo Negativo:</strong>
+        {{ dashboard.saldo_negativo | currency:'BRL':'symbol':'1.2-2' }}
+      </p>
     </div>
   </div>
 </div>

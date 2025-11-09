@@ -5,11 +5,12 @@ import {
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
-import { LocalClientesService } from "../../../services";
-import { Cliente } from "../../../services/local/models/cliente";
 import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { NgxMaskDirective } from "ngx-mask";
+import { ClientesService } from "../../../services";
+import { AutocadastroInfo } from "../../../services/models";
+import { catchError, of, tap } from "rxjs";
 
 @Component({
   selector: "app-autocadastro",
@@ -20,70 +21,64 @@ import { NgxMaskDirective } from "ngx-mask";
 })
 export class AutocadastroComponent implements OnInit {
   clienteForm: FormGroup;
+  mensagem: string | null = null;
+  erro: boolean = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private clientesService: LocalClientesService,
-  ) {
+  constructor(private fb: FormBuilder, private clientesService: ClientesService) {
     this.clienteForm = this.fb.group({
-      nome: [
-        "",
-        [
-          Validators.required,
-          Validators.minLength(2),
-          Validators.maxLength(100),
-        ],
-      ],
-      email: [
-        "",
-        [Validators.required, Validators.email, Validators.maxLength(100)],
-      ],
+      nome: ["", [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      email: ["", [Validators.required, Validators.email, Validators.maxLength(100)]],
       cpf: ["", [Validators.required]],
       telefone: ["", [Validators.required]],
       salario: [0, [Validators.required, Validators.min(0)]],
-      endereco: this.fb.group({
-        tipo: ["", Validators.required],
-        logradouro: ["", Validators.required],
-        numero: ["", Validators.required],
-        complemento: [""],
-        cep: ["", Validators.required],
-        cidade: ["", Validators.required],
-        estado: ["", [Validators.required, Validators.maxLength(2)]],
-      }),
+      endereco: ["", Validators.required],
+      CEP: ["", Validators.required], // 🔹 corrigido: maiúsculo conforme schema
+      cidade: ["", Validators.required],
+      estado: ["", [Validators.required, Validators.maxLength(2)]],
     });
   }
 
   ngOnInit(): void {}
 
   onSubmit(): void {
+    this.mensagem = null;
+    this.erro = false;
+
     if (this.clienteForm.invalid) {
       this.clienteForm.markAllAsTouched();
       return;
     }
 
-    const novoCliente: Cliente = this.clienteForm.value;
+    const formValue = this.clienteForm.value;
+    const data: AutocadastroInfo = {
+      nome: formValue.nome.trim(),
+      email: formValue.email.trim(),
+      cpf: formValue.cpf.replace(/\D/g, ""),
+      telefone: formValue.telefone.trim(),
+      salario: parseFloat(formValue.salario),
+      endereco: formValue.endereco.trim(),
+      CEP: formValue.CEP.replace(/\D/g, ""),
+      cidade: formValue.cidade.trim(),
+      estado: formValue.estado.toUpperCase(),
+    };
 
-    try {
-      this.clientesService.cadastrarCliente(novoCliente);
-      alert("Cadastro enviado com sucesso! Aguarde aprovação do gerente.");
-      this.clienteForm.reset({
-        nome: "",
-        email: "",
-        cpf: "",
-        telefone: "",
-        salario: 0,
-        endereco: {
-          tipo: "",
-          logradouro: "",
-          numero: "",
-          complemento: "",
-          cep: "",
-          cidade: "",
-          estado: "",
-        },
-      });
-    } catch (error: any) {
-      alert(error.message || "Erro ao cadastrar cliente");
-    }
+    this.clientesService
+      .autocadastro(data)
+      .pipe(
+        tap(() => {
+          this.mensagem =
+            "Cadastro enviado com sucesso! Aguarde aprovação do gerente.";
+          this.erro = false;
+          this.clienteForm.reset();
+        }),
+        catchError((err) => {
+          this.mensagem =
+            err.error?.message ||
+            "Erro ao cadastrar cliente. Verifique os dados e tente novamente.";
+          this.erro = true;
+          return of(null);
+        })
+      )
+      .subscribe();
   }
 }

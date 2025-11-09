@@ -1,1 +1,5 @@
-export interface OperacaoResponse { conta: string; data: string; saldo: number; }
+export interface OperacaoResponse {
+  conta: string;
+  data: string;
+  saldo: number;
+}

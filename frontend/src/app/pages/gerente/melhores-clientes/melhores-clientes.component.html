@@ -3,15 +3,11 @@
   <h1 class="tituloGrande mt-3">Melhores Clientes</h1>
   <div class="imgLine">
     <hr />
-    <img
-      src="../../../../assets/img/img2.png"
-      alt="Imagem Decorativa"
-      class="imgTitle"
-    />
+    <img src="../../../../assets/img/img2.png" alt="Imagem Decorativa" class="imgTitle" />
   </div>
   <div class="d-flex justify-content-end">
-    <a routerLink="/gerente/home" class="btnIcon" routerLinkActive="active"
-      ><i class="fa-solid fa-location-arrow btnVoltar"></i>
+    <a routerLink="/gerente/home" class="btnIcon" routerLinkActive="active">
+      <i class="fa-solid fa-location-arrow btnVoltar"></i>
     </a>
   </div>
   <div class="tabelaListagem">
@@ -27,11 +23,11 @@
       </thead>
       <tbody>
         <tr *ngFor="let cliente of clientes">
-          <td>{{ cliente.cpf | mask: "000.000.000-00" }}</td>
+          <td>{{ cliente.cpf | mask: '000.000.000-00' }}</td>
           <td>{{ cliente.nome }}</td>
-          <td>{{ cliente.endereco.cidade }}</td>
-          <td>{{ cliente.endereco.estado }}</td>
-          <td>{{ cliente.saldo | currency: "BRL" : "symbol" : "1.2-2" }}</td>
+          <td>{{ cliente.cidade }}</td>
+          <td>{{ cliente.estado }}</td>
+          <td>{{ cliente.saldo | currency:'BRL':'symbol':'1.2-2' }}</td>
         </tr>
       </tbody>
     </table>

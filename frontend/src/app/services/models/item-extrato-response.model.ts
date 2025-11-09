@@ -1,1 +1,7 @@
-export interface ItemExtratoResponse { data: string; tipo: 'saque' | 'depósito' | 'transferência'; origem: string; destino: string; valor: number; }
+export interface ItemExtratoResponse {
+  data: string;
+  tipo: "saque" | "depósito" | "transferência";
+  origem: string;
+  destino: string;
+  valor: number;
+}
