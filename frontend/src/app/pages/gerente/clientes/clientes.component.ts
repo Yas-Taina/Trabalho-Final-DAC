@@ -1,11 +1,12 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { LocalClientesService } from "../../../services";
-import { LocalLoginService } from "../../../services";
-import { Cliente } from "../../../services/local/models/cliente";
 import { NgxMaskDirective, NgxMaskPipe } from "ngx-mask";
+import { ClientesService } from "../../../services/clientes.service";
+import { AuthService } from "../../../services/auth.service";
+import { DadosClienteResponse } from "../../../services/models";
+import { finalize } from "rxjs/operators";
 
 @Component({
   selector: "app-clientesmanager",
@@ -18,58 +19,64 @@ import { NgxMaskDirective, NgxMaskPipe } from "ngx-mask";
     NgxMaskPipe,
   ],
   templateUrl: "./clientes.component.html",
-  styleUrl: "./clientes.component.css",
+  styleUrls: ["./clientes.component.css"],
 })
-export class ClientesManagerComponent {
-  clientes: any[] = [];
-  clientesFiltrados: any[] = [];
+export class ClientesManagerComponent implements OnInit {
+  clientes: DadosClienteResponse[] = [];
+  clientesFiltrados: DadosClienteResponse[] = [];
   searchType: string = "";
   search: string = "";
+  loading: boolean = false;
+  errorMessage: string = "";
 
   constructor(
-    private clientesService: LocalClientesService,
-    private loginService: LocalLoginService,
+    private clientesService: ClientesService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.carregarClientes();
   }
 
-  carregarClientes(): void {
-    const session = this.loginService.sessionInfo();
-    if (!session || session.tipo !== "GERENTE") {
-      this.clientes = [];
-      this.clientesFiltrados = [];
-      return;
-    }
+carregarClientes(): void {
+  this.loading = true;
+  this.errorMessage = "";
 
-    const gerenteCpf = (session.usuario as any).cpf as string;
-    const lista: Cliente[] =
-      this.clientesService.consultarClientesDoGerente(gerenteCpf);
-    this.clientes = lista.map((c) => ({
-      cpf: c.cpf,
-      nome: c.nome,
-      email: c.email,
-      endereco: c.endereco,
-      conta: c.dadosConta?.numero,
-      saldo: c.dadosConta?.saldo,
-      limite: c.dadosConta?.limite,
-      gerenteCpf: c.gerenteCpf,
-    }));
-    this.clientesFiltrados = [...this.clientes];
-  }
+  this.clientesService.getClientesByGerente()
+    .pipe(finalize(() => (this.loading = false)))
+    .subscribe({
+      next: (clientes: any[]) => { 
+        this.clientes = clientes.map((c) => ({
+          ...c,
+          salario: (c as any).salario ?? 0,
+          gerente_nome: (c as any).gerente_nome ?? "",
+          gerente_email: (c as any).gerente_email ?? "",
+        })) as DadosClienteResponse[];
+
+        this.clientesFiltrados = [...this.clientes];
+      },
+      error: (err) => {
+        this.errorMessage =
+          "Erro ao carregar clientes. Verifique a autenticação e permissões.";
+        console.error("Erro na API de clientes:", err);
+        this.clientes = [];
+        this.clientesFiltrados = [];
+      },
+    });
+}
+
 
   aplicarFiltro(): void {
     if (!this.searchType || !this.search) {
       this.clientesFiltrados = [...this.clientes];
       return;
     }
-    const termo = this.search.toLowerCase();
+    const termo = this.search.toLowerCase().trim();
+
     this.clientesFiltrados = this.clientes.filter((c) => {
-      if (this.searchType === "nome")
-        return c.nome.toLowerCase().includes(termo);
+      if (this.searchType === "nome") return c.nome.toLowerCase().includes(termo);
       if (this.searchType === "cpf") return c.cpf.toLowerCase().includes(termo);
-      return true;
+      return false;
     });
   }
 }

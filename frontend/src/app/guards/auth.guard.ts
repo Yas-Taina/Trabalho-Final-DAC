@@ -1,12 +1,12 @@
 import { CanActivateFn, Router } from "@angular/router";
-import { LocalLoginService } from "../services";
+import { AuthService } from "../services";
 import { inject } from "@angular/core";
 
 export const authGuard: CanActivateFn = (route, state) => {
-  const loginService = inject(LocalLoginService);
+  const loginService = inject(AuthService);
   const router = inject(Router);
 
-  const sessao = loginService.sessionInfo();
+  const sessao = loginService.getSession();
   const requiredRole = route.data["requiredRole"] as
     | "CLIENTE"
     | "GERENTE"

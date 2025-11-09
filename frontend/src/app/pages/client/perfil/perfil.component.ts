@@ -8,8 +8,9 @@ import {
 } from "@angular/forms";
 import { Router, RouterModule } from "@angular/router";
 import { NgxMaskDirective } from "ngx-mask";
-import { LocalClientesService, LocalLoginService } from "../../../services";
-import { Cliente } from "../../../services/local/models/cliente";
+import { ClientesService } from "../../../services/clientes.service";
+import { AuthService } from "../../../services/auth.service";
+import { PerfilInfo, DadosClienteResponse } from "../../../services/models";
 
 @Component({
   selector: "app-perfil",
@@ -24,58 +25,48 @@ export class PerfilComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private clientesService: LocalClientesService,
-    private loginService: LocalLoginService,
-    private router: Router,
+    private clientesService: ClientesService,
+    private authService: AuthService,
+    private router: Router
   ) {
     this.form = this.fb.group({
-      nome: [
-        "",
-        [
-          Validators.required,
-          Validators.minLength(2),
-          Validators.maxLength(100),
-        ],
-      ],
-      email: [
-        "",
-        [Validators.required, Validators.email, Validators.maxLength(100)],
-      ],
-      cpf: ["", [Validators.required]],
+      nome: ["", [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      email: ["", [Validators.required, Validators.email, Validators.maxLength(100)]],
       telefone: ["", [Validators.required]],
       salario: [0, [Validators.required, Validators.min(0)]],
-      endereco: this.fb.group({
-        tipo: ["", Validators.required],
-        logradouro: ["", Validators.required],
-        numero: ["", Validators.required],
-        complemento: [""],
-        cep: ["", Validators.required],
-        bairro: ["", Validators.required],
-        cidade: ["", Validators.required],
-        estado: ["", [Validators.required, Validators.maxLength(2)]],
-      }),
+      endereco: ["", [Validators.required]],
+      CEP: ["", [Validators.required]],
+      cidade: ["", [Validators.required]],
+      estado: ["", [Validators.required, Validators.maxLength(2)]],
     });
   }
 
   ngOnInit(): void {
-    const cpf = this.loginService.sessionInfo()?.usuario.cpf;
+    const cpf = this.authService.getUserCpf();
     if (!cpf) {
       alert("Sessão inválida ou usuário não é cliente");
       this.router.navigate(["/login"]);
       return;
     }
 
-    const cliente = this.clientesService
-      .listarClientes()
-      .find((g) => g.cpf === cpf);
-    if (!cliente) {
-      alert("Cliente não encontrado");
-      this.router.navigate(["/client/home"]);
-      return;
-    }
-
-    this.form.patchValue(cliente);
-    this.form.get("cpf")?.disable();
+    this.clientesService.getCliente(cpf).subscribe({
+      next: (cliente: DadosClienteResponse) => {
+        const perfil: PerfilInfo = {
+          nome: cliente.nome,
+          email: cliente.email,
+          salario: cliente.salario,
+          endereco: cliente.endereco || "",
+          CEP: "",
+          cidade: cliente.cidade,
+          estado: cliente.estado,
+        };
+        this.form.patchValue(perfil);
+      },
+      error: () => {
+        alert("Cliente não encontrado");
+        this.router.navigate(["/client/home"]);
+      },
+    });
   }
 
   salvar(): void {
@@ -84,12 +75,17 @@ export class PerfilComponent implements OnInit {
       return;
     }
 
-    const dados: Cliente = { ...this.form.getRawValue() };
-    try {
-      this.clientesService.editarPerfil(dados.cpf!, dados);
-      this.mensagem = "Dados atualizados com sucesso!";
-    } catch (error: any) {
-      this.mensagem = error.message;
-    }
+    const cpf = this.authService.getUserCpf();
+    if (!cpf) return;
+
+    const dados: PerfilInfo = { ...this.form.value };
+    this.clientesService.atualizarCliente(cpf, dados).subscribe({
+      next: () => {
+        this.mensagem = "Dados atualizados com sucesso!";
+      },
+      error: (err) => {
+        this.mensagem = err?.error?.message || "Erro ao atualizar perfil.";
+      },
+    });
   }
 }

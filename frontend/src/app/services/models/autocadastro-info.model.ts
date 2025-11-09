@@ -1,1 +1,11 @@
-export interface AutocadastroInfo { cpf: string; email: string; nome: string; telefone: string; salario: number; endereco: string; CEP: string; cidade: string; estado: string; }
+export interface AutocadastroInfo {
+  cpf: string;
+  email: string;
+  nome: string;
+  telefone: string;
+  salario: number;
+  endereco: string;
+  CEP: string;
+  cidade: string;
+  estado: string;
+}

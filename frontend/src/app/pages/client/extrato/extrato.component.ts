@@ -3,12 +3,10 @@ import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { NgxMaskDirective, NgxMaskPipe } from "ngx-mask";
-import {
-  LocalContasService,
-  LocalLoginService,
-  ClienteResponse,
-  DadoGerente,
-} from "../../../services";
+
+import { AuthService } from "../../../services/auth.service";
+import { ClientesService } from "../../../services/clientes.service";
+import { ContasService, ExtratoResponse, ItemExtratoResponse, DadosClienteResponse } from "../../../services";
 
 interface ExtratoLinha {
   data: string;
@@ -42,28 +40,36 @@ export class ExtratoComponent implements OnInit {
   dataFim = "";
   extratosPorDia: Record<string, ExtratoDia> = {};
   cpfLogado = "";
+  numeroConta = "";
 
   constructor(
-    private readonly contasService: LocalContasService,
-    private readonly loginService: LocalLoginService,
+    private readonly authService: AuthService,
+    private readonly clientesService: ClientesService,
+    private readonly contasService: ContasService
   ) {}
 
   ngOnInit(): void {
-    this.inicializarCpfLogado();
-    this.carregarExtrato();
+    this.inicializarUsuario();
   }
 
-  private inicializarCpfLogado(): void {
-    const session = this.loginService.sessionInfo();
-    if (session && this.isCliente(session.usuario)) {
-      this.cpfLogado = session.usuario.cpf ?? "0";
+  private inicializarUsuario(): void {
+    const cpf = this.authService.getUserCpf();
+    if (!cpf) {
+      alert("Usuário não logado.");
+      return;
     }
-  }
-
-  private isCliente(
-    usuario: ClienteResponse | DadoGerente,
-  ): usuario is ClienteResponse {
-    return (usuario as ClienteResponse).conta !== undefined;
+    this.cpfLogado = cpf;
+    this.clientesService.getCliente(cpf).subscribe({
+      next: (cliente: DadosClienteResponse) => {
+        if (!cliente.conta) {
+          alert("Conta não encontrada para o usuário.");
+          return;
+        }
+        this.numeroConta = cliente.conta;
+        this.carregarExtrato();
+      },
+      error: (err) => alert("Erro ao obter dados do cliente: " + err.message)
+    });
   }
 
   toggleFiltro(): void {
@@ -75,47 +81,43 @@ export class ExtratoComponent implements OnInit {
   }
 
   private carregarExtrato(inicio?: string, fim?: string): void {
-    const session = this.loginService.sessionInfo();
-    if (!session || !this.isCliente(session.usuario)) {
-      alert("Sessão inválida ou usuário não é cliente");
-      return;
-    }
+    if (!this.numeroConta) return;
 
-    const numeroConta = session.usuario.conta;
-    if (!numeroConta) {
-      alert("Número da conta não disponível");
-      return;
-    }
+    this.contasService.extrato(this.numeroConta).subscribe({
+      next: (extrato: ExtratoResponse) => {
+        let movimentos = extrato.movimentacoes;
+        if (inicio) {
+          const dtInicio = new Date(inicio);
+          movimentos = movimentos.filter(m => new Date(m.data) >= dtInicio);
+        }
+        if (fim) {
+          const dtFim = new Date(fim);
+          movimentos = movimentos.filter(m => new Date(m.data) <= dtFim);
+        }
 
-    try {
-      const resultado = this.contasService.consultarExtrato(
-        numeroConta,
-        this.cpfLogado,
-        inicio,
-        fim,
-      );
-      this.extratosPorDia = this.formatarExtratoPorDia(resultado);
-    } catch (e: any) {
-      alert(e.message || "Erro ao consultar extrato");
-    }
+        this.extratosPorDia = this.formatarExtratoPorDia(movimentos, extrato.saldo);
+      },
+      error: (err) => alert("Erro ao carregar extrato: " + err.message)
+    });
   }
 
-  private formatarExtratoPorDia(dados: any[]): Record<string, ExtratoDia> {
-    return dados.reduce(
-      (acc, dia) => {
-        acc[dia.dia] = {
-          movimentos: dia.movimentos.map((m: any) => ({
-            data: new Date(m.dataHora).toLocaleTimeString(),
-            tipo: m.tipo.toLowerCase(),
-            origem: m.clienteOrigemCpf || "-",
-            destino: m.clienteDestinoCpf || "-",
-            valor: m.valor,
-          })),
-          saldoConsolidado: dia.saldoConsolidado,
-        };
-        return acc;
-      },
-      {} as Record<string, ExtratoDia>,
-    );
+  private formatarExtratoPorDia(movimentos: ItemExtratoResponse[], saldoConsolidado: number): Record<string, ExtratoDia> {
+    const grouped: Record<string, ExtratoDia> = {};
+
+    movimentos.forEach(m => {
+      const dia = new Date(m.data).toLocaleDateString();
+      if (!grouped[dia]) {
+        grouped[dia] = { movimentos: [], saldoConsolidado };
+      }
+      grouped[dia].movimentos.push({
+        data: new Date(m.data).toLocaleTimeString(),
+        tipo: m.tipo.toLowerCase(),
+        origem: m.origem || "-",
+        destino: m.destino || "-",
+        valor: m.valor
+      });
+    });
+
+    return grouped;
   }
 }

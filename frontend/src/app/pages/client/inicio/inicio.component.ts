@@ -1,55 +1,51 @@
 import { Component, OnInit } from "@angular/core";
-import { LocalContasService } from "../../../services";
-import { LocalLoginService } from "../../../services";
-import { ClienteResponse, DadoGerente } from "../../../services";
-import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
+import { RouterModule } from "@angular/router";
 import { ReactiveFormsModule } from "@angular/forms";
 import { NgxMaskDirective } from "ngx-mask";
+import { ClientesService } from "../../../services/clientes.service";
+import { AuthService } from "../../../services/auth.service";
+import { DadosClienteResponse } from "../../../services/models";
 
 @Component({
   selector: "app-inicio",
   standalone: true,
-  imports: [RouterModule, CommonModule, ReactiveFormsModule],
+  imports: [RouterModule, CommonModule, ReactiveFormsModule, NgxMaskDirective],
   templateUrl: "./inicio.component.html",
-  styleUrl: "./inicio.component.css",
+  styleUrls: ["./inicio.component.css"],
 })
 export class InicioClientComponent implements OnInit {
-  conta: { saldo: number } | null = null;
+  saldo: number | null = null;
+  loading: boolean = false;
 
   constructor(
-    private contasService: LocalContasService,
-    private loginService: LocalLoginService,
+    private clientesService: ClientesService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.carregarSaldo();
   }
 
-  private isCliente(
-    usuario: ClienteResponse | DadoGerente,
-  ): usuario is ClienteResponse {
-    return (usuario as ClienteResponse).conta !== undefined;
-  }
-
   private carregarSaldo(): void {
-    const session = this.loginService.sessionInfo();
-    if (!session || !this.isCliente(session.usuario)) {
-      alert("Sessão inválida ou usuário não é cliente");
+    const cpf = this.authService.getUserCpf();
+    if (!cpf) {
+      alert("Usuário não logado.");
       return;
     }
 
-    const numeroConta = session.usuario.conta;
-    if (!numeroConta) {
-      alert("Número da conta não disponível");
-      return;
-    }
+    this.loading = true;
 
-    try {
-      const saldo = this.contasService.consultarSaldo(numeroConta);
-      this.conta = { saldo };
-    } catch (error: any) {
-      alert(error.message || "Erro ao consultar saldo");
-    }
+    this.clientesService.getCliente(cpf).subscribe({
+      next: (res: DadosClienteResponse) => {
+        const valor = parseFloat(res.saldo as string);
+        this.saldo = isNaN(valor) ? 0 : valor;
+        this.loading = false;
+      },
+      error: (err) => {
+        alert(err?.error?.message || "Erro ao consultar saldo");
+        this.loading = false;
+      },
+    });
   }
 }

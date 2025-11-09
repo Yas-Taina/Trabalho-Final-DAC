@@ -11,8 +11,12 @@ import {
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { NgxMaskDirective } from "ngx-mask";
-import { LocalGerentesService } from "../../../services";
-import { Gerente } from "../../../services/local/models/gerente";
+import { GerentesService } from "../../../services";
+import {
+  DadoGerente,
+  DadoGerenteInsercao,
+  DadoGerenteAtualizacao,
+} from "../../../services";
 
 @Component({
   selector: "app-editar-gerentes",
@@ -32,12 +36,13 @@ export class EditarGerentesComponent implements OnInit {
   ): ValidationErrors | null => {
     const senha = group.get("senha")?.value;
     const confirmarSenha = group.get("confirmarSenha")?.value;
+    if (this.editMode && !senha && !confirmarSenha) return null;
     return senha === confirmarSenha ? null : { senhaDiferente: true };
   };
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly gerentesService: LocalGerentesService,
+    private readonly gerentesService: GerentesService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
   ) {
@@ -55,9 +60,8 @@ export class EditarGerentesComponent implements OnInit {
     return this.fb.group(
       {
         nome: ["", Validators.required],
-        cpf: ["", Validators.required],
+        cpf: ["", [Validators.required, Validators.pattern(/^\d{11}$/)]],
         email: ["", [Validators.required, Validators.email]],
-        telefone: ["", Validators.required],
         senha: ["", [Validators.minLength(4), Validators.maxLength(4)]],
         confirmarSenha: [""],
         tipo: ["GERENTE", Validators.required],
@@ -67,19 +71,28 @@ export class EditarGerentesComponent implements OnInit {
   }
 
   private ativarModoEdicao(cpf: string): void {
-    const gerente = this.gerentesService
-      .listarGerentes()
-      .find((g) => g.cpf === cpf);
-    if (!gerente) return;
     this.editMode = true;
-    this.form.patchValue({
-      nome: gerente.nome,
-      cpf: gerente.cpf,
-      email: gerente.email,
-      telefone: gerente.telefone,
-      tipo: gerente.tipo,
-    });
     this.form.get("cpf")?.disable();
+    this.form.get("tipo")?.disable();
+
+    this.form.get("senha")?.clearValidators();
+    this.form.get("confirmarSenha")?.clearValidators();
+    this.form.updateValueAndValidity();
+
+    this.gerentesService.getGerente(cpf).subscribe({
+      next: (gerente: DadoGerente) => {
+        this.form.patchValue({
+          nome: gerente.nome,
+          cpf: gerente.cpf,
+          email: gerente.email,
+          tipo: gerente.tipo,
+        });
+      },
+      error: (e) => {
+        this.mensagem = "Erro ao carregar dados do gerente: " + e.message;
+        console.error(e);
+      },
+    });
   }
 
   salvar(): void {
@@ -89,21 +102,53 @@ export class EditarGerentesComponent implements OnInit {
     }
 
     const { confirmarSenha, senha, ...dadosForm } = this.form.getRawValue();
-    const dados: Gerente = { ...dadosForm };
-    if (senha) dados.senha = senha;
+    const cpf = dadosForm.cpf;
 
-    try {
-      if (this.editMode) {
-        this.gerentesService.editarGerente(dados.cpf!, dados);
-        this.router.navigate(["/gerentes"]);
-        alert("Gerente atualizado com sucesso!");
-      } else {
-        this.gerentesService.inserirUsuario(dados);
-        this.mensagem = "Gerente cadastrado com sucesso!";
-        this.form.reset({ tipo: "GERENTE" });
+    if (this.editMode) {
+      const dadosAtualizacao: DadoGerenteAtualizacao = {
+        nome: dadosForm.nome,
+        email: dadosForm.email,
+        senha: senha || undefined,
+      };
+
+      this.gerentesService.atualizarGerente(cpf, dadosAtualizacao).subscribe({
+        next: () => {
+          alert("Gerente atualizado com sucesso!");
+          this.router.navigate(["/gerentes"]);
+        },
+        error: (e) => {
+          this.mensagem =
+            "Erro ao atualizar gerente: " + (e.error?.message || e.message);
+          console.error(e);
+        },
+      });
+    } else {
+      if (!senha) {
+        this.mensagem = "A senha é obrigatória para o cadastro.";
+        return;
       }
-    } catch (e: any) {
-      this.mensagem = e.message;
+
+      const dadosInsercao: DadoGerenteInsercao = {
+        cpf: dadosForm.cpf,
+        nome: dadosForm.nome,
+        email: dadosForm.email,
+        tipo: dadosForm.tipo,
+        senha,
+      };
+
+      this.gerentesService.inserirGerente(dadosInsercao).subscribe({
+        next: () => {
+          this.mensagem = "Gerente cadastrado com sucesso!";
+          this.form.reset({ tipo: "GERENTE" });
+          this.form.get("cpf")?.enable();
+          this.form.get("tipo")?.enable();
+        },
+        error: (e) => {
+          this.mensagem =
+            "Erro ao cadastrar gerente: " + (e.error?.message || e.message);
+          console.error(e);
+        },
+      });
     }
   }
 }

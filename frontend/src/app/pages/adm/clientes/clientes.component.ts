@@ -1,79 +1,52 @@
-import { Component, OnInit } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { CommonModule } from "@angular/common";
-import { NgxMaskPipe } from "ngx-mask";
-import { LocalClientesService, LocalGerentesService } from "../../../services";
-import { Cliente } from "../../../services/local/models/cliente";
-import { Gerente } from "../../../services/local/models/gerente";
-
-interface ClienteExibicao {
-  cpf: string;
-  nome: string;
-  email: string;
-  salario: number;
-  conta?: string;
-  saldo?: number;
-  limite?: number;
-  gerenteCpf?: string;
-  gerenteNome?: string;
-}
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ClientesService } from '../../../services';
+import { DadosClienteResponse } from '../../../services';
+import { NgxMaskPipe } from 'ngx-mask';
 
 @Component({
-  selector: "app-clientes-adm",
+  selector: 'app-clientes-adm',
   standalone: true,
-  imports: [RouterModule, CommonModule, NgxMaskPipe],
-  templateUrl: "./clientes.component.html",
-  styleUrls: ["./clientes.component.css"],
+  imports: [CommonModule, NgxMaskPipe],
+  templateUrl: './clientes.component.html',
+  styleUrls: ['./clientes.component.css']
 })
 export class ClientesAdmComponent implements OnInit {
-  clientes: ClienteExibicao[] = [];
 
-  constructor(
-    private readonly clientesService: LocalClientesService,
-    private readonly gerentesService: LocalGerentesService,
-  ) {}
+  clientes: DadosClienteResponse[] = [];
+  erroCarregamento = false;
+
+  constructor(private clientesService: ClientesService) {}
 
   ngOnInit(): void {
     this.carregarClientes();
   }
 
-  private carregarClientes(): void {
-    const gerentesMap = this.criarMapaGerentes(
-      this.gerentesService.listarGerentes(),
-    );
-    this.clientes = this.clientesService
-      .listarClientes()
-      .filter((cliente) => cliente.estado === "APROVADO")
-      .map((cliente) => this.mapearClienteParaExibicao(cliente, gerentesMap));
-  }
+  carregarClientes(): void {
+    this.clientesService.getClientes('adm_relatorio_clientes').subscribe({
+      next: (response) => {
+        const clientesResponse = response as DadosClienteResponse[];
 
-  private criarMapaGerentes(gerentes: Gerente[]): Record<string, Gerente> {
-    return gerentes.reduce(
-      (map, gerente) => {
-        map[gerente.cpf] = gerente;
-        return map;
+        if (Array.isArray(clientesResponse)) {
+          this.clientes = clientesResponse.map(cliente => ({
+            ...cliente,
+            saldo: cliente.saldo ?? '0',
+            gerente_cpf: (cliente as any).gerente_cpf ?? null,
+            gerente_nome: (cliente as any).gerente_nome ?? '—'
+          }));
+        } else {
+          console.error('Resposta inesperada do servidor:', response);
+          this.erroCarregamento = true;
+        }
       },
-      {} as Record<string, Gerente>,
-    );
+      error: (err) => {
+        console.error('Erro ao buscar clientes:', err);
+        this.erroCarregamento = true;
+      }
+    });
   }
 
-  private mapearClienteParaExibicao(
-    cliente: Cliente,
-    gerentesMap: Record<string, Gerente>,
-  ): ClienteExibicao {
-    const gerente = cliente.gerenteCpf
-      ? gerentesMap[cliente.gerenteCpf]
-      : undefined;
-    return {
-      cpf: cliente.cpf,
-      nome: cliente.nome,
-      email: cliente.email,
-      salario: cliente.salario,
-      conta: cliente.dadosConta?.numero,
-      saldo: cliente.dadosConta?.saldo,
-      limite: cliente.dadosConta?.limite,
-      gerenteCpf: cliente.gerenteCpf,
-      gerenteNome: gerente?.nome,
-    };
+  getSaldoNumerico(saldo: string): number {
+    return Number(saldo) || 0;
   }
 }

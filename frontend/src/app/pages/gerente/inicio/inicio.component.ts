@@ -1,10 +1,10 @@
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { LocalClientesService } from "../../../services";
-import { Cliente } from "../../../services/local/models/cliente";
 import { FormsModule } from "@angular/forms";
 import { NgxMaskPipe } from "ngx-mask";
+import { ClientesService } from "../../../services/clientes.service";
+import { ClienteParaAprovarResponse } from "../../../services/models";
 
 @Component({
   selector: "app-inicio",
@@ -13,36 +13,47 @@ import { NgxMaskPipe } from "ngx-mask";
   templateUrl: "./inicio.component.html",
   styleUrls: ["./inicio.component.css"],
 })
-export class InicioManagerComponent {
-  clientes: Cliente[] = [];
-  clienteRecusando: Cliente | null = null;
+export class InicioManagerComponent implements OnInit {
+  clientes: ClienteParaAprovarResponse[] = [];
+  clienteRecusando: ClienteParaAprovarResponse | null = null;
   motivoRecusa: string = "";
+  carregando: boolean = false;
 
-  constructor(private clientesService: LocalClientesService) {}
+  constructor(private clientesService: ClientesService) {}
 
   ngOnInit() {
-    const session = JSON.parse(localStorage.getItem("dac_token") || "{}");
-    const gerenteCpf = session.usuario?.cpf;
-    if (gerenteCpf) {
-      this.clientes =
-        this.clientesService.consultarClientesAguardando(gerenteCpf);
-    }
-
-    console.log("Token:", localStorage.getItem("dac_token"));
-    console.log("Gerente CPF:", session.usuario?.cpf);
+    this.carregarClientesAguardando();
   }
 
-  aprovar(cliente: Cliente) {
-    try {
-      this.clientesService.aprovarCliente(cliente.cpf);
-      this.clientes = this.clientes.filter((c) => c.cpf !== cliente.cpf);
-      alert(`Cliente ${cliente.nome} aprovado com sucesso.`);
-    } catch (error: any) {
-      alert(error.message);
-    }
+  carregarClientesAguardando() {
+    this.carregando = true;
+    this.clientesService.getClientes("para_aprovar").subscribe({
+      next: (clientes) => {
+        this.clientes = clientes as ClienteParaAprovarResponse[];
+        this.carregando = false;
+      },
+      error: (err) => {
+        console.error("Erro ao carregar clientes:", err);
+        alert("Não foi possível carregar os clientes.");
+        this.carregando = false;
+      },
+    });
   }
 
-  abrirModalRecusa(cliente: Cliente) {
+  aprovar(cliente: ClienteParaAprovarResponse) {
+    this.clientesService.aprovarCliente(cliente.cpf).subscribe({
+      next: () => {
+        this.clientes = this.clientes.filter((c) => c.cpf !== cliente.cpf);
+        alert(`Cliente ${cliente.nome} aprovado com sucesso.`);
+      },
+      error: (err) => {
+        console.error("Erro ao aprovar cliente:", err);
+        alert("Não foi possível aprovar o cliente.");
+      },
+    });
+  }
+
+  abrirModalRecusa(cliente: ClienteParaAprovarResponse) {
     this.clienteRecusando = cliente;
     this.motivoRecusa = "";
   }
@@ -53,23 +64,22 @@ export class InicioManagerComponent {
       return;
     }
     if (this.clienteRecusando) {
-      try {
-        this.clientesService.recusarCliente(
-          this.clienteRecusando.cpf,
-          this.motivoRecusa,
-        );
-        this.clientes = this.clientes.filter(
-          (c) => c.cpf !== this.clienteRecusando!.cpf,
-        );
-        alert(`Cliente ${this.clienteRecusando.nome} recusado.`);
-        alert(
-          `Email: \nInfelizmente, seu cadastro foi recusado.\nMotivo: ${this.motivoRecusa}\nData: ${new Date().toLocaleDateString()}`,
-        );
-        this.clienteRecusando = null;
-        this.motivoRecusa = "";
-      } catch (error: any) {
-        alert(error.message);
-      }
+      this.clientesService
+        .rejeitarCliente(this.clienteRecusando.cpf, this.motivoRecusa)
+        .subscribe({
+          next: () => {
+            this.clientes = this.clientes.filter(
+              (c) => c.cpf !== this.clienteRecusando!.cpf
+            );
+            alert(`Cliente ${this.clienteRecusando!.nome} recusado com sucesso.`);
+            this.clienteRecusando = null;
+            this.motivoRecusa = "";
+          },
+          error: (err) => {
+            console.error("Erro ao rejeitar cliente:", err);
+            alert("Não foi possível recusar o cliente.");
+          },
+        });
     }
   }
 

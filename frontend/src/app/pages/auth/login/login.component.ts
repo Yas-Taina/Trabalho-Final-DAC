@@ -1,58 +1,53 @@
 import { Component, inject } from "@angular/core";
 import { RouterModule, Router } from "@angular/router";
-import { LoginInfo, LocalLoginService } from "../../../services";
+import { AuthService } from "../../../services/auth.service";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
+import { LoginInfo } from "../../../services/models";
 
 @Component({
   selector: "app-login",
   standalone: true,
   imports: [RouterModule, ReactiveFormsModule, CommonModule],
   templateUrl: "./login.component.html",
-  styleUrl: "./login.component.css",
+  styleUrls: ["./login.component.css"],
 })
 export class LoginComponent {
-  readonly loginService: LocalLoginService = inject(LocalLoginService);
-  readonly router: Router = inject(Router);
-  readonly builder: FormBuilder = inject(FormBuilder);
-
-  loginModel: LoginInfo = {
-    email: "",
-    senha: "",
-  };
+  readonly authService = inject(AuthService);
+  readonly router = inject(Router);
+  readonly builder = inject(FormBuilder);
 
   loginForm = this.builder.group({
-    email: [this.loginModel.email, [Validators.required, Validators.email]],
-    senha: [
-      this.loginModel.senha,
-      [Validators.required, Validators.minLength(4)],
-    ],
+    email: ["", [Validators.required, Validators.email]],
+    senha: ["", [Validators.required, Validators.minLength(4)]],
   });
 
-  constructor() {}
-
   async onSubmit() {
-    console.log(this.loginForm.value);
-    if (!this.loginForm.valid) {
-      return;
-    }
+    if (!this.loginForm.valid) return;
 
-    this.loginService.login(this.loginForm.value as LoginInfo).subscribe({
+    const data = this.loginForm.value as LoginInfo;
+
+    this.authService.login(data).subscribe({
       next: (res) => {
-        console.log(res);
         if (res.tipo === "ADMINISTRADOR") {
           this.router.navigate(["/adm/home"]);
         } else if (res.tipo === "GERENTE") {
           this.router.navigate(["/gerente/home"]);
-        } else {
+        } else if (res.tipo === "CLIENTE") {
           this.router.navigate(["/client/home"]);
+        } else {
+          alert("Tipo de usuário não reconhecido.");
         }
       },
       error: (err) => {
-        alert(
-          "Erro no login: " +
-            (err.error?.message || err.message || "Unknown error"),
-        );
+        if (err.status === 401) {
+          alert("Usuário ou senha incorretos.");
+        } else {
+          alert(
+            "Erro no login: " +
+              (err.error?.message || err.message || "Erro desconhecido")
+          );
+        }
       },
     });
   }

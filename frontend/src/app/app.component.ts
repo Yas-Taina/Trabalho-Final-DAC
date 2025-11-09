@@ -2,7 +2,6 @@ import { Component, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterOutlet } from "@angular/router";
 import { FooterComponent } from "./components/footer/footer.component";
-import { LocalInicializacaoService } from "./services";
 import { MenuComponent } from "./components/menu/menu.component";
 
 @Component({
@@ -15,18 +14,8 @@ import { MenuComponent } from "./components/menu/menu.component";
 export class AppComponent {
   title = "frontend";
 
-  readonly InicializacaoService: LocalInicializacaoService = inject(
-    LocalInicializacaoService,
-  );
 
   constructor() {
-    this.InicializacaoService.inicializarBanco().subscribe({
-      next: (res) => {
-        console.log("Banco inicializado", res);
-      },
-      error: (err) => {
-        console.error("Erro ao inicializar o banco", err);
-      },
-    });
+   
   }
 }

@@ -10,7 +10,21 @@
     </div>
     <h1 class="tituloGrande">Gerentes</h1>
     <hr />
-  </div>
+    <div class="input-group mb-3">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Buscar por Nome, CPF ou E-mail"
+        [(ngModel)]="termoBusca"
+        (input)="aplicarFiltro()"
+      />
+      <div class="input-group-append">
+        <span class="input-group-text">
+          <i class="fa-solid fa-search"></i>
+        </span>
+      </div>
+    </div>
+    </div>
 
   <div class="col-lg-6 d-flex flex-column justify-content-center">
     <div class="containerTabela">
@@ -21,16 +35,14 @@
               <th>CPF</th>
               <th>Nome</th>
               <th>E-mail</th>
-              <th>telefone</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let gerente of gerentes">
+            <tr *ngFor="let gerente of gerentesFiltrados">
               <td>{{ gerente.cpf | mask: "000.000.000-00" }}</td>
               <td>{{ gerente.nome }}</td>
               <td>{{ gerente.email }}</td>
-              <td>{{ gerente.telefone | mask: "(00)00000-0000" }}</td>
               <td style="min-width: 100px">
                 <a
                   [routerLink]="['/adm/gerentes', gerente.cpf]"
@@ -42,6 +54,9 @@
                   <i class="fa-solid fa-trash btnIcon"></i>
                 </a>
               </td>
+            </tr>
+            <tr *ngIf="gerentesFiltrados.length === 0">
+              <td colspan="4" style="text-align: center;">Nenhum gerente encontrado.</td>
             </tr>
           </tbody>
         </table>
