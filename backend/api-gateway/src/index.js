@@ -3,6 +3,7 @@ import { SERVICES } from "./config/services.js";
 import { createServiceProxy } from "./utils/proxyHelper.js";
 import { validateTokenMiddleware } from "./middlewares/validateTokenMiddleware.js";
 import { sagaMiddleware } from "./middlewares/sagaMiddleware.js";
+// import { mainRouter } from "./routes/mainRouter.js";
 
 const app = express();
 app.use(express.json());
@@ -11,6 +12,7 @@ const router = express.Router();
 
 app.use(validateTokenMiddleware);
 
+// app.use("/api", mainRouter);
 
 app.use("/api/clientes", sagaMiddleware);
 
