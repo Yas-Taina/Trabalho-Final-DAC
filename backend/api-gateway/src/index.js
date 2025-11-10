@@ -2,6 +2,7 @@ import express from "express";
 import { SERVICES } from "./config/services.js";
 import { createServiceProxy } from "./utils/proxyHelper.js";
 import { validateTokenMiddleware } from "./middlewares/validateTokenMiddleware.js";
+import { sagaMiddleware } from "./middlewares/sagaMiddleware.js";
 
 const app = express();
 app.use(express.json());

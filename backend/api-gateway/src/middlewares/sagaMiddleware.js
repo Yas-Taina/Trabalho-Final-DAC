@@ -32,4 +32,4 @@ export async function sagaMiddleware(req, res, next) {
         console.error("❌ Erro ao redirecionar para saga:", err);
         res.status(500).json({ error: "Erro no redirecionamento para saga" });
     }
-});
+};
