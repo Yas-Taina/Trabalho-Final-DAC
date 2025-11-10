@@ -16,6 +16,7 @@
     "express": "^5.1.0",
     "express-http-proxy": "^2.1.2",
     "http-proxy-middleware": "^3.0.5",
-    "install": "^0.13.0"
+    "install": "^0.13.0",
+    "node-fetch": "^3.3.2"
   }
 }
