@@ -19,40 +19,38 @@ import static dac.ufpr.gerente.config.RabbitMqConfig.SAGA_RESPONSE_QUEUE;
 @RequiredArgsConstructor
 public class GerenteListener {
 
-    private final Logger log = LoggerFactory.getLogger(GerenteListener.class);
+	private final Logger log = LoggerFactory.getLogger(GerenteListener.class);
 
-    private final GerenteService service;
-    private final RabbitTemplate rabbitTemplate;
+	private final GerenteService service;
+	private final RabbitTemplate rabbitTemplate;
 
-    @RabbitListener(queues = GERENTE_CREATE_QUEUE)
-    public void listen(SagaMessage<GerenteDto> message) {
-        log.info("Mensagem recebida para tópico: {}. Payload: {}", GERENTE_CREATE_QUEUE, message);
+	@RabbitListener(queues = GERENTE_CREATE_QUEUE)
+	public void listen(SagaMessage<GerenteDto> message) {
+		log.info("Mensagem recebida para tópico: {}. Payload: {}", GERENTE_CREATE_QUEUE, message);
 
-        try{
-            GerenteDto dto = service.criar(message.getData());
-            
-            SagaMessage<GerenteDto> response = new SagaMessage<>(
-                    message.getSagaId(),
-                    GERENTE_CREATE_QUEUE,
-                    EnStatusIntegracao.SUCESSO,
-                    null,
-                    dto,
-            HttpStatus.CREATED.value(),
-            message.getGerenteId()
-            );
+		try {
+			GerenteDto dto = service.criar(message.getData());
 
-            rabbitTemplate.convertAndSend(SAGA_RESPONSE_QUEUE, response);
-        } catch (Exception e) {
-            log.error ("Erro ao processar a mensagem para o tópico: {}. Erro: ",GERENTE_CREATE_QUEUE, e);
+			SagaMessage<GerenteDto> response = new SagaMessage<>(
+					message.getSagaId(),
+					GERENTE_CREATE_QUEUE,
+					EnStatusIntegracao.SUCESSO,
+					null,
+					dto,
+					HttpStatus.CREATED.value(),
+					message.getGerenteId());
 
-            SagaMessage<?> errorResponse = ExceptionMapper.mapExceptionToSagaMessage(
-                    message.getSagaId(),
-                    GERENTE_CREATE_QUEUE,
-                    message.getData(),
-                    e
-            );
+			rabbitTemplate.convertAndSend(SAGA_RESPONSE_QUEUE, response);
+		} catch (Exception e) {
+			log.error("Erro ao processar a mensagem para o tópico: {}. Erro: ", GERENTE_CREATE_QUEUE, e);
 
-            rabbitTemplate.convertAndSend(SAGA_RESPONSE_QUEUE, errorResponse);
-        }
-    }
+			SagaMessage<?> errorResponse = ExceptionMapper.mapExceptionToSagaMessage(
+					message.getSagaId(),
+					GERENTE_CREATE_QUEUE,
+					message.getData(),
+					e);
+
+			rabbitTemplate.convertAndSend(SAGA_RESPONSE_QUEUE, errorResponse);
+		}
+	}
 }
