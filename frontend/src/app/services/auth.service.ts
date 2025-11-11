@@ -9,7 +9,7 @@ import { LoginInfo, LogoutResponse } from "./models";
 export class AuthService extends BaseService {
   private readonly SESSION_KEY = "dac_token";
   login(data: LoginInfo): Observable<LogoutResponse> {
-    return this.http.post<LogoutResponse>(`${this.apiUrl}/login`, data, {
+    return this.http.post<LogoutResponse>(`${this.apiUrl}/auth/login`, data, {
       headers: this.headers,
     }).pipe(
       tap((session) => this.saveSession(session))

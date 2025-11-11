@@ -24,13 +24,15 @@ public class Autenticacao implements UserDetails {
     @MongoId
     private String id;
 
+    private String cpf;
+
     private String email;
 
     private String senha;
 
     private EnRole role;
 
-    private Long idUsuario;
+    // private Long idUsuario;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -45,5 +47,10 @@ public class Autenticacao implements UserDetails {
     @Override
     public String getUsername() {
         return this.email;
+    }
+
+
+    public String getCpf() {
+        return this.cpf;
     }
 }

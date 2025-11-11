@@ -5,15 +5,11 @@ meta {
 }
 
 get {
-  url: http://localhost:8081/clientes?filtro=ativo
+  url: http://localhost:8081/clientes
   body: json
   auth: inherit
 }
 
-params:query {
-  filtro: ativo
-}
-
 headers {
-  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBiYW50YWRzIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzYxNjY4NzY1LCJleHAiOjE3NjE2NzIzNjV9.B7U0TOvzzL_BHaoR5dnvEBXEBV2jpK8wg_wuNANNOFA
+  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbGkxQGJhbnRhZHMuY29tLmJyIiwicm9sZSI6IkNMSUVOVEUiLCJpYXQiOjE3NjI4MTY5NDUsImV4cCI6MTc2MjgyMDU0NX0.wvhT4HO26xIPttF2Ksq4HbKN5wcTG5m8hCGwRqiP4Js
 }

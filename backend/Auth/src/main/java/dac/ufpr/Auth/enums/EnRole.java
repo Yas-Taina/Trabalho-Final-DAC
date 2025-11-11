@@ -6,7 +6,7 @@ public enum EnRole {
 
     CLIENTE,
     GERENTE,
-    ADMIN;
+    ADMINISTRADOR;
 
     public static EnRole findByName(String name) {
         return Arrays.stream(EnRole.values())

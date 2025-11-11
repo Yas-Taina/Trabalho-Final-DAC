@@ -19,7 +19,7 @@ public class ContaController {
     private final ContaService service;
 
     @GetMapping
-    // @PreAuthorize("hasRole('ROLE_ADMIN')")
+    // @PreAuthorize("hasRole('ROLE_ADMINISTRADOR')")
     public ResponseEntity<List<ContaDto>> listar() {
         return ResponseEntity.ok(service.listar());
     }

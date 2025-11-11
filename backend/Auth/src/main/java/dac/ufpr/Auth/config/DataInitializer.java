@@ -8,86 +8,56 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
 public class DataInitializer {
 
     private static final String SENHA = "tads";
 
     @Bean
-    CommandLineRunner initDatabase(AuthRepository repository, PasswordEncoder passwordEncoder) {
+    CommandLineRunner initDatabase(AuthRepository repository, PasswordEncoder encoder) {
         return args -> {
-            if (repository.count() == 0) {
-                List<Autenticacao> users = new ArrayList<>();
+            // CLIENTES (CPFs exigidos pelo testador)
+            upsert(repository, encoder, "cli1@bantads.com.br", "12912861012", EnRole.CLIENTE);
+            upsert(repository, encoder, "cli2@bantads.com.br", "09506382000", EnRole.CLIENTE);
+            upsert(repository, encoder, "cli3@bantads.com.br", "85733854057", EnRole.CLIENTE);
+            upsert(repository, encoder, "cli4@bantads.com.br", "58872160006", EnRole.CLIENTE);
+            upsert(repository, encoder, "cli5@bantads.com.br", "76179646090", EnRole.CLIENTE);
 
-                Autenticacao cliente1 = new Autenticacao();
-                cliente1.setEmail("cli1@bantads.com.br");
-                cliente1.setSenha(passwordEncoder.encode(SENHA));
-                cliente1.setRole(EnRole.CLIENTE);
-                cliente1.setIdUsuario(1L);
-                users.add(cliente1);
+            // GERENTES
+            upsert(repository, encoder, "ger1@bantads.com.br", "98574307084", EnRole.GERENTE);
+            upsert(repository, encoder, "ger2@bantads.com.br", "64065268052", EnRole.GERENTE);
+            upsert(repository, encoder, "ger3@bantads.com.br", "23862179060", EnRole.GERENTE);
 
-                Autenticacao cliente2 = new Autenticacao();
-                cliente2.setEmail("cli2@bantads.com.br");
-                cliente2.setSenha(passwordEncoder.encode(SENHA));
-                cliente2.setRole(EnRole.CLIENTE);
-                cliente2.setIdUsuario(2L);
-                users.add(cliente2);
-
-                Autenticacao cliente3 = new Autenticacao();
-                cliente3.setEmail("cli3@bantads.com.br");
-                cliente3.setSenha(passwordEncoder.encode(SENHA));
-                cliente3.setRole(EnRole.CLIENTE);
-                cliente3.setIdUsuario(3L);
-                users.add(cliente3);
-
-                Autenticacao cliente4 = new Autenticacao();
-                cliente4.setEmail("cli4@bantads.com.br");
-                cliente4.setSenha(passwordEncoder.encode(SENHA));
-                cliente4.setRole(EnRole.CLIENTE);
-                cliente4.setIdUsuario(4L);
-                users.add(cliente4);
-
-                Autenticacao cliente5 = new Autenticacao();
-                cliente5.setEmail("cli5@bantads.com.br");
-                cliente5.setSenha(passwordEncoder.encode(SENHA));
-                cliente5.setRole(EnRole.CLIENTE);
-                cliente5.setIdUsuario(5L);
-                users.add(cliente5);
-
-                Autenticacao gerente1 = new Autenticacao();
-                gerente1.setEmail("ger1@bantads.com.br");
-                gerente1.setSenha(passwordEncoder.encode(SENHA));
-                gerente1.setRole(EnRole.GERENTE);
-                gerente1.setIdUsuario(1L);
-                users.add(gerente1);
-
-                Autenticacao gerente2 = new Autenticacao();
-                gerente2.setEmail("ger2@bantads.com.br");
-                gerente2.setSenha(passwordEncoder.encode(SENHA));
-                gerente2.setRole(EnRole.GERENTE);
-                gerente2.setIdUsuario(2L);
-                users.add(gerente2);
-
-                Autenticacao gerente3 = new Autenticacao();
-                gerente3.setEmail("ger3@bantads.com.br");
-                gerente3.setSenha(passwordEncoder.encode(SENHA));
-                gerente3.setRole(EnRole.GERENTE);
-                gerente3.setIdUsuario(3L);
-                users.add(gerente3);
-
-                Autenticacao admin = new Autenticacao();
-                admin.setEmail("adm1@bantads.com.br");
-                admin.setSenha(passwordEncoder.encode(SENHA));
-                admin.setRole(EnRole.ADMIN);
-                admin.setIdUsuario(4L);
-                users.add(admin);
-
-                repository.saveAll(users);
-            }
+            // ADMIN
+            upsert(repository, encoder, "adm1@bantads.com.br", "40501740066", EnRole.ADMINISTRADOR);
         };
     }
 
+    private void upsert(AuthRepository repository, PasswordEncoder encoder,
+                        String email, String cpf, EnRole role) {
+
+        repository.findByEmail(email).ifPresentOrElse(u -> {
+            boolean changed = false;
+
+            if (u.getCpf() == null || !u.getCpf().equals(cpf)) {
+                u.setCpf(cpf);
+                changed = true;
+            }
+            if (u.getRole() != role) {
+                u.setRole(role);
+                changed = true;
+            }
+            // opcional: padronizar senha apenas se desejar forçar "tads" nos seeds
+            // u.setSenha(encoder.encode(SENHA)); changed = true;
+
+            if (changed) repository.save(u);
+        }, () -> {
+            Autenticacao novo = new Autenticacao();
+            novo.setEmail(email);
+            novo.setSenha(encoder.encode(SENHA));
+            novo.setRole(role);
+            novo.setCpf(cpf);
+            repository.save(novo);
+        });
+    }
 }

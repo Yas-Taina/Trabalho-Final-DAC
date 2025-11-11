@@ -33,13 +33,13 @@ USUARIO1 = {
     "nome": "Usuário 1",
     "salario": 0,
     "endereco": "Rua das Palmeiras, 100",
-    "CEP" : "80050490",
+    "cep" : "80050490",
     "cidade" : "Curitiba",
     "estado" : "PR"
 }
 
 LOGIN = {
-    "login": "teste_zoado@gmail.com",
+    "email": "teste_zoado@gmail.com",
     "senha": "XXXX"
 }
 
@@ -224,11 +224,11 @@ def gerar_valor_moeda(inf=100, sup=500):
 # FUNÇÕES GENÉRICAS
 
 def login(email, senha, cpf, tipo, correto=True):
-    LOGIN["login"] = email
+    LOGIN["email"] = email
     LOGIN["senha"] = senha
-
+    # print(f"    >>>> Logando com {email} / {senha} ... ", end="")
+    print(URL + "/login", LOGIN)
     resp = requests.post(URL + "/login", 
-                         headers=HEADERS, 
                          json=LOGIN)
     
     if correto:
@@ -286,12 +286,15 @@ def test_r00_reboot():
 def test_r00_verificacao_base():
     # Passo 1
     # Loga como ADMIN para ver os gerentes
+    # print(ADAMANTIO)
     login(ADAMANTIO["email"], ADAMANTIO["senha"], ADAMANTIO["cpf"], ADAMANTIO["tipo"])
 
     token = recuperar_token()
     HEADERS["Authorization"] = token
 
     # Passo 2 - Busca os gerentes
+    # print("    >>>> Buscando gerentes ... ")
+    # print(URL + "/gerentes", HEADERS)
     resp = requests.get(URL + "/gerentes", 
                          headers=HEADERS)
     assert resp.status_code==200
@@ -304,6 +307,8 @@ def test_r00_verificacao_base():
     params = {
         "filtro": "adm_relatorio_clientes"
     }
+    # print("    >>>> Buscando clientes ... ")
+    # print(URL + "/clientes", HEADERS, params)
     resp = requests.get(URL + "/clientes", 
                          headers=HEADERS, 
                          params=params)
@@ -315,6 +320,7 @@ def test_r00_verificacao_base():
         assert cli["cpf"] in CLIENTES_TESTE
 
     # Passo 4 - logout
+
     logout(ADAMANTIO["email"], token)
 
 
@@ -334,6 +340,7 @@ def test_r01_autocadastro1():
     USUARIO1["email"] = email
     USUARIO1["nome"] = "Usuário 1"
     USUARIO1["salario"] = 5000.0 # para gerar limite
+    # print(f"    >>>> Cadastrando usuário {USUARIO1} ... em {URL}/clientes")
     resp = requests.post(URL + "/clientes", 
                          headers=HEADERS, 
                          json=USUARIO1)

@@ -54,11 +54,11 @@ public class AuthService {
         autenticacao.setEmail(userRequestDto.email());
         autenticacao.setSenha(passwordEncoder.encode(userRequestDto.senha()));
         autenticacao.setRole(EnRole.findByName(userRequestDto.role()));
-        autenticacao.setIdUsuario(userRequestDto.idUsuario());
+        autenticacao.setCpf(userRequestDto.cpf());
 
         repository.save(autenticacao);
 
-        return new UserResponseDto(autenticacao.getId(), autenticacao.getEmail());
+        return new UserResponseDto(autenticacao.getCpf(), autenticacao.getEmail());
     }
 
     public AuthResponseDto login(AuthRequestDto request) {
@@ -72,6 +72,7 @@ public class AuthService {
         }
 
         Autenticacao autenticacao = repository.findByEmail(request.email()).orElseThrow(() -> new ResourceNotFoundException("Usuário"));
+        log.info("Autenticacao encontrada: email={}, cpf={}", autenticacao.getEmail(), autenticacao.getCpf());
 
         String token = jwtUtil.generateToken(
                 autenticacao.getEmail(),
@@ -83,7 +84,7 @@ public class AuthService {
                 token,
                 BEARER,
                 autenticacao.getRole().name(),
-                new UserResponseDto(autenticacao.getId(), autenticacao.getEmail())
+                new UserResponseDto(autenticacao.getCpf(), autenticacao.getEmail())
         );
     }
 
@@ -112,7 +113,7 @@ public class AuthService {
                 || !StringUtils.hasText(userRequestDto.senha())
                 || Objects.isNull(userRequestDto.role())
                 || Objects.isNull(EnRole.findByName(userRequestDto.role()))
-                || Objects.isNull(userRequestDto.idUsuario());
+                || Objects.isNull(userRequestDto.cpf());
     }
 
 }
