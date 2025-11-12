@@ -225,7 +225,7 @@ def gerar_valor_moeda(inf=100, sup=500):
 # FUNÇÕES GENÉRICAS
 
 def login(email, senha, cpf, tipo, correto=True):
-    LOGIN["login"] = email
+    LOGIN["email"] = email
     LOGIN["senha"] = senha
 
     resp = requests.post(URL + "/login", 
