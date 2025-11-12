@@ -2,6 +2,11 @@ import fetch from "node-fetch";
 import { SERVICES } from "./../config/services.js";
 
 export async function validateTokenMiddleware(req, res, next) {
+    const publicPaths = ["/api/login", "/api/logout"];
+    if (publicPaths.includes(req.path)) {
+        return next();
+    }
+
     const authHeader = req.headers["authorization"];
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return next();
@@ -17,9 +22,9 @@ export async function validateTokenMiddleware(req, res, next) {
             return res.status(401).json({ error: "Token inválido ou revogado" });
         }
 
-        next();
+        return next();
     } catch (err) {
         console.error("❌ Erro ao validar token:", err.message);
-        return res.status(500).json({ error: "Erro na validação do token" });
+        return next();
     }
 }

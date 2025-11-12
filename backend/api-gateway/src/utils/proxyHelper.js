@@ -1,6 +1,6 @@
 import proxy from "express-http-proxy";
 
-export function createServiceProxy(target, prefix) {
+export function createServiceProxy(target, prefix, servicePath) {
   return proxy(target, {
     proxyReqPathResolver: (req) => {
       const newPath = req.originalUrl.replace(new RegExp(`^${prefix}`), "");
@@ -12,7 +12,8 @@ export function createServiceProxy(target, prefix) {
       if (req.body && Object.keys(req.body).length > 0) {
         console.log("  Body:", req.body);
       }
-      return `${target}${newPath}` || "/";
+      const finalPath = servicePath ? servicePath + newPath : newPath;
+      return `${target}${finalPath}` || "/";
     },
     proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
       if (srcReq.headers.authorization) {
