@@ -23,7 +23,7 @@ public class ClienteController {
     private final ClienteService service;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('GERENTE', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('GERENTE', 'ADMINISTRADOR')")
     public ResponseEntity<List<ClienteDto>> listar(@RequestParam(required = false) String filter) {
         // Recupera os dados do usuário autenticado
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

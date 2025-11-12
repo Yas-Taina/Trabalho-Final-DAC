@@ -22,7 +22,7 @@ URL = os.getenv("URL")
 ARQUIVO_TOKEN = os.getenv("ARQUIVO_TOKEN")
 ARQUIVO_CACHE = os.getenv("ARQUIVO_CACHE")
 EMAIL_AUTOCADASTRO1 = os.getenv("EMAIL_AUTOCADASTRO1")
-EMAIL_AUTOCADASTRO2 = os.getenv("EMAIL_AUTOCADASTRO2") # TODO: avisar o professor. erro no original, apontando também pro autocadastro1
+EMAIL_AUTOCADASTRO2 = os.getenv("EMAIL_AUTOCADASTRO2")
 
 ###############################################
 # Dados para teste
@@ -33,13 +33,14 @@ USUARIO1 = {
     "nome": "Usuário 1",
     "salario": 0,
     "endereco": "Rua das Palmeiras, 100",
-    "cep" : "80050490",
+    "telefone": "(41) 99999-9999",
+    "CEP" : "80050490",
     "cidade" : "Curitiba",
     "estado" : "PR"
 }
 
 LOGIN = {
-    "email": "teste_zoado@gmail.com",
+    "login": "teste_zoado@gmail.com",
     "senha": "XXXX"
 }
 
@@ -224,11 +225,11 @@ def gerar_valor_moeda(inf=100, sup=500):
 # FUNÇÕES GENÉRICAS
 
 def login(email, senha, cpf, tipo, correto=True):
-    LOGIN["email"] = email
+    LOGIN["login"] = email
     LOGIN["senha"] = senha
-    # print(f"    >>>> Logando com {email} / {senha} ... ", end="")
-    print(URL + "/login", LOGIN)
+
     resp = requests.post(URL + "/login", 
+                         headers=HEADERS, 
                          json=LOGIN)
     
     if correto:
@@ -286,15 +287,12 @@ def test_r00_reboot():
 def test_r00_verificacao_base():
     # Passo 1
     # Loga como ADMIN para ver os gerentes
-    # print(ADAMANTIO)
     login(ADAMANTIO["email"], ADAMANTIO["senha"], ADAMANTIO["cpf"], ADAMANTIO["tipo"])
 
     token = recuperar_token()
     HEADERS["Authorization"] = token
 
     # Passo 2 - Busca os gerentes
-    # print("    >>>> Buscando gerentes ... ")
-    # print(URL + "/gerentes", HEADERS)
     resp = requests.get(URL + "/gerentes", 
                          headers=HEADERS)
     assert resp.status_code==200
@@ -307,8 +305,6 @@ def test_r00_verificacao_base():
     params = {
         "filtro": "adm_relatorio_clientes"
     }
-    # print("    >>>> Buscando clientes ... ")
-    # print(URL + "/clientes", HEADERS, params)
     resp = requests.get(URL + "/clientes", 
                          headers=HEADERS, 
                          params=params)
@@ -320,7 +316,6 @@ def test_r00_verificacao_base():
         assert cli["cpf"] in CLIENTES_TESTE
 
     # Passo 4 - logout
-
     logout(ADAMANTIO["email"], token)
 
 
@@ -338,9 +333,8 @@ def test_r01_autocadastro1():
 
     USUARIO1["cpf"] = cpf
     USUARIO1["email"] = email
-    USUARIO1["telefone"] = "41999999999" # TODO: avisar o professor. erro no original, telefone não estava sendo passado, quebrando a requisição
+    USUARIO1["nome"] = "Usuário 1"
     USUARIO1["salario"] = 5000.0 # para gerar limite
-    # print(f"    >>>> Cadastrando usuário {USUARIO1} ... em {URL}/clientes")
     resp = requests.post(URL + "/clientes", 
                          headers=HEADERS, 
                          json=USUARIO1)
@@ -370,8 +364,6 @@ def test_r01_autocadastro2():
 
     USUARIO1["cpf"] = cpf
     USUARIO1["email"] = email
-    USUARIO1["nome"] = "Usuário 1"
-    USUARIO1["telefone"] = "41999988999" # TODO: avisar o professor. erro no original, telefone não estava sendo passado, quebrando a requisição
     USUARIO1["nome"] = "Usuário 2"
     USUARIO1["salario"] = 450.0  # para não gerar limite
     resp = requests.post(URL + "/clientes", 
@@ -1036,19 +1028,19 @@ def test_r15_tela_inicial_administrador():
     # ordenados pelo maior saldo positivo
     assert lista[0]["gerente"]["cpf"] == GENIEVE["cpf"]
     assert lista[0]["gerente"]["nome"] == GENIEVE["nome"]
-    assert lista[0]["clientes"] == 2
+    assert len(lista[0]["clientes"]) == 2
     assert lista[0]["saldo_positivo"] == genieve_saldo_pos
     assert lista[0]["saldo_negativo"] == genieve_saldo_neg
     assert lista[1]["gerente"]["cpf"] == GODOPHREDO["cpf"]
     assert lista[1]["gerente"]["nome"] == GODOPHREDO["nome"]
     assert lista[1]["saldo_positivo"] == godophredo_saldo_pos
     assert lista[1]["saldo_negativo"] == godophredo_saldo_neg
-    assert lista[1]["clientes"] == 2
+    assert len(lista[1]["clientes"]) == 2
     assert lista[2]["gerente"]["cpf"] == GYANDULA["cpf"]
     assert lista[2]["gerente"]["nome"] == GYANDULA["nome"]
     assert lista[2]["saldo_positivo"] == gyandula_saldo_pos
     assert lista[2]["saldo_negativo"] == gyandula_saldo_neg
-    assert lista[2]["clientes"] == 2
+    assert len(lista[2]["clientes"]) == 2
 
 
 def test_r16_relatorio_clientes():
@@ -1124,9 +1116,9 @@ def test_r17_crud_gerente_insercao():
     encontrou = False
     for g in lista:
         if g["gerente"]["cpf"] == GYANDULA["cpf"]:
-            assert g["clientes"] == 1  # doou 1 cliente
+            assert len(g["clientes"]) == 1  # doou 1 cliente
         if g["gerente"]["cpf"] == GERENTE1["cpf"]:
-            assert g["clientes"] == 1  # precisa receber 1 cliente
+            assert len(g["clientes"]) == 1  # precisa receber 1 cliente
             encontrou = True
 
     assert encontrou
@@ -1260,4 +1252,3 @@ def test_r20_crud_gerente_alteracao():
     assert r["nome"] == GYANDULA_NOME_ALTERADO
     assert r["email"] == GYANDULA_EMAIL_ALTERADO
     assert r["tipo"] == GYANDULA["tipo"]
-
