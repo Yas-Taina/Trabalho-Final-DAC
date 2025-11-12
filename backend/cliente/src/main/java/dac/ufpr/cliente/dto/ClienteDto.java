@@ -12,7 +12,7 @@ public record ClienteDto(
   String telefone, //?
   BigDecimal salario,
   String endereco,
-  String cep,
+  String CEP,
   String cidade,
   String estado,
   EnStatusCliente status, // #
