@@ -31,40 +31,40 @@ export class ClientesManagerComponent implements OnInit {
 
   constructor(
     private clientesService: ClientesService,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
     this.carregarClientes();
   }
 
-carregarClientes(): void {
-  this.loading = true;
-  this.errorMessage = "";
+  carregarClientes(): void {
+    this.loading = true;
+    this.errorMessage = "";
 
-  this.clientesService.getClientesByGerente()
-    .pipe(finalize(() => (this.loading = false)))
-    .subscribe({
-      next: (clientes: any[]) => { 
-        this.clientes = clientes.map((c) => ({
-          ...c,
-          salario: (c as any).salario ?? 0,
-          gerente_nome: (c as any).gerente_nome ?? "",
-          gerente_email: (c as any).gerente_email ?? "",
-        })) as DadosClienteResponse[];
+    this.clientesService
+      .getClientesByGerente()
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: (clientes: any[]) => {
+          this.clientes = clientes.map((c) => ({
+            ...c,
+            salario: (c as any).salario ?? 0,
+            gerente_nome: (c as any).gerente_nome ?? "",
+            gerente_email: (c as any).gerente_email ?? "",
+          })) as DadosClienteResponse[];
 
-        this.clientesFiltrados = [...this.clientes];
-      },
-      error: (err) => {
-        this.errorMessage =
-          "Erro ao carregar clientes. Verifique a autenticação e permissões.";
-        console.error("Erro na API de clientes:", err);
-        this.clientes = [];
-        this.clientesFiltrados = [];
-      },
-    });
-}
-
+          this.clientesFiltrados = [...this.clientes];
+        },
+        error: (err) => {
+          this.errorMessage =
+            "Erro ao carregar clientes. Verifique a autenticação e permissões.";
+          console.error("Erro na API de clientes:", err);
+          this.clientes = [];
+          this.clientesFiltrados = [];
+        },
+      });
+  }
 
   aplicarFiltro(): void {
     if (!this.searchType || !this.search) {
@@ -74,7 +74,8 @@ carregarClientes(): void {
     const termo = this.search.toLowerCase().trim();
 
     this.clientesFiltrados = this.clientes.filter((c) => {
-      if (this.searchType === "nome") return c.nome.toLowerCase().includes(termo);
+      if (this.searchType === "nome")
+        return c.nome.toLowerCase().includes(termo);
       if (this.searchType === "cpf") return c.cpf.toLowerCase().includes(termo);
       return false;
     });

@@ -6,7 +6,12 @@ import { NgxMaskDirective, NgxMaskPipe } from "ngx-mask";
 
 import { AuthService } from "../../../services/auth.service";
 import { ClientesService } from "../../../services/clientes.service";
-import { ContasService, ExtratoResponse, ItemExtratoResponse, DadosClienteResponse } from "../../../services";
+import {
+  ContasService,
+  ExtratoResponse,
+  ItemExtratoResponse,
+  DadosClienteResponse,
+} from "../../../services";
 
 interface ExtratoLinha {
   data: string;
@@ -45,7 +50,7 @@ export class ExtratoComponent implements OnInit {
   constructor(
     private readonly authService: AuthService,
     private readonly clientesService: ClientesService,
-    private readonly contasService: ContasService
+    private readonly contasService: ContasService,
   ) {}
 
   ngOnInit(): void {
@@ -68,7 +73,7 @@ export class ExtratoComponent implements OnInit {
         this.numeroConta = cliente.conta;
         this.carregarExtrato();
       },
-      error: (err) => alert("Erro ao obter dados do cliente: " + err.message)
+      error: (err) => alert("Erro ao obter dados do cliente: " + err.message),
     });
   }
 
@@ -88,23 +93,29 @@ export class ExtratoComponent implements OnInit {
         let movimentos = extrato.movimentacoes;
         if (inicio) {
           const dtInicio = new Date(inicio);
-          movimentos = movimentos.filter(m => new Date(m.data) >= dtInicio);
+          movimentos = movimentos.filter((m) => new Date(m.data) >= dtInicio);
         }
         if (fim) {
           const dtFim = new Date(fim);
-          movimentos = movimentos.filter(m => new Date(m.data) <= dtFim);
+          movimentos = movimentos.filter((m) => new Date(m.data) <= dtFim);
         }
 
-        this.extratosPorDia = this.formatarExtratoPorDia(movimentos, extrato.saldo);
+        this.extratosPorDia = this.formatarExtratoPorDia(
+          movimentos,
+          extrato.saldo,
+        );
       },
-      error: (err) => alert("Erro ao carregar extrato: " + err.message)
+      error: (err) => alert("Erro ao carregar extrato: " + err.message),
     });
   }
 
-  private formatarExtratoPorDia(movimentos: ItemExtratoResponse[], saldoConsolidado: number): Record<string, ExtratoDia> {
+  private formatarExtratoPorDia(
+    movimentos: ItemExtratoResponse[],
+    saldoConsolidado: number,
+  ): Record<string, ExtratoDia> {
     const grouped: Record<string, ExtratoDia> = {};
 
-    movimentos.forEach(m => {
+    movimentos.forEach((m) => {
       const dia = new Date(m.data).toLocaleDateString();
       if (!grouped[dia]) {
         grouped[dia] = { movimentos: [], saldoConsolidado };
@@ -114,7 +125,7 @@ export class ExtratoComponent implements OnInit {
         tipo: m.tipo.toLowerCase(),
         origem: m.origem || "-",
         destino: m.destino || "-",
-        valor: m.valor
+        valor: m.valor,
       });
     });
 

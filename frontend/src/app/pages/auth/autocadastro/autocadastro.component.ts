@@ -24,10 +24,23 @@ export class AutocadastroComponent implements OnInit {
   mensagem: string | null = null;
   erro: boolean = false;
 
-  constructor(private fb: FormBuilder, private clientesService: ClientesService) {
+  constructor(
+    private fb: FormBuilder,
+    private clientesService: ClientesService,
+  ) {
     this.clienteForm = this.fb.group({
-      nome: ["", [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-      email: ["", [Validators.required, Validators.email, Validators.maxLength(100)]],
+      nome: [
+        "",
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(100),
+        ],
+      ],
+      email: [
+        "",
+        [Validators.required, Validators.email, Validators.maxLength(100)],
+      ],
       cpf: ["", [Validators.required]],
       telefone: ["", [Validators.required]],
       salario: [0, [Validators.required, Validators.min(0)]],
@@ -77,7 +90,7 @@ export class AutocadastroComponent implements OnInit {
             "Erro ao cadastrar cliente. Verifique os dados e tente novamente.";
           this.erro = true;
           return of(null);
-        })
+        }),
       )
       .subscribe();
   }

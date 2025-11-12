@@ -45,7 +45,7 @@ export class LoginComponent {
         } else {
           alert(
             "Erro no login: " +
-              (err.error?.message || err.message || "Erro desconhecido")
+              (err.error?.message || err.message || "Erro desconhecido"),
           );
         }
       },

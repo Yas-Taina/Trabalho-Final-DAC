@@ -14,8 +14,5 @@ import { MenuComponent } from "./components/menu/menu.component";
 export class AppComponent {
   title = "frontend";
 
-
-  constructor() {
-   
-  }
+  constructor() {}
 }

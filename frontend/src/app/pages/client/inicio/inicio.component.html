@@ -58,9 +58,9 @@
     <h3
       class="tituloGrande"
       [ngClass]="{
-    'saldo-positivo': (saldo ?? 0) >= 0,
-    'saldo-negativo': (saldo ?? 0) < 0
-  }"
+        'saldo-positivo': (saldo ?? 0) >= 0,
+        'saldo-negativo': (saldo ?? 0) < 0,
+      }"
     >
       {{ saldo | currency: "BRL" : "symbol" : "1.2-2" }}
     </h3>
