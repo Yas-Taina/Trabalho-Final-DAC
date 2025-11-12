@@ -26,7 +26,10 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, "/sagas/clientes").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/sagas/clientes/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/sagas/autocadastro").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

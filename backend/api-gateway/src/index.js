@@ -14,8 +14,6 @@ app.use(validateTokenMiddleware);
 
 // app.use("/api", mainRouter);
 
-app.use("/api/clientes", sagaMiddleware);
-
 app.use("/api/clientes", createServiceProxy(SERVICES.CLIENTE, "/api/clientes"));
 app.use("/api", createServiceProxy(SERVICES.AUTH, "/api"));
 app.use("/api/contas", createServiceProxy(SERVICES.CONTA, "/api/contas"));

@@ -25,6 +25,11 @@ services:
     ports:
       - 15672:15672
       - 5672:5672
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   mongo:
     image: mongo:7
@@ -36,6 +41,11 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     volumes:
       - ./data/mongo:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   cliente:
     build: ./cliente
@@ -66,9 +76,9 @@ services:
     container_name: auth-service
     depends_on:
       mongo:
-        condition: service_started
+        condition: service_healthy
       rabbitmq:
-        condition: service_started
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATA_MONGODB_HOST: mongo

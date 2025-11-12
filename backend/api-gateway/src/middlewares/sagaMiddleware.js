@@ -10,20 +10,31 @@ export async function sagaMiddleware(req, res, next) {
         const matched = sagaPaths.find(p => p.method === req.method && p.regex.test(req.path));
 
         if (matched) {
-            const sagaPath = `/sagas/clientes${req.path}`;
+            const sagaPath = `/clientes${req.path}`.replace(/\/$/, '');  // Remove trailing slash
 
             // Chama o Saga Service via proxy interno
             const target = SERVICES.SAGA;
             const fetchUrl = `${target}${sagaPath}`;
+            
+            console.log(`📤 Enviando para Saga: ${fetchUrl}`);
+
+            const body = req.body && Object.keys(req.body).length > 0 ? JSON.stringify(req.body) : undefined;
 
             const fetchOptions = {
                 method: req.method,
-                headers: { ...req.headers },
-                body: req.body && Object.keys(req.body).length > 0 ? JSON.stringify(req.body) : undefined
+                headers: { 
+                    ...req.headers,
+                    ...(body && { 'content-length': Buffer.byteLength(body) })
+                },
+                body
             };
+
+            // Remove content-length from headers to avoid mismatch
+            delete fetchOptions.headers['content-length'];
 
             const response = await fetch(fetchUrl, fetchOptions);
             const data = await response.text();
+            console.log(`✅ Resposta de Saga: ${response.status}`);
             return res.status(response.status).send(data);
         }
 

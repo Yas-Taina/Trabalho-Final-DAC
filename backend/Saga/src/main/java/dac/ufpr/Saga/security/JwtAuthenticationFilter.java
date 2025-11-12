@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         String method = request.getMethod();
 
-        if (path.contains("/autocadastro") && method.equals("POST")) {
+        if ((path.contains("/autocadastro") || path.contains("/clientes")) && method.equals("POST")) {
             return true;
         }
 
