@@ -1,6 +1,6 @@
 import { Component, DoCheck } from "@angular/core";
 import { Router, RouterModule } from "@angular/router";
-import { AuthService, LogoutResponse } from "../../services";
+import { AuthService, LoginResponse } from "../../services";
 import { CommonModule } from "@angular/common";
 
 interface MenuLink {
@@ -17,12 +17,12 @@ interface MenuLink {
 })
 export class MenuComponent implements DoCheck {
   isOpen = false;
-  session: LogoutResponse | null = null;
+  session: LoginResponse | null = null;
   links: MenuLink[] = [];
   private lastSessionJson = "";
 
   constructor(
-    private loginService: AuthService,
+    private authService: AuthService,
     private router: Router,
   ) {
     this.updateSession();
@@ -41,7 +41,7 @@ export class MenuComponent implements DoCheck {
   }
 
   logout() {
-    this.loginService.logout().subscribe(() => {
+    this.authService.logout().subscribe(() => {
       this.router.navigate(["/login"]);
       this.links = [];
       this.session = null;
@@ -55,7 +55,7 @@ export class MenuComponent implements DoCheck {
   }
 
   private updateSession() {
-    const newSession = this.loginService.getSession();
+    const newSession = this.authService.getSession();
     if (JSON.stringify(newSession) !== JSON.stringify(this.session)) {
       this.session = newSession;
       this.isOpen = false;

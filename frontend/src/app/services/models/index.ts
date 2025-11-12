@@ -20,3 +20,5 @@ export * from "./dado-gerente-atualizacao.model";
 export * from "./dashboard-response.model";
 export * from "./item-dashboard-response.model";
 export * from "./dado-conta.model";
+export * from "./login-response.model";
+export * from "./usuario";

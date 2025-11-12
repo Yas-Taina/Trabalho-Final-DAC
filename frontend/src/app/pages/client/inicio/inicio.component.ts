@@ -20,7 +20,7 @@ export class InicioClientComponent implements OnInit {
 
   constructor(
     private clientesService: ClientesService,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {

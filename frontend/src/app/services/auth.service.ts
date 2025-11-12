@@ -1,58 +1,60 @@
 import { Injectable } from "@angular/core";
 import { Observable, tap } from "rxjs";
 import { BaseService } from "./base.service";
-import { LoginInfo, LogoutResponse } from "./models"; 
+import { LoginInfo, LogoutResponse, LoginResponse } from "./models";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService extends BaseService {
   private readonly SESSION_KEY = "dac_token";
-  login(data: LoginInfo): Observable<LogoutResponse> {
-    return this.http.post<LogoutResponse>(`${this.apiUrl}/auth/login`, data, {
-      headers: this.headers,
-    }).pipe(
-      tap((session) => this.saveSession(session))
-    );
+  login(data: LoginInfo): Observable<LoginResponse> {
+    return this.http
+      .post<LoginResponse>(`${this.apiUrl}/login`, data, {
+        headers: this.headers,
+      })
+      .pipe(tap((session) => this.saveSession(session)));
   }
 
   logout(): Observable<LogoutResponse> {
-    return this.http.post<LogoutResponse>(`${this.apiUrl}/logout`, {}, {
-      headers: this.headers,
-    }).pipe(
-      tap(() => this.clearSession())
-    );
+    return this.http
+      .post<LogoutResponse>(
+        `${this.apiUrl}/logout`,
+        {},
+        {
+          headers: this.headers,
+        },
+      )
+      .pipe(tap(() => this.clearSession()));
   }
 
-  private saveSession(session: LogoutResponse): void {
+  private saveSession(session: LoginResponse): void {
     try {
       localStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
-    } catch {
-
-    }
+    } catch {}
   }
 
-  getSession(): LogoutResponse | null {
+  getSession(): LoginResponse | null {
     const json = localStorage.getItem(this.SESSION_KEY);
     if (!json) return null;
     try {
-      return JSON.parse(json) as LogoutResponse;
+      return JSON.parse(json) as LoginResponse;
     } catch {
       localStorage.removeItem(this.SESSION_KEY);
       return null;
     }
   }
 
-getUserType(): "CLIENTE" | "GERENTE" | "ADMINISTRADOR" | null {
-  const tipo = this.getSession()?.tipo;
-  if (tipo === "CLIENTE" || tipo === "GERENTE" || tipo === "ADMINISTRADOR") {
-    return tipo;
+  getUserType(): "CLIENTE" | "GERENTE" | "ADMINISTRADOR" | null {
+    const tipo = this.getSession()?.tipo;
+    if (tipo === "CLIENTE" || tipo === "GERENTE" || tipo === "ADMINISTRADOR") {
+      return tipo;
+    }
+    return null;
   }
-  return null;
-}
 
   getUserCpf(): string | null {
-    return this.getSession()?.cpf ?? null;
+    return this.getSession()?.usuario.cpf ?? null;
   }
 
   isLoggedIn(): boolean {

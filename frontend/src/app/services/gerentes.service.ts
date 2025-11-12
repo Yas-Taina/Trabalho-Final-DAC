@@ -13,12 +13,14 @@ import {
   providedIn: "root",
 })
 export class GerentesService extends BaseService {
-  getGerentes(filtro?: "dashboard"): Observable<DadoGerente[] | DashboardResponse> {
+  getGerentes(
+    filtro?: "dashboard",
+  ): Observable<DadoGerente[] | DashboardResponse> {
     let params = new HttpParams();
     if (filtro) params = params.set("numero", filtro); // conforme OpenAPI
     return this.http.get<DadoGerente[] | DashboardResponse>(
       `${this.apiUrl}/gerentes`,
-      { headers: this.headers, params }
+      { headers: this.headers, params },
     );
   }
 
@@ -34,7 +36,10 @@ export class GerentesService extends BaseService {
     });
   }
 
-  atualizarGerente(cpf: string, data: DadoGerenteAtualizacao): Observable<DadoGerente> {
+  atualizarGerente(
+    cpf: string,
+    data: DadoGerenteAtualizacao,
+  ): Observable<DadoGerente> {
     return this.http.put<DadoGerente>(`${this.apiUrl}/gerentes/${cpf}`, data, {
       headers: this.headers,
     });

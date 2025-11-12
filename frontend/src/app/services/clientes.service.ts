@@ -15,12 +15,15 @@ import { AuthService } from "./auth.service";
   providedIn: "root",
 })
 export class ClientesService extends BaseService {
-  constructor(private authService: AuthService, http: HttpClient) {
+  constructor(
+    private authService: AuthService,
+    http: HttpClient,
+  ) {
     super(http);
   }
 
   getClientes(
-    filtro?: "para_aprovar" | "adm_relatorio_clientes" | "melhores_clientes"
+    filtro?: "para_aprovar" | "adm_relatorio_clientes" | "melhores_clientes",
   ): Observable<
     TodosClientesResponse | ParaAprovarResponse | RelatorioClientesResponse
   > {
@@ -48,14 +51,14 @@ export class ClientesService extends BaseService {
           return lista.filter((cli: any) => cli.gerente === cpfGerente);
         }
         return [];
-      })
+      }),
     );
   }
 
   getCliente(cpf: string): Observable<DadosClienteResponse> {
     return this.http.get<DadosClienteResponse>(
       `${this.apiUrl}/clientes/${cpf}`,
-      { headers: this.headers }
+      { headers: this.headers },
     );
   }
 
@@ -75,7 +78,7 @@ export class ClientesService extends BaseService {
     return this.http.post<void>(
       `${this.apiUrl}/clientes/${cpf}/aprovar`,
       {},
-      { headers: this.headers }
+      { headers: this.headers },
     );
   }
 
@@ -83,7 +86,7 @@ export class ClientesService extends BaseService {
     return this.http.post<void>(
       `${this.apiUrl}/clientes/${cpf}/rejeitar`,
       { motivo },
-      { headers: this.headers }
+      { headers: this.headers },
     );
   }
 }

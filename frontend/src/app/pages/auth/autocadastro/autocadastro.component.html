@@ -1,8 +1,9 @@
 <div class="mainAzul">
   <div class="row justify-content-center align-items-center">
-    <div class="col-lg-4 order-2 order-lg-1 d-flex flex-column justify-content-center">
+    <div
+      class="col-lg-4 order-2 order-lg-1 d-flex flex-column justify-content-center"
+    >
       <form [formGroup]="clienteForm" (ngSubmit)="onSubmit()">
-
         <div class="mb-3">
           <label for="nome" class="form-label">Nome</label>
           <input
@@ -10,11 +11,18 @@
             type="text"
             formControlName="nome"
             class="form-control"
-            [class.is-invalid]="clienteForm.get('nome')?.invalid && clienteForm.get('nome')?.touched"
+            [class.is-invalid]="
+              clienteForm.get('nome')?.invalid &&
+              clienteForm.get('nome')?.touched
+            "
           />
           <div class="invalid-feedback" *ngIf="clienteForm.get('nome')?.errors">
-            <div *ngIf="clienteForm.get('nome')?.errors?.['required']">Nome é obrigatório.</div>
-            <div *ngIf="clienteForm.get('nome')?.errors?.['minlength']">Mínimo de 2 caracteres.</div>
+            <div *ngIf="clienteForm.get('nome')?.errors?.['required']">
+              Nome é obrigatório.
+            </div>
+            <div *ngIf="clienteForm.get('nome')?.errors?.['minlength']">
+              Mínimo de 2 caracteres.
+            </div>
           </div>
         </div>
 
@@ -26,11 +34,21 @@
               type="email"
               formControlName="email"
               class="form-control"
-              [class.is-invalid]="clienteForm.get('email')?.invalid && clienteForm.get('email')?.touched"
+              [class.is-invalid]="
+                clienteForm.get('email')?.invalid &&
+                clienteForm.get('email')?.touched
+              "
             />
-            <div class="invalid-feedback" *ngIf="clienteForm.get('email')?.errors">
-              <div *ngIf="clienteForm.get('email')?.errors?.['required']">E-mail é obrigatório.</div>
-              <div *ngIf="clienteForm.get('email')?.errors?.['email']">E-mail inválido.</div>
+            <div
+              class="invalid-feedback"
+              *ngIf="clienteForm.get('email')?.errors"
+            >
+              <div *ngIf="clienteForm.get('email')?.errors?.['required']">
+                E-mail é obrigatório.
+              </div>
+              <div *ngIf="clienteForm.get('email')?.errors?.['email']">
+                E-mail inválido.
+              </div>
             </div>
           </div>
 
@@ -42,68 +60,136 @@
               formControlName="cpf"
               mask="000.000.000-00"
               class="form-control"
-              [class.is-invalid]="clienteForm.get('cpf')?.invalid && clienteForm.get('cpf')?.touched"
+              [class.is-invalid]="
+                clienteForm.get('cpf')?.invalid &&
+                clienteForm.get('cpf')?.touched
+              "
             />
-            <div class="invalid-feedback" *ngIf="clienteForm.get('cpf')?.errors">
-              <div *ngIf="clienteForm.get('cpf')?.errors?.['required']">CPF é obrigatório.</div>
+            <div
+              class="invalid-feedback"
+              *ngIf="clienteForm.get('cpf')?.errors"
+            >
+              <div *ngIf="clienteForm.get('cpf')?.errors?.['required']">
+                CPF é obrigatório.
+              </div>
             </div>
           </div>
         </div>
         <div class="row">
-        <div class="mb-3 col-6">
-          <label for="telefone" class="form-label">Telefone</label>
-          <input
-            id="telefone"
-            type="text"
-            formControlName="telefone"
-            mask="(00) 0 0000-0000"
-            class="form-control"
-            [class.is-invalid]="clienteForm.get('telefone')?.invalid && clienteForm.get('telefone')?.touched"
-          />
-          <div class="invalid-feedback" *ngIf="clienteForm.get('telefone')?.errors">
-            <div *ngIf="clienteForm.get('telefone')?.errors?.['required']">Telefone é obrigatório.</div>
+          <div class="mb-3 col-6">
+            <label for="telefone" class="form-label">Telefone</label>
+            <input
+              id="telefone"
+              type="text"
+              formControlName="telefone"
+              mask="(00) 0 0000-0000"
+              class="form-control"
+              [class.is-invalid]="
+                clienteForm.get('telefone')?.invalid &&
+                clienteForm.get('telefone')?.touched
+              "
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="clienteForm.get('telefone')?.errors"
+            >
+              <div *ngIf="clienteForm.get('telefone')?.errors?.['required']">
+                Telefone é obrigatório.
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div class="mb-3 col-6">
-          <label for="salario" class="form-label">Salário</label>
-          <input
-            id="salario"
-            type="number"
-            step="0.01"
-            formControlName="salario"
-            class="form-control"
-            [class.is-invalid]="clienteForm.get('salario')?.invalid && clienteForm.get('salario')?.touched"
-          />
-        </div>
+          <div class="mb-3 col-6">
+            <label for="salario" class="form-label">Salário</label>
+            <input
+              id="salario"
+              type="number"
+              step="0.01"
+              formControlName="salario"
+              class="form-control"
+              [class.is-invalid]="
+                clienteForm.get('salario')?.invalid &&
+                clienteForm.get('salario')?.touched
+              "
+            />
+          </div>
         </div>
 
         <div class="mb-3">
           <label for="endereco" class="form-label">Endereço</label>
-          <input id="endereco" type="text" formControlName="endereco" class="form-control" />
+          <input
+            id="endereco"
+            type="text"
+            formControlName="endereco"
+            class="form-control"
+          />
         </div>
 
         <div class="row">
           <div class="col-4 mb-3">
             <label for="CEP" class="form-label">CEP</label>
-            <input id="CEP" type="text" formControlName="CEP" mask="00000-000" class="form-control" />
+            <input
+              id="CEP"
+              type="text"
+              formControlName="CEP"
+              mask="00000-000"
+              class="form-control"
+            />
           </div>
           <div class="col-5 mb-3">
             <label for="cidade" class="form-label">Cidade</label>
-            <input id="cidade" type="text" formControlName="cidade" class="form-control" />
+            <input
+              id="cidade"
+              type="text"
+              formControlName="cidade"
+              class="form-control"
+            />
           </div>
           <div class="col-3 mb-3">
             <label for="estado" class="form-label">UF</label>
-            <input id="estado" type="text" maxlength="2" formControlName="estado" class="form-control" />
+            <input
+              id="estado"
+              type="text"
+              maxlength="2"
+              formControlName="estado"
+              class="form-control"
+            />
           </div>
         </div>
 
-        <div *ngIf="mensagem" [class.text-danger]="erro" [class.text-success]="!erro" class="mb-3">
+        <div
+          *ngIf="mensagem"
+          [class.text-danger]="erro"
+          [class.text-success]="!erro"
+          class="mb-3"
+        >
           {{ mensagem }}
         </div>
 
-        <button type="submit" class="btn btn-primary w-100">Enviar cadastro</button>
+        <button type="submit" class="btn btn-primary w-100">
+          Enviar cadastro
+        </button>
       </form>
+    </div>
+    <div
+      class="col-lg-6 d-flex flex-column justify-content-center order-1 order-lg-2"
+    >
+      <div class="imgLine">
+        <hr />
+        <img
+          src="../../../../assets/img/img4.png"
+          alt="Imagem Decorativa"
+          class="imgTitle"
+        />
+      </div>
+      <h1 class="tituloGrande">Realize Seu Cadastro</h1>
+      <hr />
+      <p>
+        JÁ TEM UMA CONTA? REALIZE SEU LOGIN
+        <a routerLink="/login" class="textLink" routerLinkActive="active"
+          >AQUI</a
+        >
+      </p>
     </div>
   </div>
 </div>

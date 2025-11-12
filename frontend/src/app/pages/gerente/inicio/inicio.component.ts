@@ -69,9 +69,11 @@ export class InicioManagerComponent implements OnInit {
         .subscribe({
           next: () => {
             this.clientes = this.clientes.filter(
-              (c) => c.cpf !== this.clienteRecusando!.cpf
+              (c) => c.cpf !== this.clienteRecusando!.cpf,
             );
-            alert(`Cliente ${this.clienteRecusando!.nome} recusado com sucesso.`);
+            alert(
+              `Cliente ${this.clienteRecusando!.nome} recusado com sucesso.`,
+            );
             this.clienteRecusando = null;
             this.motivoRecusa = "";
           },

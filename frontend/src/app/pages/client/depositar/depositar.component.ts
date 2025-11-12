@@ -1,12 +1,20 @@
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from "@angular/forms";
 import { Router, RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 
 import { ContasService } from "../../../services/contas.service";
 import { ClientesService } from "../../../services/clientes.service";
 import { AuthService } from "../../../services/auth.service";
-import { DadosClienteResponse, OperacaoResponse } from "../../../services/models";
+import {
+  DadosClienteResponse,
+  OperacaoResponse,
+} from "../../../services/models";
 
 @Component({
   selector: "app-depositar",
@@ -24,7 +32,7 @@ export class DepositarComponent implements OnInit {
     private contasService: ContasService,
     private clientesService: ClientesService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -57,7 +65,9 @@ export class DepositarComponent implements OnInit {
 
         this.contasService.depositar(numeroConta, valor).subscribe({
           next: (res: OperacaoResponse) => {
-            alert(`Depósito de R$ ${valor.toFixed(2)} realizado com sucesso!\nSaldo atual: R$ ${res.saldo.toFixed(2)}`);
+            alert(
+              `Depósito de R$ ${valor.toFixed(2)} realizado com sucesso!\nSaldo atual: R$ ${res.saldo.toFixed(2)}`,
+            );
             this.depositoForm.reset();
             this.router.navigate(["/client/home"]);
           },
