@@ -144,7 +144,7 @@ public class ClienteService {
             erros.add("Endereço é obrigatório");
         }
 
-        if (!StringUtils.hasText(clienteDto.cep()) || !CEP_PATTERN.matcher(clienteDto.cep()).matches()) {
+        if (!StringUtils.hasText(clienteDto.CEP()) || !CEP_PATTERN.matcher(clienteDto.CEP()).matches()) {
             erros.add("CEP inválido. Deve conter 8 números");
         }
 
@@ -164,7 +164,7 @@ public class ClienteService {
 
         String cpf = dto.cpf() != null ? dto.cpf().replaceAll("\\D", "") : null;
         String telefone = dto.telefone() != null ? dto.telefone().replaceAll("\\D", "") : null;
-        String cep = dto.cep() != null ? dto.cep().replaceAll("\\D", "") : null;
+        String cep = dto.CEP() != null ? dto.CEP().replaceAll("\\D", "") : null;
 
         return new ClienteDto(
                 dto.id(),
