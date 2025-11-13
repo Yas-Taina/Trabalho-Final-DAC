@@ -95,7 +95,7 @@ public class AuthService {
     }
 
     public LogoutResponseDto logout(String authorizationHeader) {
-        String token = authorizationHeader.replace("Bearer ", "");
+        String token = authorizationHeader.replaceAll("(?i)^bearer\\s+", "");
         
         String email = tokenService.extractEmail(token);
         Autenticacao autenticacao = repository.findByEmail(email)
