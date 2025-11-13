@@ -2,6 +2,7 @@ package dac.ufpr.Auth.service;
 
 import dac.ufpr.Auth.dto.auth.AuthRequestDto;
 import dac.ufpr.Auth.dto.auth.AuthResponseDto;
+import dac.ufpr.Auth.dto.auth.LogoutResponseDto;
 import dac.ufpr.Auth.dto.user.UserRequestDto;
 import dac.ufpr.Auth.dto.user.UserResponseDto;
 import dac.ufpr.Auth.entity.Autenticacao;
@@ -52,9 +53,10 @@ public class AuthService {
 
         Autenticacao autenticacao = new Autenticacao();
         autenticacao.setEmail(userRequestDto.email());
+        autenticacao.setCpf(userRequestDto.cpf());
+        autenticacao.setNome(userRequestDto.nome());
         autenticacao.setSenha(passwordEncoder.encode(userRequestDto.senha()));
         autenticacao.setRole(EnRole.findByName(userRequestDto.role()));
-        autenticacao.setCpf(userRequestDto.cpf());
 
         repository.save(autenticacao);
 
@@ -92,9 +94,21 @@ public class AuthService {
         );
     }
 
-    public void logout(String authorizationHeader) {
+    public LogoutResponseDto logout(String authorizationHeader) {
         String token = authorizationHeader.replace("Bearer ", "");
+        
+        String email = tokenService.extractEmail(token);
+        Autenticacao autenticacao = repository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+        
         tokenService.invalidateToken(token);
+        
+        return new LogoutResponseDto(
+                autenticacao.getCpf(),
+                autenticacao.getNome(),
+                autenticacao.getEmail(),
+                autenticacao.getRole().name()
+        );
     }
 
     public boolean isTokenValid(String token) {
