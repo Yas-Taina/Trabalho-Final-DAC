@@ -128,7 +128,7 @@ public class GerenteService {
         }
 
         // Se for criação (idAtual == -1), verifica existência
-        if (cpf == "0") {
+        if (cpf == "") {
             if (repository.existsByCpf(gerenteDto.cpf())) {
                 log.warn("Tentativa de criar gerente com CPF já existente: {}", gerenteDto.cpf());
                 throw new ResourceAlreadyExistsException("Cliente já existe ou aguardando aprovação.");
