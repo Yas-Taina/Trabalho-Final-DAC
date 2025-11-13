@@ -25,7 +25,7 @@ public class ClienteMapper {
                 EnStatusCliente.PENDENTE,
                 null,
                 LocalDateTime.now(),
-                -1L
+                ""
         );
     }
 
