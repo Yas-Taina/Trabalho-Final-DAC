@@ -16,4 +16,5 @@ public record ClienteDto(
   String cidade,
   String estado,
   EnStatusCliente status, // #
-  String motivoRejeicao) { } // #
+  String motivoRejeicao,
+  String cpf_gerente) { } // #

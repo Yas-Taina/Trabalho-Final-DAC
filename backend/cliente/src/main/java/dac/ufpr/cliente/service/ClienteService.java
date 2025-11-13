@@ -50,27 +50,23 @@ public class ClienteService {
 					.toList();
 		}
 
-    var authenticatedUserId = jwtExtractor.getAuthenticatedUser().orElse("");
+		var authenticatedUserId = jwtExtractor.getAuthenticatedCpf().orElse("");
 
-		switch (filtro) {
-			case EnFiltroCliente.PARA_APROVAR -> {
-				clientesStream = clientesStream
-						.filter(c -> Objects.equals(c.getStatus(), EnStatusCliente.PENDENTE) && c.getCpf_gerente().equals(authenticatedUserId))
-						.sorted((c1, c2) -> c1.getNome().compareTo(c2.getNome()));
-			}
-			case EnFiltroCliente.ADM_RELATORIO_CLIENTES -> {
-				clientesStream = clientesStream
-						.filter(c -> Objects.equals(c.getStatus(), EnStatusCliente.APROVADO))
-						.sorted((c1, c2) -> c1.getNome().compareTo(c2.getNome()));
-			}
-			case EnFiltroCliente.MELHORES_CLIENTES -> {
-				clientesStream = clientesStream
-						.filter(c -> Objects.equals(c.getStatus(), EnStatusCliente.APROVADO) && c.getCpf_gerente().equals(authenticatedUserId))
-						.sorted((c1, c2) -> c2.getSalario().compareTo(c1.getSalario()))
-						.limit(3);
-			}
-			default -> {
-			}
+		if (EnFiltroCliente.PARA_APROVAR.equals(filtro)) {
+			clientesStream = clientesStream
+					.filter(c -> Objects.equals(c.getStatus(), EnStatusCliente.PENDENTE) 
+						&& c.getCpf_gerente().equals(authenticatedUserId))
+					.sorted((c1, c2) -> c1.getNome().compareTo(c2.getNome()));
+		} else if (EnFiltroCliente.ADM_RELATORIO_CLIENTES.equals(filtro)) {
+			clientesStream = clientesStream
+					.filter(c -> Objects.equals(c.getStatus(), EnStatusCliente.APROVADO))
+					.sorted((c1, c2) -> c1.getNome().compareTo(c2.getNome()));
+		} else if (EnFiltroCliente.MELHORES_CLIENTES.equals(filtro)) {
+			clientesStream = clientesStream
+					.filter(c -> Objects.equals(c.getStatus(), EnStatusCliente.APROVADO) 
+						&& c.getCpf_gerente().equals(authenticatedUserId))
+					.sorted((c1, c2) -> c2.getSalario().compareTo(c1.getSalario()))
+					.limit(3);
 		}
 
 		return clientesStream
@@ -214,6 +210,7 @@ public class ClienteService {
 				cep,
 				dto.cidade() != null ? dto.cidade().trim() : null,
 				dto.estado() != null ? dto.estado().trim() : null,
+				null,
 				null,
 				null);
 	}

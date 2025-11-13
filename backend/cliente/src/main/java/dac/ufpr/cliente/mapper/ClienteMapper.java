@@ -25,7 +25,7 @@ public class ClienteMapper {
                 EnStatusCliente.PENDENTE,
                 null,
                 LocalDateTime.now(),
-                ""
+                null
         );
     }
 
@@ -42,7 +42,8 @@ public class ClienteMapper {
                 entity.getCidade(),
                 entity.getEstado(),
                 entity.getStatus(),
-                entity.getMotivoRejeicao()
+                entity.getMotivoRejeicao(),
+                entity.getCpf_gerente()
         );
     }
 
