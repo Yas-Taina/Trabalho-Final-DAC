@@ -43,7 +43,7 @@ public class GerenteService {
     @Transactional
     public GerenteDto criar(GerenteDto gerentedto) {
         log.info("Criando gerente: {}", gerentedto);
-        validarGerente(gerentedto, -1L);
+        validarGerente(gerentedto, "");
 
         Gerente gerente = repository.save(GerenteMapper.toEntity(gerentedto));
         log.info("Gerente criado com sucesso: {}", gerente);
@@ -80,7 +80,7 @@ public class GerenteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Gerente"));
 
         // Valida apenas se os dados são coerentes, mas não bloqueia por CPF
-        validarGerente(gerentedto, gerenteExistente.getId());
+        validarGerente(gerentedto, gerenteExistente.getCpf());
 
         gerenteExistente.setNome(gerentedto.nome());
         gerenteExistente.setEmail(gerentedto.email());
@@ -94,12 +94,13 @@ public class GerenteService {
     }
 
     @Transactional
-    public void remover(String cpf) {
-        if (!repository.existsByCpf(cpf)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Gerente não encontrado: " + cpf);
-        }
+    public GerenteDto remover(String cpf) {
+        Gerente gerente = repository.findByCpf(cpf)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Gerente não encontrado: " + cpf));
+        
         repository.deleteByCpf(cpf);
+        return GerenteMapper.toDto(gerente);
     }
 
     // private void validarGerente(GerenteDto gerenteDto, long id) {
@@ -119,7 +120,7 @@ public class GerenteService {
     // }
     // }
 
-    private void validarGerente(GerenteDto gerenteDto, Long idAtual) {
+    private void validarGerente(GerenteDto gerenteDto, String cpf) {
         System.out.println(gerenteDto);
         System.out.println(validarDados(gerenteDto));
         if (validarDados(gerenteDto)) {
@@ -127,7 +128,7 @@ public class GerenteService {
         }
 
         // Se for criação (idAtual == -1), verifica existência
-        if (idAtual == -1) {
+        if (cpf == "") {
             if (repository.existsByCpf(gerenteDto.cpf())) {
                 log.warn("Tentativa de criar gerente com CPF já existente: {}", gerenteDto.cpf());
                 throw new ResourceAlreadyExistsException("Cliente já existe ou aguardando aprovação.");
