@@ -5,19 +5,18 @@ meta {
 }
 
 put {
-  url: http://localhost:8084/gerentes/44444444442
+  url: http://localhost:3000/api/gerentes/44444444446
   body: json
   auth: inherit
 }
 
 headers {
   Content-Type: application/json
-  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaHJpc0BiYW50YWRzIiwicm9sZSI6IkdFUkVOVEUiLCJpYXQiOjE3NjE2MDQyODYsImV4cCI6MTc2MTYwNzg4Nn0.rvy0NqWQ234HMq72lRsSUS3nwRuV7GgJjawvITSeans
+  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXIzQGJhbnRhZHMuY29tLmJyIiwicm9sZSI6IkdFUkVOVEUiLCJpYXQiOjE3NjI5OTUwNjAsImV4cCI6MTc2Mjk5ODY2MH0.fGXzkCq9iTp-Ly-ECAdj_kOmuGAnFDRS3D-6YBrEVqs
 }
 
 body:json {
   {
-    "id": 2,
     "cpf": "44444444444",
     "nome": "João Lima atualizado",
     "email": "joao@empresa.com",

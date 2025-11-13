@@ -1,7 +1,7 @@
 package dac.ufpr.gerente.dto;
 
 public record GerenteDto(
-        Long id,
+        // Long id,
         String cpf,
         String nome,
         String email,

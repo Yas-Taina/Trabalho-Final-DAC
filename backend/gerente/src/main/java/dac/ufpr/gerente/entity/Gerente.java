@@ -14,10 +14,10 @@ import lombok.Setter;
 @Setter
 public class Gerente {
 
+    // @Id
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // Long id;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-
     String cpf;
 
     String nome;
