@@ -11,6 +11,11 @@ export async function validateTokenMiddleware(req, res, next) {
 
     try {
         const response = await fetch(`${SERVICES.AUTH}/token/validate?token=${token}`);
+        
+        if (!response.ok) {
+            return res.status(response.status).json({ error: "Falha na validação do token" });
+        }
+        
         const isValid = await response.json();
 
         if (!isValid) {

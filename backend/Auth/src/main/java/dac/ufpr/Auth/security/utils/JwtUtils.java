@@ -13,7 +13,7 @@ import java.util.Map;
 @Component
 public class JwtUtils {
 
-    @Value("${jwt.secret}")
+    @Value("${JWT_SECRET_KEY}")
     private String key;
 
     @Value("${jwt.expiration}")
@@ -29,5 +29,12 @@ public class JwtUtils {
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(Keys.hmacShaKeyFor(key.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public void validateToken(String token) {
+        Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(key.getBytes()))
+                .build()
+                .parseClaimsJws(token);
     }
 }

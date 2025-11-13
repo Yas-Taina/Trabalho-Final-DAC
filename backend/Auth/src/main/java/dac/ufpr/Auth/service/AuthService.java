@@ -13,7 +13,6 @@ import dac.ufpr.Auth.exception.custom.ResourceNotFoundException;
 import dac.ufpr.Auth.repository.AuthRepository;
 import dac.ufpr.Auth.security.TokenService;
 import dac.ufpr.Auth.security.utils.JwtUtils;
-import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,7 +98,16 @@ public class AuthService {
     }
 
     public boolean isTokenValid(String token) {
-        return !tokenService.isTokenRevoked(token);
+        try {
+            if (tokenService.isTokenRevoked(token)) {
+                return false;
+            }
+            jwtUtil.validateToken(token);
+            return true;
+        } catch (Exception e) {
+            log.error("Validação do token falhou: {}", e.getMessage());
+            return false;
+        }
     }
 
     private void validarUsuario(UserRequestDto userRequestDto) {

@@ -16,7 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JwtExtractor {
 
-    @Value("${jwt.secret}")
+    @Value("${JWT_SECRET_KEY}")
     private String secret;
 
     private SecretKey getSigningKey() {
