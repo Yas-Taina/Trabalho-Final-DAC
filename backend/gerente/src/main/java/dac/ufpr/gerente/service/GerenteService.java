@@ -30,6 +30,7 @@ public class GerenteService {
 
     public List<GerenteDto> listar() {
         return repository.findAll().stream()
+                .filter(gerente -> !gerente.getTipo().equalsIgnoreCase("administrador"))
                 .map(GerenteMapper::toDto)
                 .toList();
     }
