@@ -1,0 +1,22 @@
+meta {
+  name: sacar as
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:8082/contas/1291/depositar
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "valor": 521.44
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
