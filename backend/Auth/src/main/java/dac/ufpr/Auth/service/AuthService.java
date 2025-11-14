@@ -54,7 +54,6 @@ public class AuthService {
         Autenticacao autenticacao = new Autenticacao();
         autenticacao.setEmail(userRequestDto.email());
         autenticacao.setCpf(userRequestDto.cpf());
-        autenticacao.setNome(userRequestDto.nome());
         autenticacao.setSenha(passwordEncoder.encode(userRequestDto.senha()));
         autenticacao.setRole(EnRole.findByName(userRequestDto.role()));
 
@@ -105,7 +104,7 @@ public class AuthService {
         
         return new LogoutResponseDto(
                 autenticacao.getCpf(),
-                autenticacao.getNome(),
+                "",
                 autenticacao.getEmail(),
                 autenticacao.getRole().name()
         );
