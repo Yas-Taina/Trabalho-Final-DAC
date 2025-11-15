@@ -1,6 +1,7 @@
 package dac.ufpr.gerente.controller;
 
 import dac.ufpr.gerente.dto.GerenteDto;
+import dac.ufpr.gerente.security.utils.JwtExtractor;
 import dac.ufpr.gerente.service.GerenteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.List;
 public class GerenteController {
 
     private final GerenteService service;
+    private final JwtExtractor jwtExtractor;
 
     @GetMapping
     public ResponseEntity<List<GerenteDto>> getTodosGerentes() {
@@ -48,5 +50,12 @@ public class GerenteController {
     public ResponseEntity<GerenteDto> remover(@PathVariable String cpf) {
         GerenteDto dto = service.remover(cpf);
         return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/my-data")
+    public ResponseEntity<String> getMyData() {
+        String cpf = jwtExtractor.getAuthenticatedCpf().orElse("Unknown CPF");
+        
+        return ResponseEntity.ok(cpf);
     }
 }

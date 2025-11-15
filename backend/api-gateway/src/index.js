@@ -21,6 +21,7 @@ app.use("/api/logout", createServiceProxy(SERVICES.AUTH, "/api/logout", "/logout
 app.use("/api/clientes", createServiceProxy(SERVICES.CLIENTE, "/api/clientes"));
 app.use("/api/contas", createServiceProxy(SERVICES.CONTA, "/api/contas"));
 app.use("/api/gerentes", createServiceProxy(SERVICES.GERENTE, "/api/gerentes"));
+app.use("/api", createServiceProxy(SERVICES.AUTH, "/api"));
 
 
 app.use((err, req, res, next) => {
