@@ -2,6 +2,8 @@ package dac.ufpr.conta.controller;
 
 import dac.ufpr.conta.dto.ContaDto;
 import dac.ufpr.conta.dto.DepositoRequest;
+import dac.ufpr.conta.dto.ExtratoDto;
+import dac.ufpr.conta.dto.MovimentacaoDto;
 import dac.ufpr.conta.service.ContaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 // em dac.ufpr.conta.controller.ContaController
 import dac.ufpr.conta.dto.SaldoDto;
+import dac.ufpr.conta.dto.TransferenciaRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -45,7 +48,8 @@ public class ContaController {
     @PostMapping("/{numero}/depositar")
     public ResponseEntity<?> depositar(
             @PathVariable("numero") String numero,
-            // @RequestHeader("X-Usuario-Id") Long usuarioId, // cabeçalho com id do dono (obrigatório)
+            // @RequestHeader("X-Usuario-Id") Long usuarioId, // cabeçalho com id do dono
+            // (obrigatório)
             @Valid @RequestBody DepositoRequest req) {
 
         SaldoDto saldo = service.depositarAndGetSaldo(numero, req.getValor());
@@ -66,4 +70,28 @@ public class ContaController {
         return ResponseEntity.ok(saldo);
 
     }
+
+    @PostMapping("/{numero}/transferir")
+    public ResponseEntity<?> transferir(
+            @PathVariable("numero") String origem,
+            @Valid @RequestBody TransferenciaRequest req) {
+
+        service.transferirGenerica(origem, req.getDestino(), req.getValor());
+
+        return ResponseEntity.ok(
+                Map.of("message", "Transferência efetuada com sucesso"));
+    }
+
+    // @GetMapping("/{numero}/extrato")
+    // public ResponseEntity<List<MovimentacaoDto>> extrato(@PathVariable("numero") String numero) {
+    //     List<MovimentacaoDto> extrato = service.extrato(numero);
+    //     return ResponseEntity.ok(extrato);
+    // }
+
+    @GetMapping("/{numero}/extrato")
+    public ResponseEntity<ExtratoDto> extrato(@PathVariable("numero") String numero) {
+        ExtratoDto dto = service.extrato(numero);
+        return ResponseEntity.ok(dto);
+    }
+
 }
