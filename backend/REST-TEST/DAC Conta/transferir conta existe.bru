@@ -1,0 +1,23 @@
+meta {
+  name: transferir conta existe
+  type: http
+  seq: 9
+}
+
+post {
+  url: http://localhost:3000/api/contas/1291/transferir
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "destino": "0950",
+    "valor": 510
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

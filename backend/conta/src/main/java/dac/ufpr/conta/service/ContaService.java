@@ -8,7 +8,13 @@ import java.util.Map;
 import java.util.HashMap;
 
 import dac.ufpr.conta.dto.ContaDto;
+import dac.ufpr.conta.dto.ExtratoDto;
+import dac.ufpr.conta.dto.ExtratoMovimentacaoDto;
+import dac.ufpr.conta.dto.MovimentacaoDto;
+import dac.ufpr.conta.dto.SaldoDto;
 import dac.ufpr.conta.mapper.ContaMapper;
+import dac.ufpr.conta.mapper.MovimentacaoMapper;
+
 import org.springframework.stereotype.Service;
 
 import dac.ufpr.conta.entity.Conta;
@@ -23,14 +29,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import dac.ufpr.conta.enums.enTipoMovimento;
 
-
 @Service
 @RequiredArgsConstructor
 public class ContaService {
 
-    private final ContaRepository     contaRepo;
+    private final ContaRepository contaRepo;
     private final MovimentoRepository movRepo;
-    private final EventPublisher      publisher;
+    private final EventPublisher publisher;
 
     public List<ContaDto> listar() {
         List<Conta> contas = contaRepo.findAll();
@@ -41,16 +46,19 @@ public class ContaService {
 
     public Long findGerenteWithFewestClientes() {
         List<Conta> contas = contaRepo.findAll();
-        if (contas.isEmpty()) return null;
+        if (contas.isEmpty())
+            return null;
 
         Map<Long, Integer> counts = new HashMap<>();
         for (Conta c : contas) {
             Long gid = c.getGerenteId();
-            if (gid == null) continue;
+            if (gid == null)
+                continue;
             counts.put(gid, counts.getOrDefault(gid, 0) + 1);
         }
 
-        if (counts.isEmpty()) return null;
+        if (counts.isEmpty())
+            return null;
 
         Long chosen = null;
         int min = Integer.MAX_VALUE;
@@ -65,7 +73,7 @@ public class ContaService {
     }
 
     @Transactional
-    public void depositar(String numeroConta, BigDecimal valor, Long usuarioIdDono) {
+    public SaldoDto depositar(String numeroConta, BigDecimal valor, Long usuarioIdDono) {
         Conta c = contaRepo.findByNumeroConta(numeroConta)
                 .orElseThrow(() -> new NotFoundException("Conta não encontrada"));
         validarDono(c, usuarioIdDono);
@@ -74,9 +82,14 @@ public class ContaService {
         c.setSaldo(c.getSaldo().add(v));
         contaRepo.save(c);
 
-        Movimentacao m = movRepo.save(novoMov(c, enTipoMovimento.DEPOSITO, numeroConta, null, v));
+        Movimentacao m = movRepo.save(novoMov(c, enTipoMovimento.DEPOSITO, null, numeroConta, v));
         publisher.publicarMovimentoRegistrado(m, '+');
         publisher.publicarSaldoAtualizado(c);
+
+        return new SaldoDto(
+                c.getClienteId().toString(),
+                c.getNumeroConta(),
+                c.getSaldo().setScale(2, RoundingMode.HALF_UP));
     }
 
     @Transactional
@@ -101,7 +114,8 @@ public class ContaService {
 
     @Transactional
     public void transferir(String origem, String destino, BigDecimal valor, Long usuarioIdDono) {
-        if (origem.equals(destino)) throw new BusinessException("Mesma conta");
+        if (origem.equals(destino))
+            throw new BusinessException("Mesma conta");
 
         Conta cOrig = contaRepo.findByNumeroConta(origem)
                 .orElseThrow(() -> new NotFoundException("Conta origem não encontrada"));
@@ -126,6 +140,49 @@ public class ContaService {
         publisher.publicarSaldoAtualizado(cDest);
     }
 
+    @Transactional
+    public void transferirGenerica(String origem, String destino, BigDecimal valor) {
+
+        if (origem.equals(destino))
+            throw new BusinessException("Mesma conta");
+
+        // verificar origem
+        Conta cOrig = contaRepo.findByNumeroConta(origem)
+                .orElseThrow(() -> new NotFoundException("Conta origem não encontrada"));
+
+        BigDecimal v = valor.setScale(2, RoundingMode.HALF_UP);
+
+        BigDecimal disponivel = cOrig.getSaldo().add(cOrig.getLimite());
+        if (disponivel.compareTo(v) < 0)
+            throw new BusinessException("Saldo insuficiente");
+
+        // sempre debita origem
+        cOrig.setSaldo(cOrig.getSaldo().subtract(v));
+        contaRepo.save(cOrig);
+
+        // registra movimento origem
+        Movimentacao movOrig = movRepo.save(
+                novoMov(cOrig, enTipoMovimento.TRANSFERENCIA, origem, destino, v));
+        publisher.publicarMovimentoRegistrado(movOrig, '-');
+        publisher.publicarSaldoAtualizado(cOrig);
+
+        // tenta localizar destino
+        Conta cDest = contaRepo.findByNumeroConta(destino).orElse(null);
+
+        if (cDest != null) {
+            // destino existe → creditar
+            cDest.setSaldo(cDest.getSaldo().add(v));
+            contaRepo.save(cDest);
+
+            Movimentacao movDest = movRepo.save(
+                    novoMov(cDest, enTipoMovimento.TRANSFERENCIA, origem, destino, v));
+            publisher.publicarMovimentoRegistrado(movDest, '+');
+            publisher.publicarSaldoAtualizado(cDest);
+        }
+
+        // se não existir → nada a fazer
+    }
+
     private void validarDono(Conta c, Long usuarioId) {
         if (!c.getClienteId().equals(usuarioId))
             throw new ForbiddenException("Não é o dono da conta");
@@ -141,4 +198,119 @@ public class ContaService {
         m.setValor(v.setScale(2, RoundingMode.HALF_UP));
         return m;
     }
+
+    // em dac.ufpr.conta.service.ContaService (adicione este método)
+
+    public SaldoDto consultarSaldo(String numeroConta) {
+        Conta c = contaRepo.findByNumeroConta(numeroConta)
+                .orElseThrow(() -> new NotFoundException("Conta não encontrada"));
+
+        // BigDecimal saldo = c.getSaldo() != null
+        // ? c.getSaldo().setScale(2, RoundingMode.HALF_UP)
+        // : BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+
+        // cliente é um Long no entity; converto para string (forma igual ao exemplo)
+        // String cliente = c.getClienteId() == null ? null :
+        // c.getClienteId().toString();
+
+        return new SaldoDto(
+                c.getClienteId().toString(),
+                c.getNumeroConta(),
+                c.getSaldo());
+    }
+
+    @Transactional
+    public SaldoDto depositarAndGetSaldo(String numeroConta, BigDecimal valor) {
+        // procura a conta (lança NotFoundException se não achar)
+        Conta c = contaRepo.findByNumeroConta(numeroConta)
+                .orElseThrow(() -> new NotFoundException("Conta não encontrada"));
+
+        // valida dono
+        // validarDono(c, usuarioIdDono);
+
+        // aplica valor com escala
+        BigDecimal v = valor.setScale(2, RoundingMode.HALF_UP);
+
+        // atualiza saldo
+        if (c.getSaldo() == null) {
+            c.setSaldo(v);
+        } else {
+            c.setSaldo(c.getSaldo().add(v));
+        }
+        contaRepo.save(c);
+
+        // registra movimentacao e publica eventos
+        Movimentacao m = movRepo.save(novoMov(c, enTipoMovimento.DEPOSITO, null, numeroConta, v));
+        publisher.publicarMovimentoRegistrado(m, '+');
+        publisher.publicarSaldoAtualizado(c);
+
+        // retorna SaldoDto atualizado (converte clienteId para string como em
+        // consultarSaldo)
+        return new SaldoDto(
+                c.getClienteId() == null ? null : c.getClienteId().toString(),
+                c.getNumeroConta(),
+                c.getSaldo().setScale(2, RoundingMode.HALF_UP));
+    }
+
+    @Transactional
+    public SaldoDto sacarAndGetSaldo(String numeroConta, BigDecimal valor) {
+        Conta c = contaRepo.findByNumeroConta(numeroConta)
+                .orElseThrow(() -> new NotFoundException("Conta não encontrada"));
+
+        BigDecimal v = valor.setScale(2, RoundingMode.HALF_UP);
+
+        BigDecimal saldoAtual = c.getSaldo() == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : c.getSaldo();
+        BigDecimal limite = c.getLimite() == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : c.getLimite();
+        BigDecimal disponivel = saldoAtual.add(limite);
+        if (disponivel.compareTo(v) < 0) {
+            throw new BusinessException("Saldo insuficiente");
+        }
+
+        c.setSaldo(saldoAtual.subtract(v));
+        contaRepo.save(c);
+
+        Movimentacao m = movRepo.save(novoMov(c, enTipoMovimento.SAQUE, numeroConta, null, v));
+        publisher.publicarMovimentoRegistrado(m, '-');
+        publisher.publicarSaldoAtualizado(c);
+
+        return new SaldoDto(
+                c.getClienteId() == null ? null : c.getClienteId().toString(),
+                c.getNumeroConta(),
+                c.getSaldo().setScale(2, RoundingMode.HALF_UP));
+    }
+
+    // @Transactional
+    // public List<MovimentacaoDto> extrato(String numeroConta) {
+    //     Conta c = contaRepo.findByNumeroConta(numeroConta)
+    //             .orElseThrow(() -> new NotFoundException("Conta não encontrada"));
+
+    //     List<Movimentacao> movs = movRepo.findByContaIdOrderByDataHoraAsc(c.getId());
+
+    //     return movs.stream()
+    //             .map(MovimentacaoMapper::toDto)
+    //             .toList();
+    // }
+
+    @Transactional
+    public ExtratoDto extrato(String numeroConta) {
+        Conta conta = contaRepo.findByNumeroConta(numeroConta)
+                .orElseThrow(() -> new NotFoundException("Conta não encontrada"));
+
+        List<Movimentacao> movs = movRepo.findByContaIdOrderByDataHoraAsc(conta.getId());
+
+        List<ExtratoMovimentacaoDto> lista = movs.stream()
+                .map(m -> new ExtratoMovimentacaoDto(
+                        m.getDataHora(),
+                        m.getTipo().name().toLowerCase(), // "saque", "deposito", "transferencia"
+                        m.getOrigemConta(),
+                        m.getDestinoConta(),
+                        m.getValor()))
+                .toList();
+
+        return new ExtratoDto(
+                conta.getNumeroConta(),
+                conta.getSaldo(),
+                lista);
+    }
+
 }
