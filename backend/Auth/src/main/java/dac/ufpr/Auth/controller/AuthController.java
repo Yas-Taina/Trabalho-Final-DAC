@@ -2,6 +2,7 @@ package dac.ufpr.Auth.controller;
 
 import dac.ufpr.Auth.dto.auth.AuthRequestDto;
 import dac.ufpr.Auth.dto.auth.AuthResponseDto;
+import dac.ufpr.Auth.dto.auth.LogoutResponseDto;
 import dac.ufpr.Auth.dto.user.UserRequestDto;
 import dac.ufpr.Auth.dto.user.UserResponseDto;
 import dac.ufpr.Auth.service.AuthService;
@@ -27,9 +28,9 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authorizationHeader) {
-        service.logout(authorizationHeader);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<LogoutResponseDto> logout(@RequestHeader("Authorization") String authorizationHeader) {
+        LogoutResponseDto response = service.logout(authorizationHeader);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/token/validate")

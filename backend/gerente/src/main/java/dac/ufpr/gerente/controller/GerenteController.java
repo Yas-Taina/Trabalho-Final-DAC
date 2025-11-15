@@ -58,4 +58,11 @@ public class GerenteController {
         
         return ResponseEntity.ok(cpf);
     }
+
+    @GetMapping("/my-data")
+    public ResponseEntity<String> getMyData() {
+        String cpf = jwtExtractor.getAuthenticatedCpf().orElse("Unknown CPF");
+        
+        return ResponseEntity.ok(cpf);
+    }
 }
