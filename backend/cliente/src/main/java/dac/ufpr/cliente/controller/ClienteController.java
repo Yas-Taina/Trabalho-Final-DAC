@@ -1,6 +1,7 @@
 package dac.ufpr.cliente.controller;
 
 import dac.ufpr.cliente.dto.ClienteDto;
+import dac.ufpr.cliente.security.utils.JwtExtractor;
 import dac.ufpr.cliente.service.ClienteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,11 +17,12 @@ import java.util.List;
 public class ClienteController {
 
     private final ClienteService service;
+    private final JwtExtractor jwtExtractor;
 
     @GetMapping
     // @PreAuthorize("hasRole('ROLE_ADMINISTADOR')")
-    public ResponseEntity<List<ClienteDto>> listar() {
-        return ResponseEntity.ok(service.listar());
+    public ResponseEntity<List<ClienteDto>> listar(@RequestParam(required = false) String filtro) {
+        return ResponseEntity.ok(service.listar(filtro));
     }
 
     @GetMapping("/{cpf}")
@@ -36,6 +38,13 @@ public class ClienteController {
     @PutMapping("/{cpf}")
     public ResponseEntity<ClienteDto> atualizar(@PathVariable String cpf, @RequestBody ClienteDto clienteDto) {
         return ResponseEntity.ok(service.atualizar(cpf, clienteDto));
+    }
+
+    @GetMapping("/my-data")
+    public ResponseEntity<String> getMyData() {
+        String cpf = jwtExtractor.getAuthenticatedCpf().orElse("Unknown CPF");
+        
+        return ResponseEntity.ok(cpf);
     }
 
 }

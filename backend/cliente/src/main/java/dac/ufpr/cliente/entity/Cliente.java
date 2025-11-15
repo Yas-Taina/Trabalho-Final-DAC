@@ -49,6 +49,6 @@ public class Cliente {
 
     LocalDateTime data_alteracao;
 
-    long gerente_id;
+    String cpf_gerente;
 
 }

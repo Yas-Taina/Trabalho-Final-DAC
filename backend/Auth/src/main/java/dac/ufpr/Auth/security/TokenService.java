@@ -50,4 +50,14 @@ public class TokenService {
 
         return claims.getExpiration();
     }
+
+    public String extractEmail(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key.getBytes())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getSubject();
+    }
 }

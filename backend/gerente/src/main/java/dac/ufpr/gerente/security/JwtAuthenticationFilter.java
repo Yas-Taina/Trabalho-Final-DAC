@@ -6,6 +6,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,15 +17,19 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.crypto.SecretKey;
 import java.util.List;
 
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-
     @org.springframework.beans.factory.annotation.Value("${JWT_SECRET_KEY}")
     private String secretKey;
+
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, 
@@ -45,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(secretKey.getBytes())
+                    .setSigningKey(getSigningKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
@@ -55,7 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null,
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, token,
                     authorities);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);

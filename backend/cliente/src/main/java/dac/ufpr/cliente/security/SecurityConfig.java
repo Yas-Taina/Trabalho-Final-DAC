@@ -28,8 +28,8 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers( HttpMethod.POST,"/clientes/**").permitAll()
-                        //TODO corrigir aqui
+                        .requestMatchers(HttpMethod.POST, "/clientes/**").permitAll()
+                        .requestMatchers("/clientes/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session
@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(jwtAuthEntryPoint)
                         .accessDeniedHandler(((request, response, accessDeniedException) -> {
-                            response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                             response.setContentType("application/json");
                             response.getWriter().write("{\"error\": \"O usuário não tem permissão para efetuar esta operação\"}");                        }))
                 )

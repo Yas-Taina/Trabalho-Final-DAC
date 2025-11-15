@@ -2,6 +2,7 @@ package dac.ufpr.Auth.service;
 
 import dac.ufpr.Auth.dto.auth.AuthRequestDto;
 import dac.ufpr.Auth.dto.auth.AuthResponseDto;
+import dac.ufpr.Auth.dto.auth.LogoutResponseDto;
 import dac.ufpr.Auth.dto.user.UserRequestDto;
 import dac.ufpr.Auth.dto.user.UserResponseDto;
 import dac.ufpr.Auth.entity.Autenticacao;
@@ -13,7 +14,6 @@ import dac.ufpr.Auth.exception.custom.ResourceNotFoundException;
 import dac.ufpr.Auth.repository.AuthRepository;
 import dac.ufpr.Auth.security.TokenService;
 import dac.ufpr.Auth.security.utils.JwtUtils;
-import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +27,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -52,9 +53,9 @@ public class AuthService {
 
         Autenticacao autenticacao = new Autenticacao();
         autenticacao.setEmail(userRequestDto.email());
+        autenticacao.setCpf(userRequestDto.cpf());
         autenticacao.setSenha(passwordEncoder.encode(userRequestDto.senha()));
         autenticacao.setRole(EnRole.findByName(userRequestDto.role()));
-        autenticacao.setCpf(userRequestDto.cpf());
 
         repository.save(autenticacao);
 
@@ -74,10 +75,14 @@ public class AuthService {
         Autenticacao autenticacao = repository.findByEmail(request.email()).orElseThrow(() -> new ResourceNotFoundException("Usuário"));
         log.info("Autenticacao encontrada: email={}, cpf={}", autenticacao.getEmail(), autenticacao.getCpf());
 
+        Map<String, Object> customClaims = Map.of(
+                "cpf", autenticacao.getCpf()
+        );
+
         String token = jwtUtil.generateToken(
                 autenticacao.getEmail(),
                 autenticacao.getRole().name(),
-                null
+                customClaims
         );
 
         return new AuthResponseDto(
@@ -88,13 +93,34 @@ public class AuthService {
         );
     }
 
-    public void logout(String authorizationHeader) {
-        String token = authorizationHeader.replace("Bearer ", "");
+    public LogoutResponseDto logout(String authorizationHeader) {
+        String token = authorizationHeader.replaceAll("(?i)^bearer\\s+", "");
+        
+        String email = tokenService.extractEmail(token);
+        Autenticacao autenticacao = repository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+        
         tokenService.invalidateToken(token);
+        
+        return new LogoutResponseDto(
+                autenticacao.getCpf(),
+                "",
+                autenticacao.getEmail(),
+                autenticacao.getRole().name()
+        );
     }
 
     public boolean isTokenValid(String token) {
-        return !tokenService.isTokenRevoked(token);
+        try {
+            if (tokenService.isTokenRevoked(token)) {
+                return false;
+            }
+            jwtUtil.validateToken(token);
+            return true;
+        } catch (Exception e) {
+            log.error("Validação do token falhou: {}", e.getMessage());
+            return false;
+        }
     }
 
     private void validarUsuario(UserRequestDto userRequestDto) {

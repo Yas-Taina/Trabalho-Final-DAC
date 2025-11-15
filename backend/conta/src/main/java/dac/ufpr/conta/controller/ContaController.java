@@ -25,6 +25,8 @@ public class ContaController {
 
     private final ContaService service;
 
+    private final JwtExtractor jwtExtractor;
+
     @GetMapping
     // @PreAuthorize("hasRole('ROLE_ADMINISTRADOR')")
     public ResponseEntity<List<ContaDto>> listar() {

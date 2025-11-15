@@ -12,5 +12,5 @@ CREATE TABLE IF NOT EXISTS cliente.cliente (
     motivo_rejeicao VARCHAR(255),
     data_alteracao TIMESTAMP default now(), 
     status VARCHAR(20),
-    gerente_id BIGINT
+    cpf_gerente VARCHAR(15)
 );
