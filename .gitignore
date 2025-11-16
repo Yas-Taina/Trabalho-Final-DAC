@@ -191,4 +191,5 @@ dist
 .ionide
 
 /backend/data/mongo/
+/backend/data/postgres/
 

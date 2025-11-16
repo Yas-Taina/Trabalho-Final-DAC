@@ -1,0 +1,61 @@
+import axios from "axios";
+import "../config/axios-logger.js";
+
+import {SERVICES} from "../config/services.js";
+
+class CompositionController {
+
+    async buscarClienteComContaPorCPF(req, res) {
+        try {
+            const {cpf} = req.params;
+
+            const clientePromise = axios.get(
+                `${SERVICES.CLIENTE}/${cpf}`,
+                {
+                    headers: {
+                        ...req.headers
+                    }
+                }
+            );
+
+            const clienteResponse = await clientePromise;
+
+            const [contasResponse, gerenteResponse] = await Promise.all([
+                axios.get(
+                    `${SERVICES.CONTA}/cliente/${clienteResponse.data.id}`,
+                    { headers: { ...req.headers } }
+                ),
+                axios.get(
+                    `${SERVICES.GERENTE}/${clienteResponse.data.cpf_gerente}`,
+                    { headers: { ...req.headers } }
+                )
+            ]);
+
+            return res.json({
+                cpf: clienteResponse.data.cpf,
+                nome: clienteResponse.data.nome,
+                telefone: clienteResponse.data.telefone,
+                email: clienteResponse.data.email,
+                endereco: clienteResponse.data.endereco,
+                cidade: clienteResponse.data.cidade,
+                estado: clienteResponse.data.estado,
+                salario: clienteResponse.data.salario,
+
+                conta: contasResponse.data.numeroConta,
+                saldo: contasResponse.data.saldo,
+                limite: contasResponse.data.limite,
+
+                gerente: clienteResponse.data.cpf_gerente,
+                gerente_nome: gerenteResponse.data.nome,
+                gerente_email: gerenteResponse.data.email
+            });
+
+        } catch (err) {
+            console.error(err);
+            return res.status(err.response?.status || 500).json(err.response?.data);
+        }
+    }
+
+}
+
+export default new CompositionController();

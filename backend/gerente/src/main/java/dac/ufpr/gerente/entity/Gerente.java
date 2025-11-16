@@ -24,7 +24,5 @@ public class Gerente {
 
     String email;
 
-    String senha;
-
     String tipo;
 }

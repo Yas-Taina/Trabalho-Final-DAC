@@ -85,7 +85,6 @@ public class GerenteService {
 
         gerenteExistente.setNome(gerentedto.nome());
         gerenteExistente.setEmail(gerentedto.email());
-        gerenteExistente.setSenha(gerentedto.senha());
         gerenteExistente.setTipo(gerentedto.tipo());
 
         Gerente gerenteAtualizado = repository.save(gerenteExistente);
@@ -139,7 +138,6 @@ public class GerenteService {
 
     private boolean validarDados(GerenteDto dto) {
         return !StringUtils.hasText(dto.nome())
-                || !StringUtils.hasText(dto.senha())
                 || !StringUtils.hasText(dto.tipo())
                 || !StringUtils.hasText(dto.cpf())
                 || !StringUtils.hasText(dto.email())

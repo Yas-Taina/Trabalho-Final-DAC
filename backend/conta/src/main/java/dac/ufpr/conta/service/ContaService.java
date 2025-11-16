@@ -183,6 +183,12 @@ public class ContaService {
         // se não existir → nada a fazer
     }
 
+    public ContaDto getByClienteId(Long clienteId) {
+        Conta c = contaRepo.findByClienteId(clienteId)
+                .orElseThrow(() -> new NotFoundException("Conta não encontrada para o cliente"));
+        return ContaMapper.toDto(c);
+    }
+
     private void validarDono(Conta c, Long usuarioId) {
         if (!c.getClienteId().equals(usuarioId))
             throw new ForbiddenException("Não é o dono da conta");

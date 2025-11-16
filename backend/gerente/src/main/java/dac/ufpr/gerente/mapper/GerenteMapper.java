@@ -10,7 +10,6 @@ public class GerenteMapper {
                 dto.cpf(),
                 dto.nome(),
                 dto.email(),
-                dto.senha(),
                 dto.tipo()
         );
     }
@@ -21,7 +20,6 @@ public class GerenteMapper {
                 entity.getCpf(),
                 entity.getNome(),
                 entity.getEmail(),
-                entity.getSenha(),
                 entity.getTipo()
         );
     }
@@ -35,9 +33,6 @@ public class GerenteMapper {
         }
         if (dto.email() != null) {
             entity.setEmail(dto.email());
-        }
-        if (dto.senha() != null) {
-            entity.setSenha(dto.senha());
         }
         if (dto.tipo() != null) {
             entity.setTipo(dto.tipo());

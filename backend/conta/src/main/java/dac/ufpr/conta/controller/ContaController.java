@@ -96,4 +96,9 @@ public class ContaController {
         return ResponseEntity.ok(dto);
     }
 
+    @GetMapping("/cliente/{clienteId}")
+    public ResponseEntity<ContaDto> getByClienteId(@PathVariable Long clienteId) {
+        return ResponseEntity.ok(service.getByClienteId(clienteId));
+    }
+
 }
