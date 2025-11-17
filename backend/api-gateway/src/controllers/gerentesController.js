@@ -7,7 +7,7 @@ class GerentesController {
         try {
             const response = await axios({
                 method: req.method,
-                url: SERVICES.GERENTE + req.path,
+                url: SERVICES.GERENTE.replace(/\/$/, '') + (req.path === '/' ? '' : req.path),
                 data: req.body,
                 headers: {
                     ...req.headers

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 // em dac.ufpr.conta.controller.ContaController
 import dac.ufpr.conta.dto.SaldoDto;
 import dac.ufpr.conta.dto.TransferenciaRequest;
+import dac.ufpr.conta.security.utils.JwtExtractor;
 
 import java.util.List;
 import java.util.Map;
