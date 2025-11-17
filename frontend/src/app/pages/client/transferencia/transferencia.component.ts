@@ -33,7 +33,14 @@ export class TransferenciaComponent implements OnInit {
     private router: Router,
   ) {
     this.transferenciaForm = this.fb.group({
-      valor: ["", [Validators.required, CustomValidators.positiveNumber(), CustomValidators.decimalPlaces(2)]],
+      valor: [
+        "",
+        [
+          Validators.required,
+          CustomValidators.positiveNumber(),
+          CustomValidators.decimalPlaces(2),
+        ],
+      ],
       numeroContaDestino: ["", [Validators.required]],
     });
   }
@@ -59,7 +66,7 @@ export class TransferenciaComponent implements OnInit {
           alert("Número da conta do cliente não disponível.");
         }
       },
-      error: (err) => {
+      error: () => {
         alert("Erro ao carregar dados do cliente.");
       },
     });
@@ -69,10 +76,12 @@ export class TransferenciaComponent implements OnInit {
     if (this.transferenciaForm.invalid) return;
     if (!this.numeroContaOrigem) return;
 
-    const valor = parseFloat(this.transferenciaForm.value.valor);
-    const contaDestino = this.transferenciaForm.value.numeroContaDestino.trim();
+    const valorRaw = this.transferenciaForm.value.valor;
+    const valor = parseFloat(String(valorRaw));
+    const contaDestinoRaw = this.transferenciaForm.value.numeroContaDestino;
+    const contaDestino = String(contaDestinoRaw).trim();
 
-    if (valor <= 0) {
+    if (isNaN(valor) || valor <= 0) {
       alert("Valor deve ser maior que zero");
       return;
     }
@@ -85,9 +94,11 @@ export class TransferenciaComponent implements OnInit {
     this.contasService
       .transferir(this.numeroContaOrigem, contaDestino, valor)
       .subscribe({
-        next: (res) => {
+        next: () => {
           alert(
-            `Transferência de R$ ${res.valor.toFixed(2)} para a conta ${res.destino} realizada com sucesso!`,
+            `Transferência de R$ ${valor.toFixed(
+              2,
+            )} para a conta ${contaDestino} realizada com sucesso!`,
           );
           this.transferenciaForm.reset();
           this.router.navigate(["/client/home"]);

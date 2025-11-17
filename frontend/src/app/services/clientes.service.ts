@@ -39,7 +39,7 @@ export class ClientesService extends BaseService {
     return this.http.get<
       TodosClientesResponse | ParaAprovarResponse | RelatorioClientesResponse
     >(`${this.apiUrl}/clientes`, {
-      headers: this.headers,
+      headers: this.getAuthHeaders(),
       params,
     }).pipe(
       catchError((error) => {
@@ -81,7 +81,7 @@ export class ClientesService extends BaseService {
 
     return this.http.get<DadosClienteResponse>(
       `${this.apiUrl}/clientes/${cpf}`,
-      { headers: this.headers },
+      { headers: this.getAuthHeaders() },
     ).pipe(
       catchError((error) => {
         return throwError(() => error);
@@ -119,7 +119,7 @@ export class ClientesService extends BaseService {
     this.setLoading(true);
 
     return this.http.put<void>(`${this.apiUrl}/clientes/${cpf}`, data, {
-      headers: this.headers,
+      headers: this.getAuthHeaders(),
     }).pipe(
       catchError((error) => {
         return throwError(() => error);
@@ -138,7 +138,7 @@ export class ClientesService extends BaseService {
     return this.http.post<void>(
       `${this.apiUrl}/clientes/${cpf}/aprovar`,
       {},
-      { headers: this.headers },
+      { headers: this.getAuthHeaders() },
     ).pipe(
       catchError((error) => {
         return throwError(() => error);
@@ -161,7 +161,7 @@ export class ClientesService extends BaseService {
     return this.http.post<void>(
       `${this.apiUrl}/clientes/${cpf}/rejeitar`,
       { motivo },
-      { headers: this.headers },
+      { headers: this.getAuthHeaders() },
     ).pipe(
       catchError((error) => {
         return throwError(() => error);

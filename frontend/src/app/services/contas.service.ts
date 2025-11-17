@@ -19,10 +19,10 @@ export class ContasService extends BaseService {
 
     this.setLoading(true);
 
-    return this.http.post<SaldoResponse>(
-      `${this.apiUrl}/contas/${numero}/saldo`,
-      {},
-      { headers: this.headers },
+      return this.http.post<SaldoResponse>(
+        `${this.apiUrl}/contas/${numero}/saldo`,
+        {},
+        { headers: this.getAuthHeaders() },
     ).pipe(
       catchError((error) => {
         return throwError(() => error);
@@ -42,10 +42,10 @@ export class ContasService extends BaseService {
 
     this.setLoading(true);
 
-    return this.http.post<OperacaoResponse>(
-      `${this.apiUrl}/contas/${numero}/depositar`,
-      { valor },
-      { headers: this.headers },
+      return this.http.post<OperacaoResponse>(
+        `${this.apiUrl}/contas/${numero}/depositar`,
+        { valor },
+        { headers: this.getAuthHeaders() },
     ).pipe(
       catchError((error) => {
         return throwError(() => error);
@@ -65,10 +65,10 @@ export class ContasService extends BaseService {
 
     this.setLoading(true);
 
-    return this.http.post<OperacaoResponse>(
-      `${this.apiUrl}/contas/${numero}/sacar`,
-      { valor },
-      { headers: this.headers },
+      return this.http.post<OperacaoResponse>(
+        `${this.apiUrl}/contas/${numero}/sacar`,
+        { valor },
+        { headers: this.getAuthHeaders() },
     ).pipe(
       catchError((error) => {
         return throwError(() => error);
@@ -100,10 +100,10 @@ export class ContasService extends BaseService {
 
     this.setLoading(true);
 
-    return this.http.post<TransferenciaResponse>(
-      `${this.apiUrl}/contas/${numero}/transferir`,
-      { destino, valor },
-      { headers: this.headers },
+      return this.http.post<TransferenciaResponse>(
+        `${this.apiUrl}/contas/${numero}/transferir`,
+        { destino, valor },
+        { headers: this.getAuthHeaders() },
     ).pipe(
       catchError((error) => {
         return throwError(() => error);
@@ -118,11 +118,10 @@ export class ContasService extends BaseService {
     }
 
     this.setLoading(true);
-
-    return this.http.post<ExtratoResponse>(
-      `${this.apiUrl}/contas/${numero}/extrato`,
-      {},
-      { headers: this.headers },
+    console.log(`${this.apiUrl}/contas/${numero}/extrato`);
+      return this.http.get<ExtratoResponse>(
+        `${this.apiUrl}/contas/${numero}/extrato`,
+        { headers: this.getAuthHeaders() },
     ).pipe(
       catchError((error) => {
         return throwError(() => error);

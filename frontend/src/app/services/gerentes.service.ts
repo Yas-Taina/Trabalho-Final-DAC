@@ -27,7 +27,7 @@ export class GerentesService extends BaseService {
 
     return this.http.get<DadoGerente[] | DashboardResponse>(
       `${this.apiUrl}/gerentes`,
-      { headers: this.headers, params },
+      { headers: this.getAuthHeaders(), params },
     ).pipe(
       catchError((error) => {
         return throwError(() => error);
@@ -44,7 +44,7 @@ export class GerentesService extends BaseService {
     this.setLoading(true);
 
     return this.http.get<DadoGerente>(`${this.apiUrl}/gerentes/${cpf}`, {
-      headers: this.headers,
+      headers: this.getAuthHeaders(),
     }).pipe(
       catchError((error) => {
         return throwError(() => error);
@@ -61,7 +61,7 @@ export class GerentesService extends BaseService {
     this.setLoading(true);
 
     return this.http.post<DadoGerente>(`${this.apiUrl}/gerentes`, data, {
-      headers: this.headers,
+      headers: this.getAuthHeaders(),
     }).pipe(
       catchError((error) => {
         return throwError(() => error);
@@ -85,7 +85,7 @@ export class GerentesService extends BaseService {
     this.setLoading(true);
 
     return this.http.put<DadoGerente>(`${this.apiUrl}/gerentes/${cpf}`, data, {
-      headers: this.headers,
+      headers: this.getAuthHeaders(),
     }).pipe(
       catchError((error) => {
         return throwError(() => error);
@@ -102,7 +102,7 @@ export class GerentesService extends BaseService {
     this.setLoading(true);
 
     return this.http.delete<DadoGerente>(`${this.apiUrl}/gerentes/${cpf}`, {
-      headers: this.headers,
+      headers: this.getAuthHeaders(),
     }).pipe(
       catchError((error) => {
         return throwError(() => error);

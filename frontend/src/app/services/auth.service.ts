@@ -45,7 +45,7 @@ export class AuthService extends BaseService {
         `${this.apiUrl}/logout`,
         {},
         {
-          headers: this.headers,
+          headers: this.getAuthHeaders(),
         },
       )
       .pipe(

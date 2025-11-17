@@ -229,7 +229,7 @@ def login(email, senha, cpf, tipo, correto=True):
     LOGIN["email"] = email
     LOGIN["senha"] = senha
 
-    print(f'Login: {email} / Senha: {senha} / CPF: {cpf} / Tipo: {tipo} / Correto: {correto}')
+    # print(f'Login: {email} / Senha: {senha} / CPF: {cpf} / Tipo: {tipo} / Correto: {correto}')
     resp = requests.post(URL + "/login", 
                          headers=HEADERS, 
                          json=LOGIN)
@@ -255,6 +255,7 @@ def login(email, senha, cpf, tipo, correto=True):
 def logout(email, token):
     HEADERS["Authorization"] = token
 
+    print(f'{URL}/logout  Logout: {email} / Token: {token}, HEADERS: {HEADERS}')
     r = requests.post(URL + "/logout", 
                          headers=HEADERS)
 

@@ -50,4 +50,18 @@ export class BaseService {
     const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
     return cpfRegex.test(cpf);
   }
+
+  // Retorna headers com Authorization: Bearer <token> quando houver sessão salva
+  protected getAuthHeaders(): HttpHeaders {
+    try {
+      const json = localStorage.getItem('dac_token');
+      if (!json) return this.headers;
+      const session = JSON.parse(json) as any;
+      const token = session?.access_token;
+      if (!token) return this.headers;
+      return this.headers.set('Authorization', `Bearer ${token}`);
+    } catch (err) {
+      return this.headers;
+    }
+  }
 }

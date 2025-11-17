@@ -9,7 +9,6 @@ import { provideNgxMask } from "ngx-mask";
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideClientHydration(),
     provideHttpClient(),
     provideNgxMask(),
   ],
