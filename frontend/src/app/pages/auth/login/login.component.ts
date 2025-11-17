@@ -4,6 +4,7 @@ import { AuthService } from "../../../services/auth.service";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { LoginInfo } from "../../../services/models";
+import { CustomValidators } from "../../../validators/custom.validators";
 
 @Component({
   selector: "app-login",
@@ -16,6 +17,7 @@ export class LoginComponent {
   readonly authService = inject(AuthService);
   readonly router = inject(Router);
   readonly builder = inject(FormBuilder);
+  loading$ = this.authService.getLoadingState();
 
   loginForm = this.builder.group({
     email: ["", [Validators.required, Validators.email]],

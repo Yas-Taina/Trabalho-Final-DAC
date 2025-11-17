@@ -37,13 +37,11 @@ export class GerentesComponent implements OnInit {
         if (this.isArrayDeGerentes(dados)) {
           this.gerentes = dados;
         } else {
-          console.warn("Resposta é DashboardResponse:", dados);
           this.gerentes = [];
         }
         this.aplicarFiltro();
       },
       error: (err) => {
-        console.error("Erro ao carregar gerentes:", err);
         let msg = "Erro ao carregar gerentes.";
         if (err.status === 401) msg = "Usuário não está logado.";
         else if (err.status === 403)
@@ -76,7 +74,6 @@ export class GerentesComponent implements OnInit {
           this.carregarGerentes();
         },
         error: (err) => {
-          console.error("Erro ao remover gerente:", err);
           let msg = "Erro ao remover gerente.";
           if (err.status === 404) msg = "Gerente não encontrado.";
           else if (err.status === 403)

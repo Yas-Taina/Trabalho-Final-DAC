@@ -11,6 +11,7 @@ import { NgxMaskDirective } from "ngx-mask";
 import { ClientesService } from "../../../services";
 import { AutocadastroInfo } from "../../../services/models";
 import { catchError, of, tap } from "rxjs";
+import { CustomValidators } from "../../../validators/custom.validators";
 
 @Component({
   selector: "app-autocadastro",
@@ -23,6 +24,7 @@ export class AutocadastroComponent implements OnInit {
   clienteForm: FormGroup;
   mensagem: string | null = null;
   erro: boolean = false;
+  loading$ = this.clientesService.getLoadingState();
 
   constructor(
     private fb: FormBuilder,
@@ -41,13 +43,13 @@ export class AutocadastroComponent implements OnInit {
         "",
         [Validators.required, Validators.email, Validators.maxLength(100)],
       ],
-      cpf: ["", [Validators.required]],
-      telefone: ["", [Validators.required]],
-      salario: [0, [Validators.required, Validators.min(0)]],
+      cpf: ["", [Validators.required, CustomValidators.cpfFormat()]],
+      telefone: ["", [Validators.required, CustomValidators.phoneFormat()]],
+      salario: ["", [Validators.required, CustomValidators.positiveNumber()]],
       endereco: ["", Validators.required],
-      CEP: ["", Validators.required], // 🔹 corrigido: maiúsculo conforme schema
+      CEP: ["", [Validators.required, CustomValidators.cepFormat()]],
       cidade: ["", Validators.required],
-      estado: ["", [Validators.required, Validators.maxLength(2)]],
+      estado: ["", [Validators.required, Validators.maxLength(2), CustomValidators.stateBrazil()]],
     });
   }
 
@@ -63,12 +65,20 @@ export class AutocadastroComponent implements OnInit {
     }
 
     const formValue = this.clienteForm.value;
+    const salario = parseFloat(formValue.salario);
+
+    if (salario <= 0) {
+      this.mensagem = "Salário deve ser maior que zero";
+      this.erro = true;
+      return;
+    }
+
     const data: AutocadastroInfo = {
       nome: formValue.nome.trim(),
       email: formValue.email.trim(),
       cpf: formValue.cpf.replace(/\D/g, ""),
       telefone: formValue.telefone.trim(),
-      salario: parseFloat(formValue.salario),
+      salario: salario,
       endereco: formValue.endereco.trim(),
       CEP: formValue.CEP.replace(/\D/g, ""),
       cidade: formValue.cidade.trim(),

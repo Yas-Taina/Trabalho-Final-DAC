@@ -34,12 +34,10 @@ export class ClientesAdmComponent implements OnInit {
             gerente_nome: (cliente as any).gerente_nome ?? "—",
           }));
         } else {
-          console.error("Resposta inesperada do servidor:", response);
           this.erroCarregamento = true;
         }
       },
       error: (err) => {
-        console.error("Erro ao buscar clientes:", err);
         this.erroCarregamento = true;
       },
     });

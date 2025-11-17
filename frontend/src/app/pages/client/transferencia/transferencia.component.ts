@@ -10,6 +10,7 @@ import { CommonModule } from "@angular/common";
 
 import { ContasService, ClientesService, AuthService } from "../../../services";
 import { DadosClienteResponse } from "../../../services/models";
+import { CustomValidators } from "../../../validators/custom.validators";
 
 @Component({
   selector: "app-transferencia",
@@ -22,6 +23,7 @@ export class TransferenciaComponent implements OnInit {
   transferenciaForm: FormGroup;
   numeroContaOrigem: string | null = null;
   clienteDados: DadosClienteResponse | null = null;
+  loading$ = this.contasService.getLoadingState();
 
   constructor(
     private fb: FormBuilder,
@@ -31,7 +33,7 @@ export class TransferenciaComponent implements OnInit {
     private router: Router,
   ) {
     this.transferenciaForm = this.fb.group({
-      valor: [0, [Validators.required, Validators.min(0.01)]],
+      valor: ["", [Validators.required, CustomValidators.positiveNumber(), CustomValidators.decimalPlaces(2)]],
       numeroContaDestino: ["", [Validators.required]],
     });
   }
@@ -58,17 +60,27 @@ export class TransferenciaComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.error(err);
         alert("Erro ao carregar dados do cliente.");
       },
     });
   }
 
   onSubmit(): void {
+    if (this.transferenciaForm.invalid) return;
     if (!this.numeroContaOrigem) return;
 
-    const valor = this.transferenciaForm.value.valor;
-    const contaDestino = this.transferenciaForm.value.numeroContaDestino;
+    const valor = parseFloat(this.transferenciaForm.value.valor);
+    const contaDestino = this.transferenciaForm.value.numeroContaDestino.trim();
+
+    if (valor <= 0) {
+      alert("Valor deve ser maior que zero");
+      return;
+    }
+
+    if (this.numeroContaOrigem === contaDestino) {
+      alert("Não é permitido transferir para a mesma conta");
+      return;
+    }
 
     this.contasService
       .transferir(this.numeroContaOrigem, contaDestino, valor)
@@ -77,11 +89,10 @@ export class TransferenciaComponent implements OnInit {
           alert(
             `Transferência de R$ ${res.valor.toFixed(2)} para a conta ${res.destino} realizada com sucesso!`,
           );
-          this.transferenciaForm.reset({ valor: 0, numeroContaDestino: "" });
+          this.transferenciaForm.reset();
           this.router.navigate(["/client/home"]);
         },
         error: (err) => {
-          console.error(err);
           alert(err?.error?.message || "Erro ao realizar transferência");
         },
       });

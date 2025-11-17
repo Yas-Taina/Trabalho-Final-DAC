@@ -15,6 +15,7 @@ import {
   DadosClienteResponse,
   OperacaoResponse,
 } from "../../../services/models";
+import { CustomValidators } from "../../../validators/custom.validators";
 
 @Component({
   selector: "app-depositar",
@@ -25,7 +26,7 @@ import {
 })
 export class DepositarComponent implements OnInit {
   depositoForm!: FormGroup;
-  loading: boolean = false;
+  loading$ = this.contasService.getLoadingState();
 
   constructor(
     private fb: FormBuilder,
@@ -37,7 +38,7 @@ export class DepositarComponent implements OnInit {
 
   ngOnInit(): void {
     this.depositoForm = this.fb.group({
-      valor: [null, [Validators.required, Validators.min(0.01)]],
+      valor: ["", [Validators.required, CustomValidators.positiveNumber(), CustomValidators.decimalPlaces(2)]],
     });
   }
 
@@ -50,18 +51,20 @@ export class DepositarComponent implements OnInit {
       return;
     }
 
-    this.loading = true;
-
     this.clientesService.getCliente(cpf).subscribe({
       next: (cliente: DadosClienteResponse) => {
         const numeroConta = cliente.conta;
         if (!numeroConta) {
           alert("Conta do cliente não encontrada");
-          this.loading = false;
           return;
         }
 
-        const valor = this.depositoForm.value.valor;
+        const valor = parseFloat(this.depositoForm.value.valor);
+
+        if (valor <= 0) {
+          alert("Valor deve ser maior que zero");
+          return;
+        }
 
         this.contasService.depositar(numeroConta, valor).subscribe({
           next: (res: OperacaoResponse) => {
@@ -72,16 +75,12 @@ export class DepositarComponent implements OnInit {
             this.router.navigate(["/client/home"]);
           },
           error: (err) => {
-            console.error(err);
             alert(err?.error?.message || "Erro ao realizar depósito");
           },
-          complete: () => (this.loading = false),
         });
       },
       error: (err) => {
-        console.error(err);
         alert(err?.error?.message || "Erro ao buscar dados do cliente");
-        this.loading = false;
       },
     });
   }
