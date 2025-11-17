@@ -17,6 +17,7 @@ import {
   DadoGerenteInsercao,
   DadoGerenteAtualizacao,
 } from "../../../services";
+import { CustomValidators } from "../../../validators/custom.validators";
 
 @Component({
   selector: "app-editar-gerentes",
@@ -59,10 +60,10 @@ export class EditarGerentesComponent implements OnInit {
   private criarFormulario(): FormGroup {
     return this.fb.group(
       {
-        nome: ["", Validators.required],
-        cpf: ["", [Validators.required, Validators.pattern(/^\d{11}$/)]],
-        email: ["", [Validators.required, Validators.email]],
-        senha: ["", [Validators.minLength(4), Validators.maxLength(4)]],
+        nome: ["", [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+        cpf: ["", [Validators.required, CustomValidators.cpfFormat()]],
+        email: ["", [Validators.required, Validators.email, Validators.maxLength(100)]],
+        senha: ["", [Validators.minLength(4)]],
         confirmarSenha: [""],
         tipo: ["GERENTE", Validators.required],
       },
@@ -90,7 +91,6 @@ export class EditarGerentesComponent implements OnInit {
       },
       error: (e) => {
         this.mensagem = "Erro ao carregar dados do gerente: " + e.message;
-        console.error(e);
       },
     });
   }
@@ -119,7 +119,6 @@ export class EditarGerentesComponent implements OnInit {
         error: (e) => {
           this.mensagem =
             "Erro ao atualizar gerente: " + (e.error?.message || e.message);
-          console.error(e);
         },
       });
     } else {
@@ -146,7 +145,6 @@ export class EditarGerentesComponent implements OnInit {
         error: (e) => {
           this.mensagem =
             "Erro ao cadastrar gerente: " + (e.error?.message || e.message);
-          console.error(e);
         },
       });
     }

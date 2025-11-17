@@ -11,6 +11,7 @@ import { NgxMaskDirective } from "ngx-mask";
 import { ClientesService } from "../../../services/clientes.service";
 import { AuthService } from "../../../services/auth.service";
 import { PerfilInfo, DadosClienteResponse } from "../../../services/models";
+import { CustomValidators } from "../../../validators/custom.validators";
 
 @Component({
   selector: "app-perfil",
@@ -22,6 +23,7 @@ import { PerfilInfo, DadosClienteResponse } from "../../../services/models";
 export class PerfilComponent implements OnInit {
   form: FormGroup;
   mensagem: string | null = null;
+  loading$ = this.clientesService.getLoadingState();
 
   constructor(
     private fb: FormBuilder,
@@ -42,12 +44,12 @@ export class PerfilComponent implements OnInit {
         "",
         [Validators.required, Validators.email, Validators.maxLength(100)],
       ],
-      telefone: ["", [Validators.required]],
-      salario: [0, [Validators.required, Validators.min(0)]],
+      telefone: ["", [Validators.required, CustomValidators.phoneFormat()]],
+      salario: ["", [Validators.required, CustomValidators.positiveNumber(), CustomValidators.decimalPlaces(2)]],
       endereco: ["", [Validators.required]],
-      CEP: ["", [Validators.required]],
+      CEP: ["", [Validators.required, CustomValidators.cepFormat()]],
       cidade: ["", [Validators.required]],
-      estado: ["", [Validators.required, Validators.maxLength(2)]],
+      estado: ["", [Validators.required, Validators.maxLength(2), CustomValidators.stateBrazil()]],
     });
   }
 
@@ -88,7 +90,13 @@ export class PerfilComponent implements OnInit {
     const cpf = this.authService.getUserCpf();
     if (!cpf) return;
 
-    const dados: PerfilInfo = { ...this.form.value };
+    const salario = parseFloat(this.form.value.salario);
+    if (salario <= 0) {
+      this.mensagem = "Salário deve ser maior que zero";
+      return;
+    }
+
+    const dados: PerfilInfo = { ...this.form.value, salario };
     this.clientesService.atualizarCliente(cpf, dados).subscribe({
       next: () => {
         this.mensagem = "Dados atualizados com sucesso!";
