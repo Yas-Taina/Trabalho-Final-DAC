@@ -1,0 +1,15 @@
+meta {
+  name: Obter gerentes por ID
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8084/gerentes/44444444442
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBiYW50YWRzIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzYyODI2NzY5LCJleHAiOjE3NjI4MzAzNjl9.dPzMD-cIJSEYMGEFufOO436wvVRMMPy9GggeqMwbTkY
+}

@@ -38,36 +38,43 @@ public class ClienteService {
 	private static final Pattern CEP_PATTERN = Pattern.compile("\\d{8}");
 
 	private final ClienteRepository repository;
-  private final JwtExtractor jwtExtractor;
+	private final JwtExtractor jwtExtractor;
 
 	public List<ClienteDto> listar(String filtro) {
-		var clientesStream = repository.findAll().stream();
-
-		if (filtro == null || filtro.isBlank()) {
-			return clientesStream
-					.sorted((c1, c2) -> c1.getNome().compareTo(c2.getNome()))
-					.map(ClienteMapper::toDto)
-					.toList();
-		}
 
 		var authenticatedUserId = jwtExtractor.getAuthenticatedCpf().orElse("");
+		var authenticatedUserType = jwtExtractor.getAuthenticatedRole().orElse("");
+
+		var clientesStream = repository.findAll().stream();
+
+		if (authenticatedUserType.equals("GERENTE")) {
+			clientesStream = clientesStream
+				.filter(c -> c.getCpf_gerente().equals(authenticatedUserId));
+		}
+
+		if ((filtro == null || filtro.isBlank())) {
+			return clientesStream
+				.sorted((c1, c2) -> c1.getNome().compareTo(c2.getNome()))
+				.map(ClienteMapper::toDto)
+				.toList();
+		}
 
 		if (EnFiltroCliente.PARA_APROVAR.equals(filtro)) {
 			clientesStream = clientesStream
-					.filter(c -> Objects.equals(c.getStatus(), EnStatusCliente.PENDENTE) 
-						&& c.getCpf_gerente().equals(authenticatedUserId))
-					.sorted((c1, c2) -> c1.getNome().compareTo(c2.getNome()));
+				.filter(c -> Objects.equals(c.getStatus(), EnStatusCliente.PENDENTE))
+				.sorted((c1, c2) -> c1.getNome().compareTo(c2.getNome()));
 		} else if (EnFiltroCliente.ADM_RELATORIO_CLIENTES.equals(filtro)) {
 			clientesStream = clientesStream
-					.filter(c -> Objects.equals(c.getStatus(), EnStatusCliente.APROVADO))
-					.sorted((c1, c2) -> c1.getNome().compareTo(c2.getNome()));
-		} else if (EnFiltroCliente.MELHORES_CLIENTES.equals(filtro)) {
-			clientesStream = clientesStream
-					.filter(c -> Objects.equals(c.getStatus(), EnStatusCliente.APROVADO) 
-						&& c.getCpf_gerente().equals(authenticatedUserId))
-					.sorted((c1, c2) -> c2.getSalario().compareTo(c1.getSalario()))
-					.limit(3);
+				.filter(c -> Objects.equals(c.getStatus(), EnStatusCliente.APROVADO))
+				.sorted((c1, c2) -> c1.getNome().compareTo(c2.getNome()));
 		}
+		// TODO: esse filtro vai existir no gateway, precisa de composition para ver saldo
+		// else if (EnFiltroCliente.MELHORES_CLIENTES.equals(filtro)) {
+		// 	clientesStream = clientesStream
+		// 		.filter(c -> Objects.equals(c.getStatus(), EnStatusCliente.APROVADO))
+		// 		.sorted((c1, c2) -> c2.getSalario().compareTo(c1.getSalario()))
+		// 		.limit(3);
+		// }
 
 		return clientesStream
 				.map(ClienteMapper::toDto)

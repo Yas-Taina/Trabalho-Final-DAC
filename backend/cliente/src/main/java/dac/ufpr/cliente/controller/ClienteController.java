@@ -20,7 +20,6 @@ public class ClienteController {
     private final JwtExtractor jwtExtractor;
 
     @GetMapping
-    // @PreAuthorize("hasRole('ROLE_ADMINISTADOR')")
     public ResponseEntity<List<ClienteDto>> listar(@RequestParam(required = false) String filtro) {
         return ResponseEntity.ok(service.listar(filtro));
     }

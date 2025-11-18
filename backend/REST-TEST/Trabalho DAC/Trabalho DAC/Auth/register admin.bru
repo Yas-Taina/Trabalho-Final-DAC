@@ -1,0 +1,27 @@
+meta {
+  name: register admin
+  type: http
+  seq: 7
+}
+
+post {
+  url: HTTP://localhost:8080/auth/register
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+   {
+      "id": 3,
+      "idUsuario": 3,
+      "email": "admin@bantads",
+      "senha": "batata",
+      "role": "ADMIN"
+    }
+  
+  
+}

@@ -1,0 +1,30 @@
+meta {
+  name: Inserir Novo cliente
+  type: http
+  seq: 3
+}
+
+post {
+  url: HTTP://localhost:8081/clientes
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "cpf": "12345473904",
+    "email": "joao.fildsaa2@email.com",
+    "nome": "João Silvr",
+    "telefone": "41912245678",
+    "salario": 4500.00,
+    "endereco": "Rua das Flores, 123",
+    "CEP": "12345678",
+    "cidade": "Curitiba",
+    "estado": "PR"
+  }
+  
+}

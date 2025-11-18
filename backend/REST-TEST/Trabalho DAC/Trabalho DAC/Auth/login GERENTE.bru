@@ -1,0 +1,22 @@
+meta {
+  name: login GERENTE
+  type: http
+  seq: 5
+}
+
+post {
+  url: HTTP://localhost:3000/api/login
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+    {
+      "email": "adm1@bantads.com.br",
+      "senha": "tads"
+    }
+}
