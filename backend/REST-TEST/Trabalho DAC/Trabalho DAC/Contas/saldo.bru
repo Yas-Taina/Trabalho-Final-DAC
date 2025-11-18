@@ -1,0 +1,16 @@
+meta {
+  name: saldo
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:3000/api/contas/0950/saldo
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Busca Todos clientes
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/api/clientes
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXIzQGJhbnRhZHMuY29tLmJyIiwicm9sZSI6IkdFUkVOVEUiLCJpYXQiOjE3NjI5ODkxMzYsImV4cCI6MTc2Mjk5MjczNn0.AMPjOGDMVpLH64xZl9dxYvcJTjV0YgFUY9uWzWeq7KQ
+}

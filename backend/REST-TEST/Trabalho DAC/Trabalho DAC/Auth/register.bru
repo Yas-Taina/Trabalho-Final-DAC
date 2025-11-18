@@ -1,0 +1,24 @@
+meta {
+  name: register
+  type: http
+  seq: 4
+}
+
+post {
+  url: HTTP://localhost:3000/api/auth/login
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+    {
+      "id": 3,
+      "email": "4@bantads",
+      "senha": "batata",
+      "role": "CLIENTE"
+    }
+}

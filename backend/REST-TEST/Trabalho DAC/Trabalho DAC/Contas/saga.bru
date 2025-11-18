@@ -1,0 +1,35 @@
+meta {
+  name: saga
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8084/sagas
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBiYW50YWRzIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzYyMTExNTAyLCJleHAiOjE3NjIxMTUxMDJ9.J3hIk6nh0jR1-oPxM5dFepsFF30TYR70Balswvp14YE
+}
+
+body:json {
+  {
+   "id": null,
+      "cpf": "12345678901",
+      "email": "fulano2@example.com",
+      "nome": "Fulano da Silva",
+      "telefone": "41999999999",
+      "salario": 3500.50,
+      "endereco": "Rua A, 123",
+      "cep": "80000000",
+      "cidade": "Curitiba",
+      "estado": "PR"
+    }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

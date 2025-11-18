@@ -1,0 +1,32 @@
+meta {
+  name: Alterar cliente por ID
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:8081/clientes/12345473904
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaHJpc0BiYW50YWRzIiwicm9sZSI6IkdFUkVOVEUiLCJpYXQiOjE3NjE2MDQyODYsImV4cCI6MTc2MTYwNzg4Nn0.rvy0NqWQ234HMq72lRsSUS3nwRuV7GgJjawvITSeans
+}
+
+body:json {
+  {
+    "id":1,
+    "cpf": "12345473906",
+    "email": "joao.s123lva@atualizado.com",
+    "nome": "João da Silva",
+    "telefone": "55555335555",
+    "salario": 5000.00,
+    "endereco": "Av. Brasil, 500",
+    "CEP": "80000123",
+    "cidade": "Curitiba",
+    "estado": "PR"
+  }
+  
+}

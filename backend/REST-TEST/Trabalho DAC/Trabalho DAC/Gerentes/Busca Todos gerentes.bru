@@ -1,0 +1,15 @@
+meta {
+  name: Busca Todos gerentes
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/api/gerentes
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXIzQGJhbnRhZHMuY29tLmJyIiwicm9sZSI6IkdFUkVOVEUiLCJjcGYiOiIyMzg2MjE3OTA2MCIsImlhdCI6MTc2MzQxOTU3NCwiZXhwIjoxNzYzNDIzMTc0fQ.drhs7pDPmnggmoTk5IHDPn6YPVn6pNeY96xMhC7Q4WA
+}
