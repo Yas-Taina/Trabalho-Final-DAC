@@ -39,7 +39,11 @@ public class GerenteController {
 
     @PutMapping("/{cpf}")
     public ResponseEntity<GerenteDto> atualizar(@PathVariable String cpf,
-                                                     @RequestBody(required = true) GerenteDto dto) {
+                                                     @RequestBody(required = false) GerenteDto dto) {
+        // Permite body nulo ou parcial. Mantém CPF da path e usa campos do body quando presentes.
+        if (dto == null) {
+            dto = new GerenteDto(null, null, null, null);
+        }
         GerenteDto dtoComCpf = new GerenteDto(cpf, dto.nome(), dto.email(), dto.tipo());
         return ResponseEntity.ok(service.atualizar(cpf, dtoComCpf));
     }

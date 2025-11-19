@@ -19,7 +19,6 @@ HEADERS = {
 ### Carga dos parâmetros no arquivo .env
 load_dotenv()
 URL = os.getenv("URL")
-URL_C = os.getenv("URL_C")
 ARQUIVO_TOKEN = os.getenv("ARQUIVO_TOKEN")
 ARQUIVO_CACHE = os.getenv("ARQUIVO_CACHE")
 EMAIL_AUTOCADASTRO1 = os.getenv("EMAIL_AUTOCADASTRO1")
@@ -41,7 +40,7 @@ USUARIO1 = {
 }
 
 LOGIN = {
-    "login": "teste_zoado@gmail.com",
+    "email": "teste_zoado@gmail.com",
     "senha": "XXXX"
 }
 
@@ -341,7 +340,7 @@ def test_r01_autocadastro1():
     USUARIO1["email"] = email
     USUARIO1["nome"] = "Usuário 1"
     USUARIO1["salario"] = 5000.0 # para gerar limite
-    resp = requests.post(URL_C + "/clientes", 
+    resp = requests.post(URL + "/clientes", 
                          headers=HEADERS, 
                          json=USUARIO1)
     
@@ -372,8 +371,7 @@ def test_r01_autocadastro2():
     USUARIO1["email"] = email
     USUARIO1["nome"] = "Usuário 2"
     USUARIO1["salario"] = 450.0  # para não gerar limite
-    resp = requests.post(URL_C + "/clientes", 
-    # resp = requests.post(URL + "/clientes", 
+    resp = requests.post(URL + "/clientes", 
                          headers=HEADERS, 
                          json=USUARIO1)
     
@@ -398,8 +396,7 @@ def test_r01_autocadastro_duplicado():
     USUARIO1["email"] = cache["autocad1_email"]
     USUARIO1["nome"] = cache["autocad1_nome"]
     USUARIO1["salario"] = cache["autocad1_salario"]
-    # resp = requests.post(URL + "/clientes", 
-    resp = requests.post(URL_C + "/clientes", 
+    resp = requests.post(URL + "/clientes", 
                          headers=HEADERS, 
                          json=USUARIO1)
     
@@ -435,8 +432,7 @@ def test_r02_gerente_testar_acesso():
     params = {
         "filtro": "adm_relatorio_clientes"
     }
-    # resp = requests.get(URL + "/clientes",
-    resp = requests.get(URL_C + "/clientes", 
+    resp = requests.get(URL + "/clientes",
                          headers=HEADERS, 
                          params=params)
     assert resp.status_code==403

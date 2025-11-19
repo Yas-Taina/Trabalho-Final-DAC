@@ -81,11 +81,19 @@ public class GerenteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Gerente"));
 
         // Valida apenas se os dados são coerentes, mas não bloqueia por CPF
+
         validarGerente(gerentedto, gerenteExistente.getCpf());
 
-        gerenteExistente.setNome(gerentedto.nome());
-        gerenteExistente.setEmail(gerentedto.email());
-        gerenteExistente.setTipo(gerentedto.tipo());
+        // Atualiza somente campos presentes (não nulos) no DTO
+        if (gerentedto.nome() != null) {
+            gerenteExistente.setNome(gerentedto.nome());
+        }
+        if (gerentedto.email() != null) {
+            gerenteExistente.setEmail(gerentedto.email());
+        }
+        if (gerentedto.tipo() != null) {
+            gerenteExistente.setTipo(gerentedto.tipo());
+        }
 
         Gerente gerenteAtualizado = repository.save(gerenteExistente);
         log.info("Gerente atualizado com sucesso: {}", gerenteAtualizado);
@@ -121,28 +129,55 @@ public class GerenteService {
     // }
 
     private void validarGerente(GerenteDto gerenteDto, String cpf) {
-        System.out.println(gerenteDto);
-        System.out.println(validarDados(gerenteDto));
-        if (validarDados(gerenteDto)) {
-            throw new BadRequestException("Dados inválidos.");
-        }
+        // cpf vazio ou nulo indica criação; caso contrário é atualização
+        boolean isCreate = (cpf == null || cpf.isEmpty());
 
-        // Se for criação (idAtual == -1), verifica existência
-        if (cpf == "") {
+        if (isCreate) {
+            // Para criação, exige todos os campos válidos
+            if (validarDados(gerenteDto, true)) {
+                throw new BadRequestException("Dados inválidos.");
+            }
+
             if (repository.existsByCpf(gerenteDto.cpf())) {
                 log.warn("Tentativa de criar gerente com CPF já existente: {}", gerenteDto.cpf());
                 throw new ResourceAlreadyExistsException("Cliente já existe ou aguardando aprovação.");
             }
+        } else {
+            // Para atualização, valida apenas campos presentes no DTO (não nulos)
+            if (validarDados(gerenteDto, false)) {
+                throw new BadRequestException("Dados inválidos para atualização.");
+            }
         }
     }
 
-    private boolean validarDados(GerenteDto dto) {
-        return !StringUtils.hasText(dto.nome())
-                || !StringUtils.hasText(dto.tipo())
-                || !StringUtils.hasText(dto.cpf())
-                || !StringUtils.hasText(dto.email())
-                || !CPF_PATTERN.matcher(dto.cpf()).matches()
-                || !EMAIL_PATTERN.matcher(dto.email()).matches();
+    private boolean validarDados(GerenteDto dto, boolean requireAll) {
+        if (requireAll) {
+            return !StringUtils.hasText(dto.nome())
+                    || !StringUtils.hasText(dto.tipo())
+                    || !StringUtils.hasText(dto.cpf())
+                    || !StringUtils.hasText(dto.email())
+                    || !CPF_PATTERN.matcher(dto.cpf()).matches()
+                    || !EMAIL_PATTERN.matcher(dto.email()).matches();
+        } else {
+            // Atualização parcial: apenas campos fornecidos são validados
+            if (dto.nome() != null && !StringUtils.hasText(dto.nome())) {
+                return true;
+            }
+            if (dto.tipo() != null && !StringUtils.hasText(dto.tipo())) {
+                return true;
+            }
+            if (dto.cpf() != null) {
+                if (!StringUtils.hasText(dto.cpf()) || !CPF_PATTERN.matcher(dto.cpf()).matches()) {
+                    return true;
+                }
+            }
+            if (dto.email() != null) {
+                if (!StringUtils.hasText(dto.email()) || !EMAIL_PATTERN.matcher(dto.email()).matches()) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
 }
