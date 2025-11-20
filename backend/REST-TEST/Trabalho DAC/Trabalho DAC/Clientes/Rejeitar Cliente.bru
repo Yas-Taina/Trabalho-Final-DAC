@@ -4,12 +4,18 @@ meta {
   seq: 6
 }
 
-get {
-  url: http://localhost:8081/clientes/12345473906/aprovar
-  body: none
+post {
+  url: http://localhost:3000/api/clientes/85733854057/rejeitar
+  body: json
   auth: inherit
 }
 
 headers {
   Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaHJpc0BiYW50YWRzIiwicm9sZSI6IkdFUkVOVEUiLCJpYXQiOjE3NjE2MDQyODYsImV4cCI6MTc2MTYwNzg4Nn0.rvy0NqWQ234HMq72lRsSUS3nwRuV7GgJjawvITSeans
+}
+
+body:json {
+  {
+    "motivo": "porque sim"
+  }
 }
