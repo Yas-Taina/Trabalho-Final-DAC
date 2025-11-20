@@ -1,15 +1,18 @@
 package dac.ufpr.cliente.controller;
 
 import dac.ufpr.cliente.dto.ClienteDto;
+import dac.ufpr.cliente.dto.ClienteRejeicaoDto;
 import dac.ufpr.cliente.security.utils.JwtExtractor;
 import dac.ufpr.cliente.service.ClienteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/clientes")
@@ -37,6 +40,11 @@ public class ClienteController {
     @PutMapping("/{cpf}")
     public ResponseEntity<ClienteDto> atualizar(@PathVariable String cpf, @RequestBody ClienteDto clienteDto) {
         return ResponseEntity.ok(service.atualizar(cpf, clienteDto));
+    }
+
+    @PostMapping("/{cpf}/rejeitar")
+    public ResponseEntity<String> rejeitarCliente(@PathVariable String cpf, @RequestBody ClienteRejeicaoDto rejeicaoDto) {
+        return ResponseEntity.ok(service.rejeitarCliente(cpf, rejeicaoDto.motivo()));
     }
 
     @GetMapping("/my-data")

@@ -130,19 +130,19 @@ public class ClienteService {
 		return ClienteMapper.toDto(cliente);
 	}
 
-	public ClienteDto rejeitarCliente(ClienteDto dto) {
-		log.info("Reprovando cliente com CPF: {}", dto.cpf());
+	public String rejeitarCliente(String cpf, String motivo) {
+		log.info("Reprovando cliente com CPF: {}", cpf);
 
-		Cliente cliente = repository.findByCpf(dto.cpf())
+		Cliente cliente = repository.findByCpf(cpf)
 				.orElseThrow(() -> new ResourceNotFoundException("Usuário"));
 
 		cliente.setStatus(EnStatusCliente.REJEITADO);
-		cliente.setMotivoRejeicao(dto.motivoRejeicao());
+		cliente.setMotivoRejeicao(motivo);
 		cliente.setData_alteracao(LocalDateTime.now());
 
 		repository.save(cliente);
 		log.info("Cliente rejeitado com sucesso: {}", cliente);
-		return ClienteMapper.toDto(cliente);
+		return "Cliente rejeitado com sucesso";
 	}
 
 	private void validarCliente(ClienteDto clienteDto, long id) {
