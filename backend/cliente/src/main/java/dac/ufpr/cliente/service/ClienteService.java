@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException.Unauthorized;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.core.io.ClassPathResource;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +43,7 @@ public class ClienteService {
 
 	private final ClienteRepository repository;
 	private final JwtExtractor jwtExtractor;
+	private final JdbcTemplate jdbcTemplate;
 
 	public List<ClienteDto> listar(String filtro) {
 
@@ -220,6 +225,43 @@ public class ClienteService {
 				null,
 				null,
 				null);
+	}
+
+	@Transactional
+	public void reboot() {
+		try {
+			// Lê o arquivo SQL do classpath
+			ClassPathResource resource = new ClassPathResource("db/changelog/scripts/V2__insert_default_data.sql");
+			String sql = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+			
+			// Processa o SQL removendo comentários e dividindo em statements
+			StringBuilder currentStatement = new StringBuilder();
+			String[] lines = sql.split("\n");
+			
+			for (String line : lines) {
+				// Remove comentários de linha
+				int commentIndex = line.indexOf("--");
+				String processedLine = commentIndex >= 0 ? line.substring(0, commentIndex) : line;
+				processedLine = processedLine.trim();
+				
+				if (!processedLine.isEmpty()) {
+					currentStatement.append(" ").append(processedLine);
+					
+					// Se encontra ponto-e-vírgula, executa o statement
+					if (processedLine.endsWith(";")) {
+						String statement = currentStatement.toString().trim();
+						if (!statement.isEmpty() && !statement.equals(";")) {
+							// Remove o ponto-e-vírgula final
+							statement = statement.substring(0, statement.length() - 1).trim();
+							jdbcTemplate.execute(statement);
+						}
+						currentStatement = new StringBuilder();
+					}
+				}
+			}
+		} catch (IOException e) {
+			throw new BadRequestException("Erro ao executar reboot: " + e.getMessage());
+		}
 	}
 
 }

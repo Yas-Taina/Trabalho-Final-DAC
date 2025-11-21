@@ -1,3 +1,5 @@
+TRUNCATE TABLE cliente.cliente RESTART IDENTITY CASCADE;
+
 INSERT INTO cliente.cliente (id, nome, cpf, email, telefone, salario, endereco, cep, cidade, estado, cpf_gerente, status)
 SELECT *
 FROM (VALUES

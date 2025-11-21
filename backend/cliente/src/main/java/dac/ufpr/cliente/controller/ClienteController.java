@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -52,6 +53,13 @@ public class ClienteController {
         String cpf = jwtExtractor.getAuthenticatedCpf().orElse("Unknown CPF");
         
         return ResponseEntity.ok(cpf);
+    }
+
+    @PostMapping("/reboot")
+    public ResponseEntity<?> reboot() {
+        service.reboot();
+        return ResponseEntity.ok(
+                Map.of("message", "Banco de dados reiniciado com sucesso"));
     }
 
 }
