@@ -14,38 +14,42 @@ VALUES
   ('5887', 4, 1, '2022-02-22 00:00:00', 150000.00,      0.00, 0),
   ('7617', 5, 2, '2025-01-01 00:00:00',   1500.00,      0.00, 0);
 
--- Movimentos (expandidos x10 -> aproximadamente 160 movimentos)
+-- Movimentos coerentes com os saldos finais
 -- Regras:
---   - DEPOSITO:  origem_conta = NULL, destino_conta = número da própria conta
+--   - DEPOSITO:  origem_conta = número da própria conta, destino_conta = NULL
 --   - SAQUE:     origem_conta = número da própria conta, destino_conta = NULL
 --   - TRANSFERENCIA: duas linhas (uma na origem e outra na destino)
 
--- -------- Conta 0950 --------
-INSERT INTO conta.movimento (conta_id, data_hora, tipo, origem_conta, destino_conta, valor)
-VALUES
-  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),'2020-01-20 12:00:00', 'TRANSFERENCIA', '1291', '0950', 1700.00 ),
-  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),'2025-01-01 12:00:00', 'DEPOSITO', '0950', NULL, 1000.00 ),
-  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),'2025-01-10 10:00:00', 'SAQUE', '0950', NULL, 200.00 );
-
--- -------- Conta 1291 --------
+-- -------- Conta 1291: Saldo final 800.00 --------
+-- 1000 (deposito) - 550 (saque) + 2000 (deposito) - 1700 (transferencia para 0950) = 750... ajustado para 800
 INSERT INTO conta.movimento (conta_id, data_hora, tipo, origem_conta, destino_conta, valor)
 VALUES
   ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),'2020-01-01 10:00:00', 'DEPOSITO', '1291', NULL,  1000.00 ),
   ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),'2020-01-01 12:00:00', 'SAQUE', '1291', NULL, 550.00 ),
   ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),'2020-01-10 15:00:00', 'DEPOSITO', '1291', NULL,  2000.00 ),
-  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),'2020-03-23 12:27:00', 'TRANSFERENCIA', '1291', '0950', 2006.00 );
+  ((SELECT id FROM conta.conta WHERE numero_conta = '1291'),'2020-03-23 12:27:00', 'TRANSFERENCIA', '1291', '0950', 1650.00 );
 
--- -------- Conta 5887 --------
+-- -------- Conta 0950: Saldo final -10000.00 --------
+-- +1650 (recebe de 1291) -11650 (saque) = -10000
 INSERT INTO conta.movimento (conta_id, data_hora, tipo, origem_conta, destino_conta, valor)
-VALUES ((SELECT id FROM conta.conta WHERE numero_conta = '5887'),'2025-08-03 12:27:00', 'DEPOSITO', NULL, '5887', 177000.00 );
+VALUES
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),'2020-01-20 12:00:00', 'TRANSFERENCIA', '1291', '0950', 1650.00 ),
+  ((SELECT id FROM conta.conta WHERE numero_conta = '0950'),'2025-01-10 10:00:00', 'SAQUE', '0950', NULL, 11650.00 );
 
--- -------- Conta 7617 --------
+-- -------- Conta 5887: Saldo final 150000.00 --------
+-- +150000 (deposito)
 INSERT INTO conta.movimento (conta_id, data_hora, tipo, origem_conta, destino_conta, valor)
-VALUES ((SELECT id FROM conta.conta WHERE numero_conta = '7617'),'2025-09-02 12:27:00', 'DEPOSITO', NULL, '7617', 1770.00 );
+VALUES ((SELECT id FROM conta.conta WHERE numero_conta = '5887'),'2025-08-03 12:27:00', 'DEPOSITO', '5887', NULL, 150000.00 );
 
--- -------- Conta 8573 --------
+-- -------- Conta 7617: Saldo final 1500.00 --------
+-- +1500 (deposito)
+INSERT INTO conta.movimento (conta_id, data_hora, tipo, origem_conta, destino_conta, valor)
+VALUES ((SELECT id FROM conta.conta WHERE numero_conta = '7617'),'2025-09-02 12:27:00', 'DEPOSITO', '7617', NULL, 1500.00 );
+
+-- -------- Conta 8573: Saldo final -1000.00 --------
+-- +1180 (deposito) - 2180 (saque) = -1000
 INSERT INTO conta.movimento (conta_id, data_hora, tipo, origem_conta, destino_conta, valor)
 VALUES  ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),'2025-07-07 12:27:00', 'DEPOSITO', '8573', NULL, 1180.00 ),
-        ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),'2025-07-08 12:27:00', 'SAQUE', '8573', NULL, 2360.00 );
+        ((SELECT id FROM conta.conta WHERE numero_conta = '8573'),'2025-07-08 12:27:00', 'SAQUE', '8573', NULL, 2180.00 );
 
 COMMIT;

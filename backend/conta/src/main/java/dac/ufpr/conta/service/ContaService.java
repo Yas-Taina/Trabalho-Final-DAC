@@ -10,12 +10,12 @@ import java.util.HashMap;
 import dac.ufpr.conta.dto.ContaDto;
 import dac.ufpr.conta.dto.ExtratoDto;
 import dac.ufpr.conta.dto.ExtratoMovimentacaoDto;
-import dac.ufpr.conta.dto.MovimentacaoDto;
 import dac.ufpr.conta.dto.SaldoDto;
 import dac.ufpr.conta.mapper.ContaMapper;
-import dac.ufpr.conta.mapper.MovimentacaoMapper;
 
 import org.springframework.stereotype.Service;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.core.io.ClassPathResource;
 
 import dac.ufpr.conta.entity.Conta;
 import dac.ufpr.conta.entity.Movimentacao;
@@ -29,6 +29,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import dac.ufpr.conta.enums.enTipoMovimento;
 
+import java.nio.charset.StandardCharsets;
+import java.io.IOException;
+
 @Service
 @RequiredArgsConstructor
 public class ContaService {
@@ -36,6 +39,7 @@ public class ContaService {
     private final ContaRepository contaRepo;
     private final MovimentoRepository movRepo;
     private final EventPublisher publisher;
+    private final JdbcTemplate jdbcTemplate;
 
     public List<ContaDto> listar() {
         List<Conta> contas = contaRepo.findAll();
@@ -317,6 +321,43 @@ public class ContaService {
                 conta.getNumeroConta(),
                 conta.getSaldo(),
                 lista);
+    }
+
+    @Transactional
+    public void reboot() {
+        try {
+            // Lê o arquivo SQL do classpath
+            ClassPathResource resource = new ClassPathResource("db/changelog/scripts/04_seed.sql");
+            String sql = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+            
+            // Processa o SQL removendo comentários e dividindo em statements
+            StringBuilder currentStatement = new StringBuilder();
+            String[] lines = sql.split("\n");
+            
+            for (String line : lines) {
+                // Remove comentários de linha
+                int commentIndex = line.indexOf("--");
+                String processedLine = commentIndex >= 0 ? line.substring(0, commentIndex) : line;
+                processedLine = processedLine.trim();
+                
+                if (!processedLine.isEmpty()) {
+                    currentStatement.append(" ").append(processedLine);
+                    
+                    // Se encontra ponto-e-vírgula, executa o statement
+                    if (processedLine.endsWith(";")) {
+                        String statement = currentStatement.toString().trim();
+                        if (!statement.isEmpty() && !statement.equals(";")) {
+                            // Remove o ponto-e-vírgula final
+                            statement = statement.substring(0, statement.length() - 1).trim();
+                            jdbcTemplate.execute(statement);
+                        }
+                        currentStatement = new StringBuilder();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new BusinessException("Erro ao executar reboot: " + e.getMessage());
+        }
     }
 
 }

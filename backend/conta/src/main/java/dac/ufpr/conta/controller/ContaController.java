@@ -102,4 +102,11 @@ public class ContaController {
         return ResponseEntity.ok(service.getByClienteId(clienteId));
     }
 
+    @PostMapping("/reboot")
+    public ResponseEntity<?> reboot() {
+        service.reboot();
+        return ResponseEntity.ok(
+                Map.of("message", "Banco de dados reiniciado com sucesso"));
+    }
+
 }
