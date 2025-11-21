@@ -142,4 +142,44 @@ public class AuthService {
                 || Objects.isNull(userRequestDto.cpf());
     }
 
+    @Transactional
+    public void reboot() {
+        final String SENHA = "tads";
+        
+        // Limpa todos os registros do MongoDB
+        repository.deleteAll();
+        
+        // Reinicializa com dados padrão
+        // CLIENTES (CPFs exigidos pelo testador)
+        upsert("cli1@bantads.com.br", "12912861012", EnRole.CLIENTE, SENHA);
+        upsert("cli2@bantads.com.br", "09506382000", EnRole.CLIENTE, SENHA);
+        upsert("cli3@bantads.com.br", "85733854057", EnRole.CLIENTE, SENHA);
+        upsert("cli4@bantads.com.br", "58872160006", EnRole.CLIENTE, SENHA);
+        upsert("cli5@bantads.com.br", "76179646090", EnRole.CLIENTE, SENHA);
+
+        // GERENTES
+        upsert("ger1@bantads.com.br", "98574307084", EnRole.GERENTE, SENHA);
+        upsert("ger2@bantads.com.br", "64065268052", EnRole.GERENTE, SENHA);
+        upsert("ger3@bantads.com.br", "23862179060", EnRole.GERENTE, SENHA);
+
+        // ADMIN
+        upsert("adm1@bantads.com.br", "40501740066", EnRole.ADMINISTRADOR, SENHA);
+    }
+
+    private void upsert(String email, String cpf, EnRole role, String senha) {
+        repository.findByEmail(email).ifPresentOrElse(u -> {
+            u.setCpf(cpf);
+            u.setRole(role);
+            u.setSenha(passwordEncoder.encode(senha));
+            repository.save(u);
+        }, () -> {
+            Autenticacao novo = new Autenticacao();
+            novo.setEmail(email);
+            novo.setSenha(passwordEncoder.encode(senha));
+            novo.setRole(role);
+            novo.setCpf(cpf);
+            repository.save(novo);
+        });
+    }
+
 }

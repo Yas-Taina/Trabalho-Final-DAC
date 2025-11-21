@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -37,6 +39,13 @@ public class AuthController {
     public ResponseEntity<Boolean> isTokenValid(@RequestParam("token") String token) {
         boolean isValid = service.isTokenValid(token);
         return ResponseEntity.ok(isValid);
+    }
+
+    @PostMapping("/reboot")
+    public ResponseEntity<?> reboot() {
+        service.reboot();
+        return ResponseEntity.ok(
+                Map.of("message", "Banco de dados reiniciado com sucesso"));
     }
 
 }

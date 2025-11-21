@@ -14,9 +14,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.core.io.ClassPathResource;
 
 import java.util.List;
 import java.util.regex.Pattern;
+import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 
 @Service
 @Slf4j
@@ -27,6 +31,7 @@ public class GerenteService {
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
 
     private final GerenteRepository repository;
+    private final JdbcTemplate jdbcTemplate;
 
     public List<GerenteDto> listar() {
         return repository.findAll().stream()
@@ -143,6 +148,43 @@ public class GerenteService {
                 || !StringUtils.hasText(dto.email())
                 || !CPF_PATTERN.matcher(dto.cpf()).matches()
                 || !EMAIL_PATTERN.matcher(dto.email()).matches();
+    }
+
+    @Transactional
+    public void reboot() {
+        try {
+            // Lê o arquivo SQL do classpath
+            ClassPathResource resource = new ClassPathResource("db/changelog/scripts/create_gerente_seed.sql");
+            String sql = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+            
+            // Processa o SQL removendo comentários e dividindo em statements
+            StringBuilder currentStatement = new StringBuilder();
+            String[] lines = sql.split("\n");
+            
+            for (String line : lines) {
+                // Remove comentários de linha
+                int commentIndex = line.indexOf("--");
+                String processedLine = commentIndex >= 0 ? line.substring(0, commentIndex) : line;
+                processedLine = processedLine.trim();
+                
+                if (!processedLine.isEmpty()) {
+                    currentStatement.append(" ").append(processedLine);
+                    
+                    // Se encontra ponto-e-vírgula, executa o statement
+                    if (processedLine.endsWith(";")) {
+                        String statement = currentStatement.toString().trim();
+                        if (!statement.isEmpty() && !statement.equals(";")) {
+                            // Remove o ponto-e-vírgula final
+                            statement = statement.substring(0, statement.length() - 1).trim();
+                            jdbcTemplate.execute(statement);
+                        }
+                        currentStatement = new StringBuilder();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new BadRequestException("Erro ao executar reboot: " + e.getMessage());
+        }
     }
 
 }
