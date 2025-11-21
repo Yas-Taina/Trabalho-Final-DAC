@@ -34,13 +34,6 @@ public class ContaController {
         return ResponseEntity.ok(service.listar());
     }
 
-    @GetMapping("/gerente/assign")
-    public ResponseEntity<Map<String, Long>> getGerenteWithFewestClientes() {
-        Long gerenteId = service.findGerenteWithFewestClientes();
-        Map<String, Long> resp = new HashMap<>();
-        resp.put("gerenteId", gerenteId);
-        return ResponseEntity.ok(resp);
-    }
 
     @GetMapping("/{numero}/saldo")
     public ResponseEntity<SaldoDto> consultarSaldo(@PathVariable("numero") String numero) {

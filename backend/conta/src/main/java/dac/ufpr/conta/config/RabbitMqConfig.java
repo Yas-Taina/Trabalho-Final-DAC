@@ -12,12 +12,25 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMqConfig {
 
     public static final String CONTA_CREATE_QUEUE = "conta.create.queue";
-    public static final String SAGA_RESPONSE_QUEUE = "saga.response.queue";
+    public static final String SAGA_AUTOCADASTRO_QUEUE = "saga.autocadastro.queue";
+    public static final String CONTA_GERENTE_ASSIGN_QUEUE = "gerente.assign.queue";
+
 
     @Bean
     public Declarable contaQueue() {
         return new Queue(CONTA_CREATE_QUEUE);
     }
+
+    @Bean
+    public Declarable gerenteAssignQueue() {
+        return new Queue(CONTA_GERENTE_ASSIGN_QUEUE);
+    }
+
+    @Bean
+    public Declarable sagaAutocadastroQueue() {
+        return new Queue(SAGA_AUTOCADASTRO_QUEUE);
+    }
+
 
     @Bean
     public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {

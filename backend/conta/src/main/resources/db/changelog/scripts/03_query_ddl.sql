@@ -2,7 +2,7 @@
 CREATE TABLE if not exists conta_query.conta_view (
   numero_conta VARCHAR(10) PRIMARY KEY,
   cliente_id int4 NOT NULL,
-  gerente_id int4 NOT NULL,
+  cpfGerente VARCHAR(15) NOT NULL,
   saldo NUMERIC(18,2) NOT NULL,
   limite NUMERIC(18,2) NOT NULL,
   nome_cliente TEXT,   -- opcional: preenchido por composição via gateway, pode ficar null aqui
@@ -22,7 +22,7 @@ CREATE TABLE if not exists conta_query.movimento_view (
 
 -- Resumo por gerente para tela do admin
 CREATE TABLE if not exists conta_query.gerente_resumo (
-  gerente_id int4 PRIMARY KEY,
+  cpfGerente VARCHAR(15) PRIMARY KEY,
   qtde_clientes INT NOT NULL,
   soma_saldos_positivos NUMERIC(18,2) NOT NULL,
   soma_saldos_negativos NUMERIC(18,2) NOT NULL

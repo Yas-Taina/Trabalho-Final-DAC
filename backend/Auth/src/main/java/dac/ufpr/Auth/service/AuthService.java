@@ -54,7 +54,7 @@ public class AuthService {
         Autenticacao autenticacao = new Autenticacao();
         autenticacao.setEmail(userRequestDto.email());
         autenticacao.setCpf(userRequestDto.cpf());
-        autenticacao.setSenha(passwordEncoder.encode(userRequestDto.senha()));
+        //autenticacao.setSenha(passwordEncoder.encode(userRequestDto.senha()));
         autenticacao.setRole(EnRole.findByName(userRequestDto.role()));
 
         repository.save(autenticacao);
@@ -136,7 +136,7 @@ public class AuthService {
     private boolean validarDados(UserRequestDto userRequestDto) {
         return !StringUtils.hasText(userRequestDto.email())
                 || !EMAIL_PATTERN.matcher(userRequestDto.email()).matches()
-                || !StringUtils.hasText(userRequestDto.senha())
+                //|| !StringUtils.hasText(userRequestDto.senha())
                 || Objects.isNull(userRequestDto.role())
                 || Objects.isNull(EnRole.findByName(userRequestDto.role()))
                 || Objects.isNull(userRequestDto.cpf());

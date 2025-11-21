@@ -2,6 +2,7 @@ package dac.ufpr.Saga.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dac.ufpr.Saga.config.EmailService;
+import dac.ufpr.Saga.dto.ClienteDto;
 import dac.ufpr.Saga.enums.EnStatusIntegracao;
 import dac.ufpr.Saga.listener.dto.SagaMessage;
 import jakarta.mail.MessagingException;
@@ -28,8 +29,10 @@ public class SagaAutocadastroListener {
 
   private final EmailService emailService;
 
+  private final ObjectMapper mapper;
+
   @RabbitListener(queues = SAGA_AUTOCADASTRO_QUEUE)
-  public void onSagamessage(SagaMessage<?> message) {
+  public void onSagamessage(SagaMessage<ClienteDto> message) {
     log.info("Mensagem recebida para tópico: {}. Payload: {}", SAGA_AUTOCADASTRO_QUEUE, message);
 
     if (EnStatusIntegracao.SUCESSO.equals(message.getStatus())) {
@@ -48,17 +51,14 @@ public class SagaAutocadastroListener {
         case CONTA_GERENTE_ASSIGN_QUEUE -> compensarConta(message);
       }
 
-      ObjectMapper mapper = new ObjectMapper();
-      Map<String, Object> map = mapper.convertValue(message.getData(), Map.class);
-
-      String email = (String) map.get("email");
-      String nome = (String) map.get("nome");
+      String email = message.getData().email();
+      String nome = message.getData().nome();
       if (Objects.nonNull(email)) {
         Map<String, Object> vars = new HashMap<>();
         vars.put("nome", nome);
         try {
           emailService.enviarEmailComTemplate(email, "Falha no Autocadastro BANTADS", "email-falha-autocadastro", vars);
-        } catch (MessagingException e) {
+        } catch (Exception e) {
           log.error("Erro ao enviar email de falha no autocadastro para {}: {}", email, e.getMessage());
         }
       }
@@ -71,9 +71,7 @@ public class SagaAutocadastroListener {
         AUTH_CREATE_QUEUE,
         EnStatusIntegracao.INICIADO,
         null,
-        message.getData(),
-        message.getHttpStatus(),
-        message.getGerenteId());
+        message.getData());
 
     rabbitTemplate.convertAndSend(AUTH_CREATE_QUEUE, next);
   }
@@ -85,9 +83,7 @@ public class SagaAutocadastroListener {
         CLIENTE_CREATE_QUEUE,
         EnStatusIntegracao.INICIADO,
         null,
-        message.getData(),
-        message.getHttpStatus(),
-        message.getGerenteId());
+        message.getData());
 
     rabbitTemplate.convertAndSend(CLIENTE_CREATE_QUEUE, next);
   }
@@ -99,9 +95,7 @@ public class SagaAutocadastroListener {
         CONTA_GERENTE_ASSIGN_QUEUE,
         EnStatusIntegracao.INICIADO,
         null,
-        message.getData(),
-        message.getHttpStatus(),
-        message.getGerenteId());
+        message.getData());
 
     rabbitTemplate.convertAndSend(CONTA_GERENTE_ASSIGN_QUEUE, next);
   }

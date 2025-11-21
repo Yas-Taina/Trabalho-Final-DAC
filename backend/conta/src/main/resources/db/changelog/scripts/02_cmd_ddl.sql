@@ -3,7 +3,7 @@ CREATE TABLE if not exists conta.conta (
   id serial PRIMARY KEY,
   numero_conta VARCHAR(10) UNIQUE NOT NULL,
   cliente_id int NOT NULL,        -- ID vindo do MS Cliente (sem FK cross-service)
-  gerente_id  int NOT NULL,
+  cpfGerente  VARCHAR(15) NOT NULL,
   data_criacao TIMESTAMP NOT NULL,
   data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   saldo NUMERIC(18,2) NOT NULL DEFAULT 0,

@@ -15,6 +15,7 @@ import dac.ufpr.conta.dto.SaldoDto;
 import dac.ufpr.conta.mapper.ContaMapper;
 import dac.ufpr.conta.mapper.MovimentacaoMapper;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import dac.ufpr.conta.entity.Conta;
@@ -44,32 +45,8 @@ public class ContaService {
                 .toList();
     }
 
-    public Long findGerenteWithFewestClientes() {
-        List<Conta> contas = contaRepo.findAll();
-        if (contas.isEmpty())
-            return null;
-
-        Map<Long, Integer> counts = new HashMap<>();
-        for (Conta c : contas) {
-            Long gid = c.getGerenteId();
-            if (gid == null)
-                continue;
-            counts.put(gid, counts.getOrDefault(gid, 0) + 1);
-        }
-
-        if (counts.isEmpty())
-            return null;
-
-        Long chosen = null;
-        int min = Integer.MAX_VALUE;
-        for (Map.Entry<Long, Integer> e : counts.entrySet()) {
-            if (e.getValue() < min) {
-                min = e.getValue();
-                chosen = e.getKey();
-            }
-        }
-
-        return chosen;
+    public String recuperaCpfGerenteComMenosConta() {
+        return contaRepo.findGerenteCpfWithLeastAccounts();
     }
 
     @Transactional

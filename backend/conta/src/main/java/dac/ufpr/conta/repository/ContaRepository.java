@@ -1,6 +1,7 @@
 package dac.ufpr.conta.repository;
 
 import dac.ufpr.conta.entity.Conta;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
@@ -11,6 +12,16 @@ public interface ContaRepository extends JpaRepository<Conta, Long> {
     Optional<Conta> findByNumeroConta(String numeroConta);
 
     Optional<Conta> findByClienteId(Long clienteId);
+
+    @Query(
+            value = "SELECT cpfGerente " +
+                    "FROM conta.conta " +
+                    "GROUP BY cpfGerente " +
+                    "ORDER BY COUNT(cpfGerente) ASC " +
+                    "LIMIT 1",
+            nativeQuery = true
+    )
+    String findGerenteCpfWithLeastAccounts();
 
 
 }

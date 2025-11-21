@@ -2,8 +2,10 @@ package dac.ufpr.Auth.listener;
 
 import dac.ufpr.Auth.dto.user.UserRequestDto;
 import dac.ufpr.Auth.dto.user.UserResponseDto;
+import dac.ufpr.Auth.enums.EnRole;
 import dac.ufpr.Auth.enums.EnStatusIntegracao;
 import dac.ufpr.Auth.exception.mapper.ExceptionMapper;
+import dac.ufpr.Auth.listener.dto.ClienteDto;
 import dac.ufpr.Auth.listener.dto.SagaMessage;
 import dac.ufpr.Auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -27,20 +29,27 @@ public class AuthListener {
     private final RabbitTemplate rabbitTemplate;
 
     @RabbitListener(queues = AUTH_CREATE_QUEUE)
-    public void listen(SagaMessage<UserRequestDto> message) {
+    public void listen(SagaMessage<ClienteDto> message) {
         log.info("Mensagem recebida para tópico: {}. Payload: {}", AUTH_CREATE_QUEUE, message);
 
         try {
-            UserResponseDto dto = service.register(message.getData());
+            UserRequestDto dtoRequest =
+                    new UserRequestDto(
+                            null,
+                            message.getData().cpf(),
+                            message.getData().email(),
+                            null,
+                            EnRole.CLIENTE.name()
+                    );
 
-            SagaMessage<UserResponseDto> response = new SagaMessage<>(
+            UserResponseDto dtoResponse = service.register(dtoRequest);
+
+            SagaMessage<ClienteDto> response = new SagaMessage<>(
                     message.getSagaId(),
                     AUTH_CREATE_QUEUE,
                     EnStatusIntegracao.SUCESSO,
                     null,
-                    dto,
-            HttpStatus.CREATED.value(),
-            message.getGerenteId()
+                    message.getData()
             );
 
             rabbitTemplate.convertAndSend(SAGA_AUTOCADASTRO_QUEUE, response);

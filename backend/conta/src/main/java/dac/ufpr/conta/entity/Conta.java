@@ -31,7 +31,7 @@ public class Conta {
 
     private Long clienteId;   // mantém Long (não UUID)
 
-    private Long gerenteId;
+    private String cpfGerente;
 
     private Instant dataCriacao;
 

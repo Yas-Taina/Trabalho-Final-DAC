@@ -1,6 +1,6 @@
-package dac.ufpr.Saga.listener.dto;
+package dac.ufpr.conta.messaging.dto;
 
-import dac.ufpr.Saga.enums.EnStatusIntegracao;
+import dac.ufpr.conta.enums.EnStatusIntegracao;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

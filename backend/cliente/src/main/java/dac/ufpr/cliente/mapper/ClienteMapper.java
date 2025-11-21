@@ -19,13 +19,13 @@ public class ClienteMapper {
                 dto.telefone(),
                 dto.salario(),
                 dto.endereco(),
-                dto.CEP(),
+                dto.cep(),
                 dto.cidade(),
                 dto.estado(),
                 EnStatusCliente.PENDENTE,
                 null,
                 LocalDateTime.now(),
-                null
+                dto.cpf_gerente()
         );
     }
 
@@ -54,7 +54,7 @@ public class ClienteMapper {
         entity.setTelefone(dto.telefone());
         entity.setSalario(dto.salario());
         entity.setEndereco(dto.endereco());
-        entity.setCEP(dto.CEP());
+        entity.setCEP(dto.cep());
         entity.setCidade(dto.cidade());
         entity.setEstado(dto.estado());
     }

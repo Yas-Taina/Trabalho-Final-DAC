@@ -12,7 +12,7 @@ public class ContaMapper {
                 entity.getId(),
                 entity.getNumeroConta(),
                 entity.getClienteId(),
-                entity.getGerenteId(),
+                entity.getCpfGerente(),
                 entity.getDataCriacao(),
                 entity.getDataAtualizacao(),
                 entity.getSaldo(),

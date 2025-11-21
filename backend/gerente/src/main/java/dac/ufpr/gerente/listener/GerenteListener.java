@@ -36,9 +36,7 @@ public class GerenteListener {
 					GERENTE_CREATE_QUEUE,
 					EnStatusIntegracao.SUCESSO,
 					null,
-					dto,
-					HttpStatus.CREATED.value(),
-					message.getGerenteId());
+					dto);
 
 			rabbitTemplate.convertAndSend(SAGA_RESPONSE_QUEUE, response);
 		} catch (Exception e) {

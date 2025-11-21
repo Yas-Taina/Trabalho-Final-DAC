@@ -75,9 +75,7 @@ public class SagaClienteApprovalListener {
         AUTH_UPDATE_QUEUE,
         EnStatusIntegracao.INICIADO,
         null,
-        message.getData(),
-        null,
-        message.getGerenteId());
+        message.getData());
 
     rabbitTemplate.convertAndSend(AUTH_UPDATE_QUEUE, next);
   }
@@ -89,9 +87,7 @@ public class SagaClienteApprovalListener {
         CONTA_CREATE_QUEUE,
         EnStatusIntegracao.INICIADO,
         null,
-        message.getData(),
-        null,
-        message.getGerenteId());
+        message.getData());
 
     rabbitTemplate.convertAndSend(CONTA_CREATE_QUEUE, next);
   }

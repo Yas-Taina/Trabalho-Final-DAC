@@ -1,8 +1,6 @@
-package dac.ufpr.cliente.dto;
+package dac.ufpr.Auth.listener.dto;
 
 import java.math.BigDecimal;
-
-import dac.ufpr.cliente.enums.EnStatusCliente;
 
 public record ClienteDto(
   Long id, // #
@@ -15,6 +13,6 @@ public record ClienteDto(
   String cep,
   String cidade,
   String estado,
-  EnStatusCliente status, // #
+  String status, // #
   String motivoRejeicao,
   String cpf_gerente) { } // #

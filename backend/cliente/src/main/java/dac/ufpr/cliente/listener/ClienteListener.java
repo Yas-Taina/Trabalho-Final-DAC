@@ -31,7 +31,6 @@ public class ClienteListener {
         log.info("Mensagem recebida para tópico: {}. Payload: {}", CLIENTE_CREATE_QUEUE, message);
 
         try {
-            System.out.println("ENTROU NO LISTENER DE CRIAÇÃO DE CLIENTE, CHAMANDO SERVIÇO" + message.getGerenteId());
             ClienteDto dto = service.criar(message.getData());
 
         SagaMessage<ClienteDto> response = new SagaMessage<>(
@@ -39,9 +38,7 @@ public class ClienteListener {
             CLIENTE_CREATE_QUEUE,
             EnStatusIntegracao.SUCESSO,
             null,
-            dto,
-            HttpStatus.CREATED.value(),
-            message.getGerenteId()
+            dto
         );
 
         rabbitTemplate.convertAndSend(SAGA_AUTOCADASTRO_QUEUE, response);
@@ -72,9 +69,7 @@ public class ClienteListener {
                     CLIENTE_APPROVAL_QUEUE,
                     EnStatusIntegracao.SUCESSO,
                     null,
-                    dto,
-                    HttpStatus.OK.value(),
-                    message.getGerenteId()
+                    dto
             );
 
             rabbitTemplate.convertAndSend(SAGA_CLIENTE_APPROVAL_QUEUE, response);

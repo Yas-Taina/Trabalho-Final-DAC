@@ -22,9 +22,7 @@ public class SagaService {
                 CONTA_GERENTE_ASSIGN_QUEUE,
                 EnStatusIntegracao.INICIADO,
                 null,
-                dto,
-                null,
-                null
+                dto
         );
 
         rabbitTemplate.convertAndSend(CONTA_GERENTE_ASSIGN_QUEUE, message);
@@ -37,9 +35,7 @@ public class SagaService {
                 CLIENTE_APPROVAL_QUEUE,
                 EnStatusIntegracao.INICIADO,
                 null,
-                cpf,
-                null,
-                null
+                cpf
         );
 
         rabbitTemplate.convertAndSend(CLIENTE_APPROVAL_QUEUE, message);

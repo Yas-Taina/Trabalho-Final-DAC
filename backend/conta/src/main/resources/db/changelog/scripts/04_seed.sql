@@ -6,13 +6,13 @@ TRUNCATE TABLE conta.conta     RESTART IDENTITY CASCADE;
 
 -- Contas (mesmas do seed original)
 
-INSERT INTO conta.conta (numero_conta, cliente_id, gerente_id, data_criacao, saldo, limite, versao)
+INSERT INTO conta.conta (numero_conta, cliente_id, cpfGerente, data_criacao, saldo, limite, versao)
 VALUES
-  ('1291', 1, 1, '2000-01-01 00:00:00',    800.00,   5000.00, 0),
-  ('0950', 2, 2, '1990-10-10 00:00:00', -10000.00,  10000.00, 0),
-  ('8573', 3, 3, '2012-12-12 00:00:00',  -1000.00,   1500.00, 0),
-  ('5887', 4, 1, '2022-02-22 00:00:00', 150000.00,      0.00, 0),
-  ('7617', 5, 2, '2025-01-01 00:00:00',   1500.00,      0.00, 0);
+  ('1291', 1, 98574307084, '2000-01-01 00:00:00',    800.00,   5000.00, 0),
+  ('0950', 2, 64065268052, '1990-10-10 00:00:00', -10000.00,  10000.00, 0),
+  ('8573', 3, 23862179060, '2012-12-12 00:00:00',  -1000.00,   1500.00, 0),
+  ('5887', 4, 98574307084, '2022-02-22 00:00:00', 150000.00,      0.00, 0),
+  ('7617', 5, 64065268052, '2025-01-01 00:00:00',   1500.00,      0.00, 0);
 
 -- Movimentos (expandidos x10 -> aproximadamente 160 movimentos)
 -- Regras:
