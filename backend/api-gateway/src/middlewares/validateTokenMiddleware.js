@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import { SERVICES } from "./../config/services.js";
 
 export async function validateTokenMiddleware(req, res, next) {
-    const publicPaths = ["/api/login", "/api/logout"];
+    const publicPaths = ["/api/login", "/api/logout", "/api/reboot"];
     if (publicPaths.includes(req.path)) {
         return next();
     }

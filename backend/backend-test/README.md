@@ -64,6 +64,7 @@ Ao executar você vai perceber a criação de 2 arquivos (cujos nomes estão no 
 
 ## Validação do Arquivo de Teste
 
+t
 O testador possui um hash que está no arquivo: "hash.md5.txt", que será testado para evitar alterações.
 
 ````

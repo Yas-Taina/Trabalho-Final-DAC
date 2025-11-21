@@ -2,7 +2,7 @@ import express from "express";
 import clientesRoutes from "./routes/clientesRoutes.js";
 import contasRoutes from "./routes/contasRoutes.js";
 import gerentesRoutes from "./routes/gerentesRoutes.js";
-//import rebootRoutes from "./routes/rebootRoutes.js";
+import rebootRoutes from "./routes/rebootRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import { validateTokenMiddleware } from "./middlewares/validateTokenMiddleware.js";
 
@@ -27,7 +27,7 @@ app.use(validateTokenMiddleware);
 app.use("/api/clientes", clientesRoutes);
 app.use("/api/contas", contasRoutes);
 app.use("/api/gerentes", gerentesRoutes);
-//app.use("/api/reboot", rebootRoutes);
+app.use("/api/reboot", rebootRoutes);
 app.use("/api", authRoutes);
 
 
