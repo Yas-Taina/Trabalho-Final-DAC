@@ -82,7 +82,7 @@ public class ContaService {
         c.setSaldo(c.getSaldo().add(v));
         contaRepo.save(c);
 
-        Movimentacao m = movRepo.save(novoMov(c, enTipoMovimento.DEPOSITO, null, numeroConta, v));
+        Movimentacao m = movRepo.save(novoMov(c, enTipoMovimento.DEPOSITO, numeroConta, null, v));
         publisher.publicarMovimentoRegistrado(m, '+');
         publisher.publicarSaldoAtualizado(c);
 
@@ -246,7 +246,7 @@ public class ContaService {
         contaRepo.save(c);
 
         // registra movimentacao e publica eventos
-        Movimentacao m = movRepo.save(novoMov(c, enTipoMovimento.DEPOSITO, null, numeroConta, v));
+        Movimentacao m = movRepo.save(novoMov(c, enTipoMovimento.DEPOSITO, numeroConta, null, v));
         publisher.publicarMovimentoRegistrado(m, '+');
         publisher.publicarSaldoAtualizado(c);
 
