@@ -57,6 +57,66 @@ class CompositionController {
 		}
 	}
 
+	async buscarMelhoresClientes(req, res) {
+		try {
+			const clientesResponse = await axios.get(
+				`${SERVICES.CLIENTE}`,
+				{
+					headers: {
+						...req.headers
+					},
+				}
+			);
+
+			console.log("###############################Clientes:", clientesResponse.data);
+
+			const contasResponse = await axios.get(
+				`${SERVICES.CONTA}`,
+				{
+					headers: {
+						...req.headers
+					}
+				}
+			);
+
+			const cpfGerente = clientesResponse.data[0].cpf_gerente;
+
+			const gerenteResponse = await axios.get(
+				`${SERVICES.GERENTE}/${cpfGerente}`,
+				{
+					headers: {
+						...req.headers
+					}
+				}
+			);
+
+			console.log("#########################################Gerente:", gerenteResponse.data);
+
+
+			const contasGerente = contasResponse.data.filter((conta) => conta.gerenteId == gerenteResponse.data.id);
+
+			console.log("##########################\n\n\n\n\Contas do Gerente:", contasGerente);
+
+			const melhores3Contas = contasGerente
+				.sort((a, b) => b.saldo - a.saldo)
+				.slice(0, 3);
+
+			const melhoresClientes = melhores3Contas.map((conta) => {
+				const cliente = clientesResponse.data.find((c) => c.id == conta.clienteId);
+				return {
+					...cliente,
+					saldo: conta.saldo,
+				};
+			});
+
+			console.log("##########################Melhores Clientes:", melhoresClientes);
+
+			return res.json(melhoresClientes);
+		} catch (err) {
+			console.error(err);
+			return res.status(err.response?.status || 500).json(err.response?.data);
+		}
+	}
 }
 
 export default new CompositionController();
