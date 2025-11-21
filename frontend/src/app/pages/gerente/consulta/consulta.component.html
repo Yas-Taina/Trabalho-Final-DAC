@@ -48,7 +48,7 @@
         </div>
         <div class="col-5">
           <h5>CPF</h5>
-          <p>{{ cliente.cpf | mask: "000.000.000-00" }}</p>
+          <p>{{ (cliente.cpf | mask: "000.000.000-00") }}</p>
         </div>
       </div>
 

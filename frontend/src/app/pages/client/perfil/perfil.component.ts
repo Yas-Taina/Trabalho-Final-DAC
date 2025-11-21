@@ -24,6 +24,9 @@ export class PerfilComponent implements OnInit {
   form: FormGroup;
   mensagem: string | null = null;
   loading$ = this.clientesService.getLoadingState();
+  saldo: string = "";
+  limite: number = 0;
+  gerente_nome: string = "";
 
   constructor(
     private fb: FormBuilder,
@@ -32,6 +35,7 @@ export class PerfilComponent implements OnInit {
     private router: Router,
   ) {
     this.form = this.fb.group({
+      cpf: [{ value: "", disabled: true }],
       nome: [
         "",
         [
@@ -44,8 +48,8 @@ export class PerfilComponent implements OnInit {
         "",
         [Validators.required, Validators.email, Validators.maxLength(100)],
       ],
-      telefone: ["", [Validators.required, CustomValidators.phoneFormat()]],
-      salario: ["", [Validators.required, CustomValidators.positiveNumber(), CustomValidators.decimalPlaces(2)]],
+      telefone: [{ value: "", disabled: true }],
+      salario: ["", [Validators.required, CustomValidators.positiveNumber()]],
       endereco: ["", [Validators.required]],
       CEP: ["", [Validators.required, CustomValidators.cepFormat()]],
       cidade: ["", [Validators.required]],
@@ -63,16 +67,20 @@ export class PerfilComponent implements OnInit {
 
     this.clientesService.getCliente(cpf).subscribe({
       next: (cliente: DadosClienteResponse) => {
-        const perfil: PerfilInfo = {
+        this.saldo = cliente.saldo;
+        this.limite = cliente.limite;
+        this.gerente_nome = cliente.gerente_nome;
+        this.form.patchValue({
+          cpf: cliente.cpf,
           nome: cliente.nome,
           email: cliente.email,
+          telefone: cliente.telefone,
           salario: cliente.salario,
           endereco: cliente.endereco || "",
-          CEP: "",
+          CEP: cliente.CEP || "",
           cidade: cliente.cidade,
           estado: cliente.estado,
-        };
-        this.form.patchValue(perfil);
+        });
       },
       error: () => {
         alert("Cliente não encontrado");

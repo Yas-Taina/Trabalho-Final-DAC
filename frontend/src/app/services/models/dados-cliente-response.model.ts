@@ -4,6 +4,7 @@ export interface DadosClienteResponse {
   telefone: string;
   email: string;
   endereco: string;
+  CEP: string;
   cidade: string;
   estado: string;
   salario: number;
