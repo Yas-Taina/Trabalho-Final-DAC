@@ -114,11 +114,16 @@ export class ExtratoComponent implements OnInit {
     saldoConsolidado: number,
   ): Record<string, ExtratoDia> {
     const grouped: Record<string, ExtratoDia> = {};
+    let saldoAtual = saldoConsolidado;
 
-    movimentos.forEach((m) => {
+    const movimentosOrdenados = [...movimentos].sort(
+      (a, b) => new Date(a.data).getTime() - new Date(b.data).getTime()
+    );
+
+    movimentosOrdenados.forEach((m) => {
       const dia = new Date(m.data).toLocaleDateString();
       if (!grouped[dia]) {
-        grouped[dia] = { movimentos: [], saldoConsolidado };
+        grouped[dia] = { movimentos: [], saldoConsolidado: saldoAtual };
       }
       grouped[dia].movimentos.push({
         data: new Date(m.data).toLocaleTimeString(),
@@ -127,6 +132,13 @@ export class ExtratoComponent implements OnInit {
         destino: m.destino || "-",
         valor: m.valor,
       });
+
+      if (m.tipo === "depósito") {
+        saldoAtual += m.valor;
+      } else {
+        saldoAtual -= m.valor;
+      }
+      grouped[dia].saldoConsolidado = saldoAtual;
     });
 
     return grouped;

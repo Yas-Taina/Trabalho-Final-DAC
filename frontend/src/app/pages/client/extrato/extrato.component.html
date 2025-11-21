@@ -71,14 +71,14 @@
             <td>
               {{
                 t.origem && t.origem !== "-"
-                  ? (t.origem | mask: "000.000.000-00")
+                  ? (t.origem)
                   : "-"
               }}
             </td>
             <td>
               {{
                 t.destino && t.destino !== "-"
-                  ? (t.destino | mask: "000.000.000-00")
+                  ? (t.destino)
                   : "-"
               }}
             </td>

@@ -28,7 +28,7 @@
             <tbody *ngFor="let cliente of clientes">
               <tr>
                 <td>{{ cliente.nome }}</td>
-                <td>{{ cliente.cpf | mask: "000.000.00-00" }}</td>
+                <td>{{ (cliente.cpf | mask: "000.000.00-00") }}</td>
                 <td>
                   {{ cliente.salario | currency: "BRL" : "symbol" : "1.2-2" }}
                 </td>
