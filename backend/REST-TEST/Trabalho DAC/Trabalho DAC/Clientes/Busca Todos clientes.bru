@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: http://localhost:3000/api/clientes
+  url: http://localhost:3000/api/clientes?filtro=melhores_clientes
   body: json
   auth: inherit
+}
+
+params:query {
+  filtro: melhores_clientes
 }
 
 headers {

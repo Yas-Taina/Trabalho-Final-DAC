@@ -7,7 +7,7 @@ class CompositionController {
 
 	async buscarClienteComContaPorCPF(req, res) {
 		try {
-            const {cpf} = req.params;
+      const {cpf} = req.params;
 
 			const clientePromise = axios.get(
 				`${SERVICES.CLIENTE}/${cpf}`,
@@ -68,8 +68,6 @@ class CompositionController {
 				}
 			);
 
-			console.log("###############################Clientes:", clientesResponse.data);
-
 			const contasResponse = await axios.get(
 				`${SERVICES.CONTA}`,
 				{
@@ -90,12 +88,7 @@ class CompositionController {
 				}
 			);
 
-			console.log("#########################################Gerente:", gerenteResponse.data);
-
-
-			const contasGerente = contasResponse.data.filter((conta) => conta.gerenteId == gerenteResponse.data.id);
-
-			console.log("##########################\n\n\n\n\Contas do Gerente:", contasGerente);
+			const contasGerente = contasResponse.data.filter((conta) => conta.cpfGerente == gerenteResponse.data.cpf);
 
 			const melhores3Contas = contasGerente
 				.sort((a, b) => b.saldo - a.saldo)
@@ -105,11 +98,11 @@ class CompositionController {
 				const cliente = clientesResponse.data.find((c) => c.id == conta.clienteId);
 				return {
 					...cliente,
+          conta: conta.numeroConta,
 					saldo: conta.saldo,
+          limite: conta.limite
 				};
 			});
-
-			console.log("##########################Melhores Clientes:", melhoresClientes);
 
 			return res.json(melhoresClientes);
 		} catch (err) {
@@ -117,6 +110,57 @@ class CompositionController {
 			return res.status(err.response?.status || 500).json(err.response?.data);
 		}
 	}
+
+  async buscarTodosClientes(req, res) {
+    try {
+			const [clienteResponse, contasResponse, gerenteResponse] = await Promise.all([
+        axios.get(
+          `${SERVICES.CLIENTE}`,
+          { headers: { ...req.headers } }
+        ),
+				axios.get(
+					`${SERVICES.CONTA}`,
+					{ headers: { ...req.headers } }
+				),
+				axios.get(
+					`${SERVICES.GERENTE}`,
+					{ headers: { ...req.headers } }
+				)
+			]);
+
+      const result = [];
+
+      for (const cliente of clienteResponse.data) {
+        const conta = contasResponse.data.find((c) => c.clienteId == cliente.id);
+        const gerente = gerenteResponse.data.find((g) => g.cpf == cliente.cpf_gerente);
+
+        result.push({
+          cpf: cliente.cpf,
+          nome: cliente.nome,
+          telefone: cliente.telefone,
+          email: cliente.email,
+          endereco: cliente.endereco,
+          cidade: cliente.cidade,
+          estado: cliente.estado,
+          CEP: cliente.CEP,
+          salario: cliente.salario,
+
+          conta: conta.numeroConta,
+          saldo: conta.saldo,
+          limite: conta.limite,
+
+          gerente: cliente.cpf_gerente,
+          gerente_nome: gerente.nome,
+          gerente_email: gerente.email
+        });
+      }
+
+      return res.json(result);
+		} catch (err) {
+			console.error(err);
+			return res.status(err.response?.status || 500).json(err.response?.data);
+		}
+  }
 }
 
 export default new CompositionController();
