@@ -161,6 +161,76 @@ class CompositionController {
 			return res.status(err.response?.status || 500).json(err.response?.data);
 		}
   }
+
+  async gerarDashboardGerentes(req, res, next) {
+    try {
+      const [clientesResponse, contasResponse, gerentesResponse] = await Promise.all([
+        axios.get(
+          `${SERVICES.CLIENTE}`,
+          { headers: { ...req.headers } }
+        ),
+        axios.get(
+          `${SERVICES.CONTA}`,
+          { headers: { ...req.headers } }
+        ),
+        axios.get(
+          `${SERVICES.GERENTE}`,
+          { headers: { ...req.headers } }
+        )
+      ]);
+
+      const dashboard = [];
+
+      for (const gerente of gerentesResponse.data) {
+        const clientesDoGerente = clientesResponse.data.filter(
+          (cliente) => cliente.cpf_gerente === gerente.cpf
+        );
+
+        const contasDoGerente = contasResponse.data.filter((conta) => {
+          const cliente = clientesDoGerente.find((c) => c.id === conta.clienteId);
+          return cliente !== undefined;
+        });
+
+        const clientes = contasDoGerente.map((conta) => {
+          const cliente = clientesDoGerente.find((c) => c.id === conta.clienteId);
+          return {
+            cliente: cliente.nome,
+            numero: conta.numeroConta,
+            saldo: conta.saldo,
+            limite: conta.limite,
+            gerente: gerente.nome,
+            criacao: conta.dataCriacaoConta || ""
+          };
+        });
+
+        const saldoPositivo = contasDoGerente
+          .filter((conta) => conta.saldo >= 0)
+          .reduce((sum, conta) => sum + conta.saldo, 0);
+
+        const saldoNegativo = contasDoGerente
+          .filter((conta) => conta.saldo < 0)
+          .reduce((sum, conta) => sum + Math.abs(conta.saldo), 0);
+
+        dashboard.push({
+          gerente: {
+            cpf: gerente.cpf,
+            nome: gerente.nome,
+            email: gerente.email,
+            tipo: gerente.tipo || "GERENTE"
+          },
+          clientes: clientes,
+          saldo_positivo: saldoPositivo,
+          saldo_negativo: saldoNegativo
+        });
+      }
+
+      return res.json(dashboard);
+    } catch (err) {
+      console.error(err);
+      return res.status(err.response?.status || 500).json(err.response?.data);
+    }
+  }
+
 }
 
 export default new CompositionController();
