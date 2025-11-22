@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/gerentes")
@@ -55,5 +56,12 @@ public class GerenteController {
         String cpf = jwtExtractor.getAuthenticatedCpf().orElse("Unknown CPF");
         
         return ResponseEntity.ok(cpf);
+    }
+
+    @PostMapping("/reboot")
+    public ResponseEntity<?> reboot() {
+        service.reboot();
+        return ResponseEntity.ok(
+                Map.of("message", "Banco de dados reiniciado com sucesso"));
     }
 }

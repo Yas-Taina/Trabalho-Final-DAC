@@ -26,6 +26,7 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/contas/reboot").permitAll()
                         .requestMatchers("/contas/**").authenticated()
                         .anyRequest().permitAll()
                 )

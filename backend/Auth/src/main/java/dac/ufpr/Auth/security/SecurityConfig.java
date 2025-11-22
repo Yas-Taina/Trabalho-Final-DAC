@@ -26,6 +26,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/register").permitAll()
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/auth/logout").permitAll()
+                        .requestMatchers("/auth/reboot").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

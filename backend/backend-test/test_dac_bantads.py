@@ -270,6 +270,7 @@ def logout(email, token):
 # R00 - Reboot - apagar base
 def test_r00_reboot():
 
+    print(f'Reboot na URL: {URL}/reboot', HEADERS)
     # Passo 1 - invoca reboot
     resp = requests.get(URL + f"/reboot", 
                          headers=HEADERS)
