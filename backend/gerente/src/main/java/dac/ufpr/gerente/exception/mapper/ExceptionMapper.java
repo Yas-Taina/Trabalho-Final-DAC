@@ -15,9 +15,7 @@ public static SagaMessage<?> mapExceptionToSagaMessage(String sagaId, String ste
                     step,
                     EnStatusIntegracao.FALHA,
                     ce.getMessage(),
-                    data,
-                    ce.getHttpStatus(),
-                    null
+                    data
             );
         }
 
@@ -26,9 +24,7 @@ public static SagaMessage<?> mapExceptionToSagaMessage(String sagaId, String ste
                 step,
                 EnStatusIntegracao.FALHA,
                 "Erro: " + e.getMessage(),
-                data,
-                500,
-                null
+                data
         );
     }
 }

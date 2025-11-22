@@ -11,7 +11,7 @@ class ContasController {
         try {
             const response = await axios({
                 method: req.method,
-                url: SERVICES.CONTA + req.path,
+                url: SERVICES.CONTA.replace(/\/$/, '') + (req.path === '/' ? '' : req.path),
                 data: req.body,
                 headers: {
                     ...req.headers

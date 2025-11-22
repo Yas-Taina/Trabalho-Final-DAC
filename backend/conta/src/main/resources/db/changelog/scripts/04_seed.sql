@@ -6,7 +6,7 @@ TRUNCATE TABLE conta.conta     RESTART IDENTITY CASCADE;
 
 -- Contas (mesmas do seed original)
 
-INSERT INTO conta.conta (numero_conta, cliente_id, cpfGerente, data_criacao, saldo, limite, versao)
+INSERT INTO conta.conta (numero_conta, cliente_id, cpf_gerente, data_criacao, saldo, limite, versao)
 VALUES
   ('1291', 1, 98574307084, '2000-01-01 00:00:00',    800.00,   5000.00, 0),
   ('0950', 2, 64065268052, '1990-10-10 00:00:00', -10000.00,  10000.00, 0),
