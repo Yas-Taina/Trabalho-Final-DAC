@@ -167,6 +167,17 @@ public class AuthService {
     }
 
     @Transactional
+    public void deleteUserByCpf(String cpf) {
+        log.info("Deletando usuário com CPF: {}", cpf);
+        
+        Autenticacao autenticacao = repository.findByCpf(cpf)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário com CPF: " + cpf));
+        
+        repository.deleteByCpf(cpf);
+        log.info("Usuário deletado com sucesso. CPF: {}, Email: {}", cpf, autenticacao.getEmail());
+    }
+
+    @Transactional
     public void reboot() {
         final String SENHA = "tads";
         

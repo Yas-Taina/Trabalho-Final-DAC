@@ -134,6 +134,14 @@ class CompositionController {
         const conta = contasResponse.data.find((c) => c.clienteId == cliente.id);
         const gerente = gerenteResponse.data.find((g) => g.cpf == cliente.cpf_gerente);
 
+        if (!conta || conta.numeroConta === null || conta.numeroConta === undefined) {
+          continue;
+        }
+
+        if (!gerente || gerente.nome === null || gerente.nome === undefined) {
+          continue;
+        }
+
         result.push({
           cpf: cliente.cpf,
           nome: cliente.nome,

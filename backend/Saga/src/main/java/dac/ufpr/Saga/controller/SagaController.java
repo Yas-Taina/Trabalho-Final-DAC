@@ -33,4 +33,18 @@ public class SagaController {
         service.iniciarSagaGerenteCreation(dto);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/gerentes/{cpf}")
+    public ResponseEntity<Void> iniciarSagaGerenteDeletion(@PathVariable String cpf) {
+        service.iniciarSagaGerenteDeletion(cpf);
+        return ResponseEntity.ok().build();
+    }
+  
+    @PreAuthorize("hasAnyRole('CLIENTE', 'ADMINISTRADOR')")
+    @PutMapping("/clientes/{cpf}")
+    public ResponseEntity<Void> iniciarSagaAlteracaoPerfilCliente(@PathVariable String cpf, @RequestBody ClienteDto dto) {
+        service.iniciarSagaAlteracaoPerfilCliente(cpf, dto);
+        return ResponseEntity.ok().build();
+    }
+
 }
