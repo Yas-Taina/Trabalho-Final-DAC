@@ -42,12 +42,12 @@ public class GerenteUpdateListener {
 			GerenteDto dto = service.atualizar(gerenteDto.cpf(), gerenteDto);
 			log.info("Gerente atualizado com sucesso. CPF: {}", dto.cpf());
 
-			// If password is provided, send message to Auth to update it
-			if (StringUtils.hasText(gerenteDto.senha())) {
-				log.info("Senha fornecida. Enviando solicitação de atualização para Auth. CPF: {}", gerenteDto.cpf());
+			if (StringUtils.hasText(gerenteDto.senha()) || StringUtils.hasText(gerenteDto.email())) {
+				log.info("Senha ou email fornecido. Enviando solicitação de atualização para Auth. CPF: {}", gerenteDto.cpf());
 				
 				Map<String, Object> authData = new HashMap<>();
 				authData.put("cpf", gerenteDto.cpf());
+				authData.put("email", gerenteDto.email());
 				authData.put("senha", gerenteDto.senha());
 				
 				SagaMessage<Map<String, Object>> authMessage = new SagaMessage<>(
@@ -58,9 +58,9 @@ public class GerenteUpdateListener {
 						authData);
 				
 				rabbitTemplate.convertAndSend(AUTH_UPDATE_QUEUE, authMessage);
-				log.info("Solicitação de atualização de senha enviada para Auth. CPF: {}", gerenteDto.cpf());
+				log.info("Solicitação de atualização de credenciais enviada para Auth. CPF: {}", gerenteDto.cpf());
 			} else {
-				log.info("Nenhuma senha fornecida. Pulando atualização de credenciais. CPF: {}", gerenteDto.cpf());
+				log.info("Nenhuma senha ou email fornecido. Pulando atualização de credenciais. CPF: {}", gerenteDto.cpf());
 				
 				// Send success response immediately if no password update needed
 				SagaMessage<GerenteDto> response = new SagaMessage<>(

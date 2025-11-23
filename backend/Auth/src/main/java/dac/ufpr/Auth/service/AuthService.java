@@ -191,6 +191,31 @@ public class AuthService {
     }
 
     @Transactional
+    public void updateGerenteCredentials(String cpf, String email, String newPassword) {
+        log.info("Atualizando credenciais do gerente com CPF: {}", cpf);
+        log.info("Email recebido: {}, Senha recebida: {}", email, newPassword != null ? "***" : "null");
+        
+        Autenticacao autenticacao = repository.findByCpf(cpf)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário com CPF: " + cpf));
+        
+        if (email != null && !email.isBlank()) {
+            log.info("Atualizando email de {} para {}", autenticacao.getEmail(), email);
+            autenticacao.setEmail(email);
+        }
+        
+        if (newPassword != null && !newPassword.isBlank()) {
+            log.info("Atualizando senha do usuário");
+            autenticacao.setSenha(passwordEncoder.encode(newPassword));
+        } else {
+            log.info("Senha não será atualizada (valor: {})", newPassword);
+        }
+        
+        repository.save(autenticacao);
+        
+        log.info("Credenciais atualizadas com sucesso. CPF: {}, Email: {}", cpf, autenticacao.getEmail());
+    }
+
+    @Transactional
     public void reboot() {
         final String SENHA = "tads";
         
