@@ -2,6 +2,7 @@ package dac.ufpr.Saga.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dac.ufpr.Saga.config.EmailService;
+import dac.ufpr.Saga.dto.ClienteDto;
 import dac.ufpr.Saga.enums.EnStatusIntegracao;
 import dac.ufpr.Saga.listener.dto.SagaMessage;
 import jakarta.mail.MessagingException;
@@ -31,7 +32,7 @@ public class SagaClienteApprovalListener {
   private final EmailService emailService;
 
   @RabbitListener(queues = SAGA_CLIENTE_APPROVAL_QUEUE)
-  public void onSagamessage(SagaMessage<?> message) {
+  public void onSagamessage(SagaMessage<ClienteDto> message) {
     log.info("Mensagem recebida para tópico: {}. Payload: {}", SAGA_CLIENTE_APPROVAL_QUEUE, message);
 
     switch (message.getStep()) {
@@ -49,21 +50,6 @@ public class SagaClienteApprovalListener {
       switch (message.getStep()) {
         case CONTA_CREATE_QUEUE -> compensarConta(message);
         case AUTH_UPDATE_QUEUE -> compensarAuth(message);
-      }
-
-      ObjectMapper mapper = new ObjectMapper();
-      Map<String, Object> map = mapper.convertValue(message.getData(), Map.class);
-
-      String email = (String) map.get("email");
-      String nome = (String) map.get("nome");
-      if (Objects.nonNull(email)) {
-        Map<String, Object> vars = new HashMap<>();
-        vars.put("nome", nome);
-        try {
-          emailService.enviarEmailComTemplate(email, "Falha no Autocadastro BANTADS", "email-falha-autocadastro", vars);
-        } catch (MessagingException e) {
-          log.error("Erro ao enviar email de falha no autocadastro para {}: {}", email, e.getMessage());
-        }
       }
     }
   }
@@ -92,34 +78,30 @@ public class SagaClienteApprovalListener {
     rabbitTemplate.convertAndSend(CONTA_CREATE_QUEUE, next);
   }
 
-  private void enviarSenha(SagaMessage<?> message) {
+  private void enviarSenha(SagaMessage<ClienteDto> message) {
 
-    ObjectMapper mapper = new ObjectMapper();
-    Map<String, Object> map = mapper.convertValue(message.getData(), Map.class);
-
-    String email = (String) map.get("email");
-    String senha = (String) map.get("senha");
+    String email = message.getData().email();
+    String senha = message.getData().senha();
     if (StringUtils.hasText(email)) {
       Map<String, Object> vars = new HashMap<>();
       vars.put("senha", senha);
       try {
         emailService.enviarEmailComTemplate(email, "Senha autenticação BANTADS", "email-aprovacao-cliente", vars);
-      } catch (MessagingException e) {
+      } catch (Exception e) {
         log.error("Erro ao enviar email de senha para {}: {}", email, e.getMessage());
       }
     }
 
-    log.info("Saga finalizda");
   }
 
   private void compensarAuth(SagaMessage<?> message) {
     log.info("[sagaId={}] Compensando AUTH...", message.getSagaId());
-    rabbitTemplate.convertAndSend(CONTA_DELETE_QUEUE, message);
-    rabbitTemplate.convertAndSend(CLIENTE_DELETE_QUEUE, message);
+    rabbitTemplate.convertAndSend(CONTA_COMPENSATE_CREATE_QUEUE, message);
+    rabbitTemplate.convertAndSend(CLIENTE_COMPENSATE_APPROVAL_QUEUE, message);
   }
 
   private void compensarConta(SagaMessage<?> message) {
     log.info("[sagaId={}] Compensando CONTA...", message.getSagaId());
-    rabbitTemplate.convertAndSend(CLIENTE_DELETE_QUEUE, message);
+    rabbitTemplate.convertAndSend(CLIENTE_COMPENSATE_APPROVAL_QUEUE, message);
   }
 }

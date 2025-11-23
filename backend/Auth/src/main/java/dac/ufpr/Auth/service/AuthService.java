@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.Map;
 
@@ -54,7 +55,6 @@ public class AuthService {
         Autenticacao autenticacao = new Autenticacao();
         autenticacao.setEmail(userRequestDto.email());
         autenticacao.setCpf(userRequestDto.cpf());
-        //autenticacao.setSenha(passwordEncoder.encode(userRequestDto.senha()));
         autenticacao.setRole(EnRole.findByName(userRequestDto.role()));
 
         repository.save(autenticacao);
@@ -121,6 +121,21 @@ public class AuthService {
             log.error("Validação do token falhou: {}", e.getMessage());
             return false;
         }
+    }
+
+    public String atualizarUsuarioComSenha(String email) {
+        Autenticacao autenticacao = repository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário"));
+
+        String novaSenha = gerarSenhaAleatoria();
+        autenticacao.setSenha(passwordEncoder.encode(novaSenha));
+        repository.save(autenticacao);
+
+        return novaSenha;
+    }
+
+    private String gerarSenhaAleatoria() {
+        return UUID.randomUUID().toString().substring(0, 8);
     }
 
     private void validarUsuario(UserRequestDto userRequestDto) {

@@ -87,4 +87,17 @@ public class ClienteListener {
         }
     }
 
+    @RabbitListener(queues = CLIENTE_COMPENSATE_APPROVAL_QUEUE)
+    public void listenCompensateApproval(SagaMessage<String> message) {
+        log.info("Mensagem recebida para tópico: {}. Payload: {}", CLIENTE_COMPENSATE_APPROVAL_QUEUE, message);
+
+        try {
+            service.atualizarStatusParaPendente(message.getData());
+
+            log.info("Compensação da aprovação do cliente realizada com sucesso para o cliente: {}", message.getData());
+        } catch (Exception e) {
+            log.error("Erro ao processar mensagem para tópico: {}. Erro: ", CLIENTE_COMPENSATE_APPROVAL_QUEUE, e);
+        }
+    }
+
 }

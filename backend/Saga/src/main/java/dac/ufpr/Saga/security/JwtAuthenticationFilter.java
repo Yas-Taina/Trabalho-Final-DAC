@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         String method = request.getMethod();
 
-        if (path.contains("/clientes") && method.equals("POST")) {
+        if (path.contains("/clientes") && method.equals("POST") && !path.contains("aprovar")) {
             return true;
         }
 

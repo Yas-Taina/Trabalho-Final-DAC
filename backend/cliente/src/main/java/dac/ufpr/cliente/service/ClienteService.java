@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.core.io.ClassPathResource;
 
@@ -121,6 +120,20 @@ public class ClienteService {
 		return ClienteMapper.toDto(clienteAtualizado);
 	}
 
+	public ClienteDto atualizarStatusParaPendente(String cpf) {
+		log.info("Atualizando status do cliente para PENDENTE, CPF: {}", cpf);
+
+		Cliente cliente = repository.findByCpf(cpf)
+				.orElseThrow(() -> new ResourceNotFoundException("Usuário"));
+
+		cliente.setStatus(EnStatusCliente.PENDENTE);
+		cliente.setData_alteracao(LocalDateTime.now());
+
+		repository.save(cliente);
+		log.info("Status do cliente atualizado para PENDENTE com sucesso: {}", cliente);
+		return ClienteMapper.toDto(cliente);
+	}
+
 	public ClienteDto aprovarCliente(String cpf) {
 		log.info("Aprovando cliente com CPF: {}", cpf);
 
@@ -188,7 +201,7 @@ public class ClienteService {
 			erros.add("Endereço é obrigatório");
 		}
 
-		if (!StringUtils.hasText(clienteDto.cep()) || !CEP_PATTERN.matcher(clienteDto.cep()).matches()) {
+		if (!StringUtils.hasText(clienteDto.CEP()) || !CEP_PATTERN.matcher(clienteDto.CEP()).matches()) {
 			erros.add("CEP inválido. Deve conter 8 números");
 		}
 
@@ -209,7 +222,7 @@ public class ClienteService {
 
 		String cpf = dto.cpf() != null ? dto.cpf().replaceAll("\\D", "") : null;
 		String telefone = dto.telefone() != null ? dto.telefone().replaceAll("\\D", "") : null;
-		String cep = dto.cep() != null ? dto.cep().replaceAll("\\D", "") : null;
+		String cep = dto.CEP() != null ? dto.CEP().replaceAll("\\D", "") : null;
 
 		return new ClienteDto(
 				dto.id(),

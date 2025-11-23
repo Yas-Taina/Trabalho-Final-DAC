@@ -3,6 +3,7 @@ package dac.ufpr.conta.entity;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.*;
@@ -33,6 +34,7 @@ public class Conta {
 
     private String cpfGerente;
 
+    @CreationTimestamp
     private Instant dataCriacao;
 
     @UpdateTimestamp
@@ -44,5 +46,6 @@ public class Conta {
     @Column(precision = 18, scale = 2)
     private BigDecimal limite;
 
+    @Version
     private Long versao;
 }

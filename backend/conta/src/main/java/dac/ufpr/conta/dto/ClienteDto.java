@@ -1,5 +1,6 @@
 package dac.ufpr.conta.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +16,8 @@ public class ClienteDto{
   String telefone; //?
   BigDecimal salario;
   String endereco;
-  String cep;
+  @JsonProperty("CEP")
+  String CEP;
   String cidade;
   String estado;
   String status;
