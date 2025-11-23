@@ -16,6 +16,7 @@ import { DadosClienteResponse } from "../../../services/models";
 })
 export class InicioClientComponent implements OnInit {
   saldo: number | null = null;
+  limite: number | null = null;
   loading: boolean = false;
 
   constructor(
@@ -40,6 +41,8 @@ export class InicioClientComponent implements OnInit {
       next: (res: DadosClienteResponse) => {
         const valor = parseFloat(res.saldo as string);
         this.saldo = isNaN(valor) ? 0 : valor;
+        const limiteValor = parseFloat(res.limite as unknown as string);
+        this.limite = isNaN(limiteValor) ? 0 : limiteValor;
         this.loading = false;
       },
       error: (err) => {
