@@ -11,14 +11,28 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMqConfig {
 
-    public static final String CONTA_CREATE_QUEUE = "conta.create.queue";
+    // Rotina de autocadastro
     public static final String SAGA_AUTOCADASTRO_QUEUE = "saga.autocadastro.queue";
+
+    // Topicos Sucesso
     public static final String CONTA_GERENTE_ASSIGN_QUEUE = "gerente.assign.queue";
     public static final String GERENTE_CADASTRO_REDISTRIBUTION_QUEUE = "gerente.cadastro.redistribution.queue";
 
     public static final String CONTA_REASSIGN_QUEUE = "conta.reassign.queue";
     public static final String CLIENTE_REASSIGN_QUEUE = "cliente.reassign.queue";
     public static final String SAGA_GERENTE_CREATION_QUEUE = "saga.gerente.creation.queue";
+
+    // -- // -- //
+
+    // Rotina de aprovação de cliente
+    public static final String SAGA_CLIENTE_APPROVAL_QUEUE = "saga.cliente.approval.queue";
+
+    // Topicos Sucesso
+    public static final String CONTA_CREATE_QUEUE = "conta.create.queue";
+
+    // Topicos Compensação
+    public static final String CONTA_COMPENSATE_CREATE_QUEUE = "conta.compensate.create.queue";
+
 
 
     @Bean

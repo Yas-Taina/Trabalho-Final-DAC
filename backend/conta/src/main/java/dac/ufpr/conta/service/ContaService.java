@@ -12,6 +12,7 @@ import dac.ufpr.conta.dto.ContaDto;
 import dac.ufpr.conta.dto.ExtratoDto;
 import dac.ufpr.conta.dto.ExtratoMovimentacaoDto;
 import dac.ufpr.conta.dto.SaldoDto;
+import dac.ufpr.conta.dto.*;
 import dac.ufpr.conta.mapper.ContaMapper;
 
 import org.apache.commons.lang3.StringUtils;
@@ -399,4 +400,35 @@ public class ContaService {
         contaRepo.save(conta);
     }
 
+    public ContaDto criar(ClienteDto clienteDto) {
+        Conta conta = new Conta();
+        conta.setClienteId(clienteDto.getId());
+        conta.setNumeroConta(gerarNumeroConta());
+        conta.setSaldo(BigDecimal.ZERO);
+        conta.setLimite(calcularLimite(clienteDto.getSalario()));
+        conta.setCpfGerente(clienteDto.getCpf_gerente());
+        Conta contaSalva = contaRepo.save(conta);
+        return ContaMapper.toDto(contaSalva);
+    }
+
+    public void deletar(ClienteDto clienteDto) {
+        Conta conta = contaRepo.findByClienteId(clienteDto.getId())
+                .orElseThrow(() -> new NotFoundException("Conta não encontrada para o cliente"));
+        contaRepo.delete(conta);
+    }
+
+    private String gerarNumeroConta() {
+        int numero = (int)(Math.random() * 9000) + 1000;
+        return String.valueOf(numero);
+    }
+
+    public BigDecimal calcularLimite(BigDecimal salarioMensal) {
+        BigDecimal salarioMinimoParaLimite = new BigDecimal("2000.00");
+
+        if (salarioMensal.compareTo(salarioMinimoParaLimite) >= 0) {
+            return salarioMensal.multiply(new BigDecimal("0.5"));
+        }
+
+        return BigDecimal.ZERO;
+    }
 }

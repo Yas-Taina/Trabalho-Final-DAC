@@ -9,21 +9,33 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMqConfig {
 
+    // Rotina de autocadastro
     public static final String SAGA_AUTOCADASTRO_QUEUE = "saga.autocadastro.queue";
 
+    //Topicos Sucesso
+    public static final String CONTA_GERENTE_ASSIGN_QUEUE = "gerente.assign.queue";
     public static final String CLIENTE_CREATE_QUEUE = "cliente.create.queue";
     public static final String AUTH_CREATE_QUEUE = "auth.create.queue";
-    public static final String CONTA_GERENTE_ASSIGN_QUEUE = "gerente.assign.queue";
 
-    public static final String CLIENTE_DELETE_QUEUE = "cliente.delete.queue";
-    public static final String AUTH_DELETE_QUEUE = "auth.delete.queue";
-    public static final String CONTA_DELETE_QUEUE = "conta.delete.queue";
+    //Topicos Compensação
+    public static final String CONTA_COMPENSATE_GERENTE_ASSIGN_QUEUE = "conta.compensate.gerente.assign.queue";
+    public static final String CLIENTE_COMPENSATE_CREATE_QUEUE = "cliente.compensate.create.queue";
 
+    // -- // -- //
 
+    // Rotina de aprovação de cliente
+
+    //Saga
     public static final String SAGA_CLIENTE_APPROVAL_QUEUE = "saga.cliente.approval.queue";
-    public static final String AUTH_UPDATE_QUEUE = "auth.update.queue";
-    public static final String CONTA_CREATE_QUEUE = "conta.create.queue";
+
+    //Topicos Sucesso
     public static final String CLIENTE_APPROVAL_QUEUE = "cliente.approval.queue";
+    public static final String CONTA_CREATE_QUEUE = "conta.create.queue";
+    public static final String AUTH_UPDATE_QUEUE = "auth.update.queue";
+
+    //Topicos Compensação
+    public static final String CLIENTE_COMPENSATE_APPROVAL_QUEUE = "cliente.compensate.approval.queue";
+    public static final String CONTA_COMPENSATE_CREATE_QUEUE = "conta.compensate.create.queue";
 
     public static final String SAGA_GERENTE_CREATION_QUEUE = "saga.gerente.creation.queue";
     public static final String GERENTE_CREATE_QUEUE = "gerente.create.queue";

@@ -36,8 +36,8 @@ public class AuthListener {
             UserRequestDto dtoRequest =
                     new UserRequestDto(
                             null,
-                            message.getData().cpf(),
-                            message.getData().email(),
+                            message.getData().getCpf(),
+                            message.getData().getEmail(),
                             null,
                             EnRole.CLIENTE.name()
                     );

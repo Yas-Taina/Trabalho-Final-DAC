@@ -5,10 +5,8 @@ import dac.ufpr.Saga.dto.GerenteDto;
 import dac.ufpr.Saga.service.SagaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/sagas")
@@ -23,8 +21,9 @@ public class SagaController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasAnyRole('GERENTE', 'ADMINISTRADOR')")
     @PostMapping("/clientes/{cpf}/aprovar")
-    public ResponseEntity<Void> aprovarCliente(@RequestBody String cpf) {
+    public ResponseEntity<Void> aprovarCliente(@PathVariable String cpf) {
         service.aprovarCliente(cpf);
         return ResponseEntity.ok().build();
     }
