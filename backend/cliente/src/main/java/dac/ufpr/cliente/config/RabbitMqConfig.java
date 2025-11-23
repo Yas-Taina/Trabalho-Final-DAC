@@ -12,6 +12,7 @@ public class RabbitMqConfig {
     // Filas Cliente
     public static final String CLIENTE_CREATE_QUEUE = "cliente.create.queue";
     public static final String CLIENTE_APPROVAL_QUEUE = "cliente.approval.queue";
+    public static final String CLIENTE_ALTERACAO_PERFIL_QUEUE = "cliente.alteracao.perfil.queue";
 
     // Filas de Compensação
     public static final String CLIENTE_COMPENSATE_APPROVAL_QUEUE = "cliente.compensate.approval.queue";
@@ -20,6 +21,7 @@ public class RabbitMqConfig {
     // Fila Saga
     public static final String SAGA_AUTOCADASTRO_QUEUE = "saga.autocadastro.queue";
     public static final String SAGA_CLIENTE_APPROVAL_QUEUE = "saga.cliente.approval.queue";
+    public static final String SAGA_CLIENTE_ALTERACAO_PERFIL_QUEUE = "saga.cliente.alteracao.perfil.queue";
 
     // Fila Saga Gerente
     public static final String CLIENTE_REASSIGN_QUEUE = "cliente.reassign.queue";
@@ -60,6 +62,11 @@ public class RabbitMqConfig {
     @Bean
     public Declarable clienteCompensateCreateQueue() {
         return new Queue(CLIENTE_COMPENSATE_CREATE_QUEUE);
+    }
+
+    @Bean
+    public Declarable clienteAlteracaoPerfilQueue() {
+        return new Queue(CLIENTE_ALTERACAO_PERFIL_QUEUE);
     }
 
 

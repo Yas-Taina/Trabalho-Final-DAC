@@ -40,6 +40,16 @@ public class RabbitMqConfig {
     // -- // -- //
 
     //Saga
+    public static final String SAGA_CLIENTE_ALTERACAO_PERFIL_QUEUE = "saga.cliente.alteracao.perfil.queue";
+
+    //Topicos Sucesso
+    public static final String CLIENTE_ALTERACAO_PERFIL_QUEUE = "cliente.alteracao.perfil.queue";
+    public static final String AUTH_ALTERACAO_PERFIL = "auth.alteracao.perfil.queue";
+    public static final String CONTA_ALTERACAO_PERFIL_QUEUE = "conta.alteracao.perfil.queue";
+
+    // -- // -- //
+
+    //Saga
     public static final String SAGA_GERENTE_CREATION_QUEUE = "saga.gerente.creation.queue";
 
     public static final String GERENTE_CREATE_QUEUE = "gerente.create.queue";
@@ -87,4 +97,8 @@ public class RabbitMqConfig {
         return new Queue(GERENTE_CREATE_QUEUE);
     }
 
+    @Bean
+    public Declarable sagaClienteAlteracaoPerfilQueue() {
+        return new Queue(SAGA_CLIENTE_ALTERACAO_PERFIL_QUEUE);
+    }
 }

@@ -82,8 +82,8 @@ public class SagaClienteApprovalListener {
 
   private void enviarSenha(SagaMessage<ClienteDto> message) {
 
-    String email = message.getData().email();
-    String senha = message.getData().senha();
+    String email = message.getData().getEmail();
+    String senha = message.getData().getSenha();
     if (StringUtils.hasText(email)) {
       Map<String, Object> vars = new HashMap<>();
       vars.put("senha", senha);

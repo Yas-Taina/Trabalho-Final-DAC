@@ -50,8 +50,8 @@ public class SagaAutocadastroListener {
         case AUTH_CREATE_QUEUE ->   compensarAuth(message);
       }
 
-      String email = message.getData().email();
-      String nome = message.getData().nome();
+      String email = message.getData().getEmail();
+      String nome = message.getData().getNome();
       if (Objects.nonNull(email)) {
         Map<String, Object> vars = new HashMap<>();
         vars.put("nome", nome);
