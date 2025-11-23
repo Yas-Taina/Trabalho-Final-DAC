@@ -47,8 +47,8 @@ class CompositionController {
 				limite: contasResponse.data.limite,
 
 				gerente: clienteResponse.data.cpf_gerente,
-				gerente_nome: gerenteResponse.data.nome,
-				gerente_email: gerenteResponse.data.email
+				gerente_nome: gerenteResponse?.data.nome,
+				gerente_email: gerenteResponse?.data.email
 			});
 
 		} catch (err) {
@@ -150,8 +150,8 @@ class CompositionController {
           limite: conta.limite,
 
           gerente: cliente.cpf_gerente,
-          gerente_nome: gerente.nome,
-          gerente_email: gerente.email
+          gerente_nome: gerente?.nome,
+          gerente_email: gerente?.email
         });
       }
 
