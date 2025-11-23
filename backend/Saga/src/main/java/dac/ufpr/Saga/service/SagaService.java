@@ -97,5 +97,24 @@ public class SagaService {
         );
 
         rabbitTemplate.convertAndSend(CLIENTE_ALTERACAO_PERFIL_QUEUE, message);
+
+      }
+
+    public String iniciarSagaGerenteUpdate(GerenteDto gerenteDto) {
+        log.info("Iniciando saga de atualização de gerente. CPF: {}, Nome: {}", gerenteDto.cpf(), gerenteDto.nome());
+        String sagaId = java.util.UUID.randomUUID().toString();
+
+        SagaMessage<GerenteDto> message = new SagaMessage<>(
+                sagaId,
+                "UPDATE_GERENTE",
+                EnStatusIntegracao.INICIADO,
+                null,
+                gerenteDto
+        );
+
+        log.info("Enviando mensagem para fila: {}. SagaId: {}", GERENTE_UPDATE_QUEUE, sagaId);
+        rabbitTemplate.convertAndSend(GERENTE_UPDATE_QUEUE, message);
+        log.info("Mensagem enviada com sucesso para fila: {}. SagaId: {}", GERENTE_UPDATE_QUEUE, sagaId);
+        return sagaId;
     }
 }

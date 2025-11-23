@@ -178,6 +178,19 @@ public class AuthService {
     }
 
     @Transactional
+    public void updatePasswordByCpf(String cpf, String newPassword) {
+        log.info("Atualizando senha do usuário com CPF: {}", cpf);
+        
+        Autenticacao autenticacao = repository.findByCpf(cpf)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário com CPF: " + cpf));
+        
+        autenticacao.setSenha(passwordEncoder.encode(newPassword));
+        repository.save(autenticacao);
+        
+        log.info("Senha atualizada com sucesso. CPF: {}, Email: {}", cpf, autenticacao.getEmail());
+    }
+
+    @Transactional
     public void reboot() {
         final String SENHA = "tads";
         

@@ -17,19 +17,19 @@ public class RabbitMqConfig {
     //Fila do Gerente
     public static final String GERENTE_CREATE_QUEUE = "gerente.create.queue";
     public static final String GERENTE_DELETE_QUEUE = "gerente.delete.queue";
+    public static final String GERENTE_UPDATE_QUEUE = "gerente.update.queue";
 
     //Filas Auth
     public static final String AUTH_CREATE_QUEUE = "auth.gerente.create.queue";
     public static final String AUTH_DELETE_QUEUE = "auth.gerente.delete.queue";
+    public static final String AUTH_UPDATE_QUEUE = "auth.gerente.update.queue";
 
     //Fila Saga
     public static final String SAGA_RESPONSE_QUEUE = "saga.response.queue";
     public static final String SAGA_GERENTE_CREATION_QUEUE = "saga.gerente.creation.queue";
     public static final String SAGA_GERENTE_DELETION_QUEUE = "saga.gerente.deletion.queue";
+    public static final String SAGA_GERENTE_UPDATE_QUEUE = "saga.gerente.update.queue";
     public static final String CONTA_REASSIGN_QUEUE = "conta.reassign.queue";
-    
-    //Fila Auth
-    public static final String AUTH_CREATE_QUEUE = "auth.gerente.create.queue";
     public static final String CONTA_REASSIGN_ON_DELETE_QUEUE = "conta.reassign.on.delete.queue";
 
     @Bean
@@ -43,6 +43,11 @@ public class RabbitMqConfig {
     }
 
     @Bean
+    public Declarable gerenteUpdateQueue() {
+        return new Queue(GERENTE_UPDATE_QUEUE);
+    }
+
+    @Bean
     public Declarable contaReassignQueue() {
         return new Queue(CONTA_REASSIGN_QUEUE);
     }
@@ -50,6 +55,11 @@ public class RabbitMqConfig {
     @Bean
     public Declarable contaReassignOnDeleteQueue() {
         return new Queue(CONTA_REASSIGN_ON_DELETE_QUEUE);
+    }
+
+    @Bean
+    public Declarable sagaGerenteUpdateQueue() {
+        return new Queue(SAGA_GERENTE_UPDATE_QUEUE);
     }
     
     @Bean

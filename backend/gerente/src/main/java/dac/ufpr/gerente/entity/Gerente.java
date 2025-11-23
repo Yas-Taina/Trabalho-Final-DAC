@@ -1,28 +1,62 @@
 package dac.ufpr.gerente.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Table(name = "gerente", schema = "gerente") // sem schema
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
+@Table(name = "gerente", schema = "gerente")
 public class Gerente {
 
-    // @Id
-    // @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // Long id;
     @Id
-    String cpf;
+    private String cpf;
 
-    String nome;
+    private String nome;
 
-    String email;
+    private String email;
 
-    String tipo;
+    private String tipo;
+
+    // No-args constructor for JPA
+    public Gerente() {
+    }
+
+    // All-args constructor
+    public Gerente(String cpf, String nome, String email, String tipo) {
+        this.cpf = cpf;
+        this.nome = nome;
+        this.email = email;
+        this.tipo = tipo;
+    }
+
+    // Manual getters and setters
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
 }
