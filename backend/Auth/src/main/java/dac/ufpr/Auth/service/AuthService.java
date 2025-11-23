@@ -55,6 +55,7 @@ public class AuthService {
         Autenticacao autenticacao = new Autenticacao();
         autenticacao.setEmail(userRequestDto.email());
         autenticacao.setCpf(userRequestDto.cpf());
+        autenticacao.setSenha(passwordEncoder.encode(userRequestDto.senha()));
         autenticacao.setRole(EnRole.findByName(userRequestDto.role()));
 
         repository.save(autenticacao);

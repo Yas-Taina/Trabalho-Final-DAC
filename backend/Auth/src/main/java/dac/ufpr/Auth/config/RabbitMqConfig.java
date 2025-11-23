@@ -12,6 +12,7 @@ public class RabbitMqConfig {
     // Filas Auth
     public static final String AUTH_CREATE_QUEUE = "auth.create.queue";
     public static final String AUTH_UPDATE_QUEUE = "auth.update.queue";
+    public static final String AUTH_GERENTE_CREATE_QUEUE = "auth.gerente.create.queue";
 
     // Filas Compensação
     public static final String AUTH_COMPENSATE_UPDATE_QUEUE = "auth.compensate.update.queue";
@@ -19,6 +20,7 @@ public class RabbitMqConfig {
     // Fila Saga
     public static final String SAGA_AUTOCADASTRO_QUEUE = "saga.autocadastro.queue";
     public static final String SAGA_CLIENTE_APPROVAL_QUEUE = "saga.cliente.approval.queue";
+    public static final String SAGA_RESPONSE_QUEUE = "saga.response.queue";
 
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {
@@ -38,5 +40,10 @@ public class RabbitMqConfig {
     @Bean
     public Declarable authUpdateQueue() {
         return new Queue(AUTH_UPDATE_QUEUE);
+    }
+
+    @Bean
+    public Declarable authGerenteCreateQueue() {
+        return new Queue(AUTH_GERENTE_CREATE_QUEUE);
     }
 }

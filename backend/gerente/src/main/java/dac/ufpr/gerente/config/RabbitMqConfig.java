@@ -21,6 +21,9 @@ public class RabbitMqConfig {
     public static final String SAGA_RESPONSE_QUEUE = "saga.response.queue";
     public static final String SAGA_GERENTE_CREATION_QUEUE = "saga.gerente.creation.queue";
     public static final String CONTA_REASSIGN_QUEUE = "conta.reassign.queue";
+    
+    //Fila Auth
+    public static final String AUTH_CREATE_QUEUE = "auth.gerente.create.queue";
 
     @Bean
     public Declarable gerenteQueue() {
