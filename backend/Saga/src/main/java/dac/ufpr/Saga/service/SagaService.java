@@ -1,6 +1,7 @@
 package dac.ufpr.Saga.service;
 
 import dac.ufpr.Saga.dto.ClienteDto;
+import dac.ufpr.Saga.dto.GerenteDto;
 import dac.ufpr.Saga.enums.EnStatusIntegracao;
 import dac.ufpr.Saga.listener.dto.SagaMessage;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +40,30 @@ public class SagaService {
         );
 
         rabbitTemplate.convertAndSend(CLIENTE_APPROVAL_QUEUE, message);
+    }
+
+    /**
+     * Initiates the Gerente Creation Saga.
+     * After gerente is created, this saga will:
+     * 1. Find a conta to reassign to the new gerente
+     * 2. Get the clienteId from that conta
+     * 3. Reassign the cliente to the new gerente
+     * 
+     * @param gerenteDto The created gerente data (must include cpf)
+     * @return The saga ID for tracking
+     */
+    public String iniciarSagaGerenteCreation(GerenteDto gerenteDto) {
+        String sagaId = java.util.UUID.randomUUID().toString();
+
+        SagaMessage<GerenteDto> message = new SagaMessage<>(
+                sagaId,
+                "GERENTE_CREATE_INITIATED",
+                EnStatusIntegracao.INICIADO,
+                null,
+                gerenteDto
+        );
+
+        rabbitTemplate.convertAndSend(SAGA_GERENTE_CREATION_QUEUE, message);
+        return sagaId;
     }
 }

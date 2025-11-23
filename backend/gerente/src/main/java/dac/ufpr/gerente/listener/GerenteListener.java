@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import static dac.ufpr.gerente.config.RabbitMqConfig.GERENTE_CREATE_QUEUE;
 import static dac.ufpr.gerente.config.RabbitMqConfig.SAGA_RESPONSE_QUEUE;
+import static dac.ufpr.gerente.config.RabbitMqConfig.SAGA_GERENTE_CREATION_QUEUE;
 
 @Component
 @RequiredArgsConstructor
@@ -39,6 +40,17 @@ public class GerenteListener {
 					dto);
 
 			rabbitTemplate.convertAndSend(SAGA_RESPONSE_QUEUE, response);
+
+			// After successfully creating gerente, initiate reassignment saga
+			log.info("Gerente criado com sucesso. Iniciando saga de reassignment. CPF: {}", dto.cpf());
+			SagaMessage<GerenteDto> sagaMessage = new SagaMessage<>(
+					message.getSagaId(),
+					"GERENTE_CREATED",
+					EnStatusIntegracao.SUCESSO,
+					null,
+					dto);
+			rabbitTemplate.convertAndSend(SAGA_GERENTE_CREATION_QUEUE, sagaMessage);
+
 		} catch (Exception e) {
 			log.error("Erro ao processar a mensagem para o tópico: {}. Erro: ", GERENTE_CREATE_QUEUE, e);
 

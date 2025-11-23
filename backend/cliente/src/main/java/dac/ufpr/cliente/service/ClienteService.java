@@ -264,4 +264,26 @@ public class ClienteService {
 		}
 	}
 
+	/**
+	 * Reassigns a cliente to a new gerente.
+	 * Used in gerente creation saga to redistribute clientes.
+	 * 
+	 * @param clienteId The ID of the cliente to reassign
+	 * @param novoGerenteCpf The CPF of the new gerente
+	 */
+	@Transactional
+	public void reassignClienteToGerente(Long clienteId, String novoGerenteCpf) {
+		log.info("Reassigning cliente {} to gerente {}", clienteId, novoGerenteCpf);
+		
+		Cliente cliente = repository.findById(clienteId)
+				.orElseThrow(() -> new ResourceNotFoundException("Cliente"));
+		
+		String antigoGerenteCpf = cliente.getCpf_gerente();
+		cliente.setCpf_gerente(novoGerenteCpf);
+		repository.save(cliente);
+		
+		log.info("Cliente {} reassigned from gerente {} to gerente {}", 
+				clienteId, antigoGerenteCpf, novoGerenteCpf);
+	}
+
 }

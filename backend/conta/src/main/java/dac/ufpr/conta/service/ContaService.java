@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Optional;
 
 import dac.ufpr.conta.dto.ContaDto;
 import dac.ufpr.conta.dto.ExtratoDto;
@@ -335,6 +336,92 @@ public class ContaService {
         } catch (IOException e) {
             throw new BusinessException("Erro ao executar reboot: " + e.getMessage());
         }
+    }
+
+    /**
+     * Finds a conta that should be reassigned to a new gerente.
+     * Logic: 
+     * 1. Find gerente(s) with most contas
+     * 2. If multiple gerentes are tied with the same max count, pick conta with lowest positive balance from any of them
+     * 3. If only one gerente has the most contas, pick any conta from that gerente
+     * 4. If it's the first gerente, or if only one other gerente exists with only one conta, return null
+     * 
+     * @return The Conta entity to be reassigned, or null if no reassignment should happen
+     */
+    public Conta findContaToReassign() {
+        // Check if this is the first gerente or if there's only one gerente with one conta
+        Long totalContas = contaRepo.countAllContas();
+        Long totalGerentes = contaRepo.countDistinctGerentes();
+        
+        // First gerente being created - no contas to reassign
+        if (totalContas == 0 || totalGerentes == 0) {
+            return null;
+        }
+        
+        // Only one gerente exists with one conta - don't reassign
+        if (totalGerentes == 1 && totalContas == 1) {
+            return null;
+        }
+        
+        // Find all gerentes with most contas
+        java.util.List<Object[]> gerentesComMaisContas = contaRepo.findAllGerentesWithMostAccounts();
+        if (gerentesComMaisContas == null || gerentesComMaisContas.isEmpty()) {
+            return null;
+        }
+        
+        Long maxContaCount = ((Number) gerentesComMaisContas.get(0)[1]).longValue();
+        
+        // Don't reassign if the gerente with most contas only has 1 conta
+        if (maxContaCount <= 1) {
+            return null;
+        }
+        
+        // If only one gerente has the max count, pick any conta from that gerente
+        if (gerentesComMaisContas.size() == 1) {
+            String cpfGerente = (String) gerentesComMaisContas.get(0)[0];
+            return contaRepo.findAnyContaByGerente(cpfGerente).orElse(null);
+        }
+        
+        // Multiple gerentes tied - find the one with conta with lowest positive balance
+        Conta contaEscolhida = null;
+        BigDecimal menorSaldo = null;
+        
+        for (Object[] row : gerentesComMaisContas) {
+            String cpfGerente = (String) row[0];
+            Optional<Conta> contaComMenorSaldo = contaRepo.findContaWithLowestPositiveBalance(cpfGerente);
+            
+            if (contaComMenorSaldo.isPresent()) {
+                BigDecimal saldo = contaComMenorSaldo.get().getSaldo();
+                if (menorSaldo == null || saldo.compareTo(menorSaldo) < 0) {
+                    menorSaldo = saldo;
+                    contaEscolhida = contaComMenorSaldo.get();
+                }
+            }
+        }
+        
+        // If we found a conta with positive balance, return it
+        if (contaEscolhida != null) {
+            return contaEscolhida;
+        }
+        
+        // Fallback: if no conta with positive balance, pick any conta from the first gerente
+        String cpfPrimeiroGerente = (String) gerentesComMaisContas.get(0)[0];
+        return contaRepo.findAnyContaByGerente(cpfPrimeiroGerente).orElse(null);
+    }
+
+    /**
+     * Reassigns a conta to a new gerente.
+     * 
+     * @param contaId The ID of the conta to reassign
+     * @param novoGerenteCpf The CPF of the new gerente
+     */
+    @Transactional
+    public void reassignConta(Long contaId, String novoGerenteCpf) {
+        Conta conta = contaRepo.findById(contaId)
+                .orElseThrow(() -> new NotFoundException("Conta não encontrada"));
+        
+        conta.setCpfGerente(novoGerenteCpf);
+        contaRepo.save(conta);
     }
 
 }
