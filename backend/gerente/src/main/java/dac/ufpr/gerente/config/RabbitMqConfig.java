@@ -19,7 +19,7 @@ public class RabbitMqConfig {
     public static final String GERENTE_DELETE_QUEUE = "gerente.delete.queue";
 
     //Filas Auth
-    public static final String AUTH_CREATE_QUEUE = "auth.gerente.create.queue";
+    // public static final String AUTH_CREATE_QUEUE = "auth.gerente.create.queue";
     public static final String AUTH_DELETE_QUEUE = "auth.gerente.delete.queue";
 
     //Fila Saga
