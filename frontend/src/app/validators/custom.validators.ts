@@ -9,14 +9,6 @@ export class CustomValidators {
     };
   }
 
-  static nonNegativeNumber(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (!control.value) return null;
-      const num = parseFloat(control.value);
-      return num >= 0 ? null : { nonNegativeNumber: true };
-    };
-  }
-
   static cpfFormat(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value) return null;

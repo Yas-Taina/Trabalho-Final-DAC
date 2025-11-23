@@ -85,11 +85,11 @@
             <td
               [ngClass]="{
                 'valor-entrada':
-                  t.tipo === 'depósito' ||
-                  (t.tipo === 'transferência' && t.destino === cpfLogado),
+                  t.tipo === 'deposito' ||
+                  (t.tipo === 'transferencia' && t.destino === numeroConta),
                 'valor-saida':
                   t.tipo === 'saque' ||
-                  (t.tipo === 'transferência' && t.origem === cpfLogado),
+                  (t.tipo === 'transferencia' && t.origem === numeroConta),
               }"
             >
               {{ t.valor | currency: "BRL" : "symbol" : "1.2-2" }}
