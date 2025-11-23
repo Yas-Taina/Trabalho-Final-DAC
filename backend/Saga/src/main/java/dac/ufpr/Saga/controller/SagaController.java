@@ -1,6 +1,7 @@
 package dac.ufpr.Saga.controller;
 
 import dac.ufpr.Saga.dto.ClienteDto;
+import dac.ufpr.Saga.dto.GerenteDto;
 import dac.ufpr.Saga.service.SagaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,12 @@ public class SagaController {
     @PostMapping("/clientes/{cpf}/aprovar")
     public ResponseEntity<Void> aprovarCliente(@PathVariable String cpf) {
         service.aprovarCliente(cpf);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/gerentes")
+    public ResponseEntity<Void> iniciarSagaGerenteCreation(@RequestBody GerenteDto dto) {
+        service.iniciarSagaGerenteCreation(dto);
         return ResponseEntity.ok().build();
     }
 }

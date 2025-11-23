@@ -37,6 +37,11 @@ public class RabbitMqConfig {
     public static final String CLIENTE_COMPENSATE_APPROVAL_QUEUE = "cliente.compensate.approval.queue";
     public static final String CONTA_COMPENSATE_CREATE_QUEUE = "conta.compensate.create.queue";
 
+    public static final String SAGA_GERENTE_CREATION_QUEUE = "saga.gerente.creation.queue";
+    public static final String GERENTE_CREATE_QUEUE = "gerente.create.queue";
+    public static final String CONTA_REASSIGN_QUEUE = "conta.reassign.queue";
+    public static final String CLIENTE_REASSIGN_QUEUE = "cliente.reassign.queue";
+
 
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {
@@ -61,6 +66,16 @@ public class RabbitMqConfig {
     @Bean
     public Declarable clienteApprovalQueue() {
         return new Queue(CLIENTE_APPROVAL_QUEUE);
+    }
+
+    @Bean
+    public Declarable sagaGerenteCreationQueue() {
+        return new Queue(SAGA_GERENTE_CREATION_QUEUE);
+    }
+
+    @Bean
+    public Declarable gerenteCreateQueue() {
+        return new Queue(GERENTE_CREATE_QUEUE);
     }
 
 }

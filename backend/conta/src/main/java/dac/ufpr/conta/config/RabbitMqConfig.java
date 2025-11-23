@@ -16,6 +16,11 @@ public class RabbitMqConfig {
 
     // Topicos Sucesso
     public static final String CONTA_GERENTE_ASSIGN_QUEUE = "gerente.assign.queue";
+    public static final String GERENTE_CADASTRO_REDISTRIBUTION_QUEUE = "gerente.cadastro.redistribution.queue";
+
+    public static final String CONTA_REASSIGN_QUEUE = "conta.reassign.queue";
+    public static final String CLIENTE_REASSIGN_QUEUE = "cliente.reassign.queue";
+    public static final String SAGA_GERENTE_CREATION_QUEUE = "saga.gerente.creation.queue";
 
     // -- // -- //
 
@@ -43,6 +48,11 @@ public class RabbitMqConfig {
     @Bean
     public Declarable sagaAutocadastroQueue() {
         return new Queue(SAGA_AUTOCADASTRO_QUEUE);
+    }
+
+    @Bean
+    public Declarable contaReassignQueue() {
+        return new Queue(CONTA_REASSIGN_QUEUE);
     }
 
 

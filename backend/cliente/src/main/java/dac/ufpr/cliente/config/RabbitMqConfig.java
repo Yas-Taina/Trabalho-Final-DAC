@@ -20,6 +20,10 @@ public class RabbitMqConfig {
     public static final String SAGA_AUTOCADASTRO_QUEUE = "saga.autocadastro.queue";
     public static final String SAGA_CLIENTE_APPROVAL_QUEUE = "saga.cliente.approval.queue";
 
+    // Fila Saga Gerente
+    public static final String CLIENTE_REASSIGN_QUEUE = "cliente.reassign.queue";
+    public static final String SAGA_GERENTE_CREATION_QUEUE = "saga.gerente.creation.queue";
+
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
@@ -35,6 +39,11 @@ public class RabbitMqConfig {
         return new Queue(CLIENTE_APPROVAL_QUEUE);
     }
 
+    @Bean
+    public Declarable clienteReassignQueue() {
+        return new Queue(CLIENTE_REASSIGN_QUEUE);
+    }
+  
     @Bean
     public Declarable clienteCompensateApprovalQueue() {
         return new Queue(CLIENTE_COMPENSATE_APPROVAL_QUEUE);
