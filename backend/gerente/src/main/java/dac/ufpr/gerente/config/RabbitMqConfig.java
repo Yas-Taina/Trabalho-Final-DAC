@@ -27,6 +27,9 @@ public class RabbitMqConfig {
     public static final String SAGA_GERENTE_CREATION_QUEUE = "saga.gerente.creation.queue";
     public static final String SAGA_GERENTE_DELETION_QUEUE = "saga.gerente.deletion.queue";
     public static final String CONTA_REASSIGN_QUEUE = "conta.reassign.queue";
+    
+    //Fila Auth
+    public static final String AUTH_CREATE_QUEUE = "auth.gerente.create.queue";
     public static final String CONTA_REASSIGN_ON_DELETE_QUEUE = "conta.reassign.on.delete.queue";
 
     @Bean

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import static dac.ufpr.gerente.config.RabbitMqConfig.GERENTE_CREATE_QUEUE;
 import static dac.ufpr.gerente.config.RabbitMqConfig.SAGA_RESPONSE_QUEUE;
 import static dac.ufpr.gerente.config.RabbitMqConfig.CONTA_REASSIGN_QUEUE;
+import static dac.ufpr.gerente.config.RabbitMqConfig.AUTH_CREATE_QUEUE;
 
 @Component
 @RequiredArgsConstructor
@@ -44,7 +45,16 @@ public class GerenteListener {
 
 			rabbitTemplate.convertAndSend(SAGA_RESPONSE_QUEUE, response);
 
-			log.info("Gerente criado com sucesso. Iniciando saga de reassignment. CPF: {}", dto.cpf());
+			log.info("Gerente criado com sucesso. Criando credenciais no Auth. CPF: {}", dto.cpf());
+			SagaMessage<GerenteDto> authMessage = new SagaMessage<>(
+					message.getSagaId(),
+					"GERENTE_AUTH_CREATE",
+					EnStatusIntegracao.SUCESSO,
+					null,
+					gerenteDto);
+			rabbitTemplate.convertAndSend(AUTH_CREATE_QUEUE, authMessage);
+
+			log.info("Credenciais enviadas. Iniciando saga de reassignment. CPF: {}", dto.cpf());
 			ContaReassignDto reassignDto = new ContaReassignDto();
 			reassignDto.setNovoGerenteCpf(dto.cpf());
 			

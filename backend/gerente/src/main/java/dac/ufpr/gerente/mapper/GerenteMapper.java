@@ -20,6 +20,7 @@ public class GerenteMapper {
                 entity.getCpf(),
                 entity.getNome(),
                 entity.getEmail(),
+                null,
                 entity.getTipo()
         );
     }
