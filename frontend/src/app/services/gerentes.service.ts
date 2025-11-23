@@ -116,7 +116,7 @@ export class GerentesService extends BaseService {
       return false;
     }
 
-    const requiredFields = ["cpf", "email", "nome", "telefone"];
+    const requiredFields = ["cpf", "email", "nome", "senha"];
     for (const field of requiredFields) {
       if (!this.validateString(data[field as keyof DadoGerenteInsercao], field)) {
         return false;

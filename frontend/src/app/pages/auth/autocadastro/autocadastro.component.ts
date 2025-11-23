@@ -1,10 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from "@angular/forms";
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { NgxMaskDirective } from "ngx-mask";
@@ -18,38 +13,28 @@ import { CustomValidators } from "../../../validators/custom.validators";
   standalone: true,
   imports: [RouterModule, CommonModule, ReactiveFormsModule, NgxMaskDirective],
   templateUrl: "./autocadastro.component.html",
-  styleUrls: ["./autocadastro.component.css"],
+  styleUrls: ["./autocadastro.component.css"]
 })
 export class AutocadastroComponent implements OnInit {
   clienteForm: FormGroup;
   mensagem: string | null = null;
-  erro: boolean = false;
+  erro = false;
   loading$ = this.clientesService.getLoadingState();
 
   constructor(
     private fb: FormBuilder,
-    private clientesService: ClientesService,
+    private clientesService: ClientesService
   ) {
     this.clienteForm = this.fb.group({
-      nome: [
-        "",
-        [
-          Validators.required,
-          Validators.minLength(2),
-          Validators.maxLength(100),
-        ],
-      ],
-      email: [
-        "",
-        [Validators.required, Validators.email, Validators.maxLength(100)],
-      ],
+      nome: ["", [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      email: ["", [Validators.required, Validators.email, Validators.maxLength(100)]],
       cpf: ["", [Validators.required, CustomValidators.cpfFormat()]],
       telefone: ["", [Validators.required, CustomValidators.phoneFormat()]],
       salario: ["", [Validators.required, CustomValidators.positiveNumber()]],
       endereco: ["", Validators.required],
       CEP: ["", [Validators.required, CustomValidators.cepFormat()]],
       cidade: ["", Validators.required],
-      estado: ["", [Validators.required, Validators.maxLength(2), CustomValidators.stateBrazil()]],
+      estado: ["", [Validators.required, Validators.maxLength(2), CustomValidators.stateBrazil()]]
     });
   }
 
@@ -65,9 +50,9 @@ export class AutocadastroComponent implements OnInit {
     }
 
     const formValue = this.clienteForm.value;
-    const salario = parseFloat(formValue.salario);
+    const salario = Number(formValue.salario);
 
-    if (salario <= 0) {
+    if (isNaN(salario) || salario <= 0) {
       this.mensagem = "Salário deve ser maior que zero";
       this.erro = true;
       return;
@@ -82,25 +67,22 @@ export class AutocadastroComponent implements OnInit {
       endereco: formValue.endereco.trim(),
       CEP: formValue.CEP.replace(/\D/g, ""),
       cidade: formValue.cidade.trim(),
-      estado: formValue.estado.toUpperCase(),
+      estado: formValue.estado?.toUpperCase() || ""
     };
 
     this.clientesService
       .autocadastro(data)
       .pipe(
         tap(() => {
-          this.mensagem =
-            "Cadastro enviado com sucesso! Aguarde aprovação do gerente.";
+          this.mensagem = "Cadastro enviado com sucesso! Aguarde aprovação do gerente.";
           this.erro = false;
           this.clienteForm.reset();
         }),
         catchError((err) => {
-          this.mensagem =
-            err.error?.message ||
-            "Erro ao cadastrar cliente. Verifique os dados e tente novamente.";
+          this.mensagem = err.error?.message || "Erro ao cadastrar cliente. Verifique os dados e tente novamente.";
           this.erro = true;
           return of(null);
-        }),
+        })
       )
       .subscribe();
   }

@@ -109,7 +109,7 @@ hr {
   top: 50%;
   transform: translateY(-50%);
   width: 100%;
-  z-index: 1000;
+  z-index: 500;
   border-top: 1px solid;
   opacity: 1 !important;
 }
@@ -121,7 +121,7 @@ hr {
   transform: translate(-50%, -50%);
   width: 150px;
   height: 150px;
-  z-index: 1020;
+  z-index: 800;
 }
 
 /*---Titulos, Subtitulos, Textos Especiais---*/

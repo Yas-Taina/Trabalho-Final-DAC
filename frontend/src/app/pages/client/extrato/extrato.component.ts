@@ -10,7 +10,7 @@ import {
   ContasService,
   ExtratoResponse,
   ItemExtratoResponse,
-  DadosClienteResponse,
+  DadosClienteResponse
 } from "../../../services";
 
 interface ExtratoLinha {
@@ -34,10 +34,10 @@ interface ExtratoDia {
     CommonModule,
     FormsModule,
     NgxMaskDirective,
-    NgxMaskPipe,
+    NgxMaskPipe
   ],
   templateUrl: "./extrato.component.html",
-  styleUrls: ["./extrato.component.css"],
+  styleUrls: ["./extrato.component.css"]
 })
 export class ExtratoComponent implements OnInit {
   mostrarFiltro = false;
@@ -50,7 +50,7 @@ export class ExtratoComponent implements OnInit {
   constructor(
     private readonly authService: AuthService,
     private readonly clientesService: ClientesService,
-    private readonly contasService: ContasService,
+    private readonly contasService: ContasService
   ) {}
 
   ngOnInit(): void {
@@ -63,7 +63,9 @@ export class ExtratoComponent implements OnInit {
       alert("Usuário não logado.");
       return;
     }
+
     this.cpfLogado = cpf;
+
     this.clientesService.getCliente(cpf).subscribe({
       next: (cliente: DadosClienteResponse) => {
         if (!cliente.conta) {
@@ -73,7 +75,7 @@ export class ExtratoComponent implements OnInit {
         this.numeroConta = cliente.conta;
         this.carregarExtrato();
       },
-      error: (err) => alert("Erro ao obter dados do cliente: " + err.message),
+      error: (err) => alert("Erro ao obter dados do cliente: " + err.message)
     });
   }
 
@@ -91,56 +93,79 @@ export class ExtratoComponent implements OnInit {
     this.contasService.extrato(this.numeroConta).subscribe({
       next: (extrato: ExtratoResponse) => {
         let movimentos = extrato.movimentacoes;
+
         if (inicio) {
           const dtInicio = new Date(inicio);
-          movimentos = movimentos.filter((m) => new Date(m.data) >= dtInicio);
-        }
-        if (fim) {
-          const dtFim = new Date(fim);
-          movimentos = movimentos.filter((m) => new Date(m.data) <= dtFim);
+          movimentos = movimentos.filter(m => new Date(m.data) >= dtInicio);
         }
 
-        this.extratosPorDia = this.formatarExtratoPorDia(
-          movimentos,
-          extrato.saldo,
-        );
+        if (fim) {
+          const dtFim = new Date(fim);
+          movimentos = movimentos.filter(m => new Date(m.data) <= dtFim);
+        }
+
+        this.extratosPorDia = this.formatarExtratoPorDia(movimentos);
       },
-      error: (err) => alert("Erro ao carregar extrato: " + err.message),
+      error: (err) =>
+        alert("Erro ao carregar extrato: " + err.message)
     });
   }
 
   private formatarExtratoPorDia(
-    movimentos: ItemExtratoResponse[],
-    saldoConsolidado: number,
+    movimentos: ItemExtratoResponse[]
   ): Record<string, ExtratoDia> {
     const grouped: Record<string, ExtratoDia> = {};
-    let saldoAtual = saldoConsolidado;
 
-    const movimentosOrdenados = [...movimentos].sort(
-      (a, b) => new Date(a.data).getTime() - new Date(b.data).getTime()
+    const ordenados = [...movimentos].sort(
+      (a, b) => new Date(b.data).getTime() - new Date(a.data).getTime()
     );
 
-    movimentosOrdenados.forEach((m) => {
-      const dia = new Date(m.data).toLocaleDateString();
-      if (!grouped[dia]) {
-        grouped[dia] = { movimentos: [], saldoConsolidado: saldoAtual };
-      }
-      grouped[dia].movimentos.push({
-        data: new Date(m.data).toLocaleTimeString(),
-        tipo: m.tipo.toLowerCase(),
-        origem: m.origem || "-",
-        destino: m.destino || "-",
-        valor: m.valor,
-      });
+    const porDia: Record<string, ItemExtratoResponse[]> = {};
 
-      if (m.tipo === "depósito") {
-        saldoAtual += m.valor;
-      } else {
-        saldoAtual -= m.valor;
-      }
-      grouped[dia].saldoConsolidado = saldoAtual;
+    ordenados.forEach(m => {
+      const key = new Date(m.data).toLocaleDateString();
+      if (!porDia[key]) porDia[key] = [];
+      porDia[key].push(m);
     });
 
-    return grouped;
+    Object.keys(porDia).forEach(dia => {
+      let consolidado = 0;
+      const movs = porDia[dia]
+        .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
+        .map(m => {
+          if (m.tipo === "deposito") {
+            consolidado += m.valor;
+          } else if (m.tipo === "saque") {
+            consolidado -= m.valor;
+          } else if (m.tipo === "transferencia") {
+            if (m.destino === this.numeroConta) consolidado += m.valor;
+            else if (m.origem === this.numeroConta) consolidado -= m.valor;
+          }
+
+          return {
+            data: new Date(m.data).toLocaleTimeString(),
+            tipo: m.tipo.toLowerCase(),
+            origem: m.origem || "-",
+            destino: m.destino || "-",
+            valor: m.valor
+          };
+        });
+
+      grouped[dia] = {
+        movimentos: movs,
+        saldoConsolidado: consolidado
+      };
+    });
+
+    const ordenadoFinal: Record<string, ExtratoDia> = {};
+    Object.keys(grouped)
+      .sort((a, b) => {
+        const pa = a.split("/").reverse().join("-");
+        const pb = b.split("/").reverse().join("-");
+        return new Date(pb).getTime() - new Date(pa).getTime();
+      })
+      .forEach(k => (ordenadoFinal[k] = grouped[k]));
+
+    return ordenadoFinal;
   }
 }

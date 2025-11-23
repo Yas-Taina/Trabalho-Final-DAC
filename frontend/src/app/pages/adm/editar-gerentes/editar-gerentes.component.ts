@@ -37,7 +37,8 @@ export class EditarGerentesComponent implements OnInit {
   ): ValidationErrors | null => {
     const senha = group.get("senha")?.value;
     const confirmarSenha = group.get("confirmarSenha")?.value;
-    if (this.editMode && !senha && !confirmarSenha) return null;
+
+    if (!senha || !confirmarSenha) return { senhaDiferente: true };
     return senha === confirmarSenha ? null : { senhaDiferente: true };
   };
 
@@ -63,8 +64,8 @@ export class EditarGerentesComponent implements OnInit {
         nome: ["", [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
         cpf: ["", [Validators.required, CustomValidators.cpfFormat()]],
         email: ["", [Validators.required, Validators.email, Validators.maxLength(100)]],
-        senha: ["", [Validators.minLength(4)]],
-        confirmarSenha: [""],
+        senha: ["", [Validators.required, Validators.minLength(4)]],
+        confirmarSenha: ["", [Validators.required]],
         tipo: ["GERENTE", Validators.required],
       },
       { validators: this.confirmarSenhaValidator },
@@ -73,12 +74,9 @@ export class EditarGerentesComponent implements OnInit {
 
   private ativarModoEdicao(cpf: string): void {
     this.editMode = true;
+
     this.form.get("cpf")?.disable();
     this.form.get("tipo")?.disable();
-
-    this.form.get("senha")?.clearValidators();
-    this.form.get("confirmarSenha")?.clearValidators();
-    this.form.updateValueAndValidity();
 
     this.gerentesService.getGerente(cpf).subscribe({
       next: (gerente: DadoGerente) => {
@@ -108,7 +106,7 @@ export class EditarGerentesComponent implements OnInit {
       const dadosAtualizacao: DadoGerenteAtualizacao = {
         nome: dadosForm.nome,
         email: dadosForm.email,
-        senha: senha || undefined,
+        senha,
       };
 
       this.gerentesService.atualizarGerente(cpf, dadosAtualizacao).subscribe({
@@ -122,11 +120,6 @@ export class EditarGerentesComponent implements OnInit {
         },
       });
     } else {
-      if (!senha) {
-        this.mensagem = "A senha é obrigatória para o cadastro.";
-        return;
-      }
-
       const dadosInsercao: DadoGerenteInsercao = {
         cpf: dadosForm.cpf,
         nome: dadosForm.nome,
