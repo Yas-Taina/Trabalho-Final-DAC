@@ -13,6 +13,9 @@ public class RabbitMqConfig {
     public static final String AUTH_CREATE_QUEUE = "auth.create.queue";
     public static final String AUTH_UPDATE_QUEUE = "auth.update.queue";
 
+    // Filas Compensação
+    public static final String AUTH_COMPENSATE_UPDATE_QUEUE = "auth.compensate.update.queue";
+
     // Fila Saga
     public static final String SAGA_AUTOCADASTRO_QUEUE = "saga.autocadastro.queue";
     public static final String SAGA_CLIENTE_APPROVAL_QUEUE = "saga.cliente.approval.queue";
@@ -25,6 +28,11 @@ public class RabbitMqConfig {
     @Bean
     public Declarable authQueue() {
         return new Queue(AUTH_CREATE_QUEUE);
+    }
+
+    @Bean
+    public Declarable authCompensateUpdateQueue() {
+        return new Queue(AUTH_COMPENSATE_UPDATE_QUEUE);
     }
 
     @Bean

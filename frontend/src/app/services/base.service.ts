@@ -51,7 +51,6 @@ export class BaseService {
     return cpfRegex.test(cpf);
   }
 
-  // Retorna headers com Authorization: Bearer <token> quando houver sessão salva
   protected getAuthHeaders(): HttpHeaders {
     try {
       const json = localStorage.getItem('dac_token');

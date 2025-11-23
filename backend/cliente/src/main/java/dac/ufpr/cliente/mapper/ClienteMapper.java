@@ -48,15 +48,35 @@ public class ClienteMapper {
     }
 
     public static void updateEntityFromDto(ClienteDto dto, Cliente entity) {
-        entity.setNome(dto.nome());
-        entity.setEmail(dto.email());
-        entity.setCpf(dto.cpf());
-        entity.setTelefone(dto.telefone());
-        entity.setSalario(dto.salario());
-        entity.setEndereco(dto.endereco());
-        entity.setCEP(dto.CEP());
-        entity.setCidade(dto.cidade());
-        entity.setEstado(dto.estado());
+        if (dto.nome() != null) {
+            entity.setNome(dto.nome());
+        }
+        if (dto.email() != null) {
+            entity.setEmail(dto.email());
+        }
+        // Somente atualiza CPF se enviado no payload
+        if (dto.cpf() != null) {
+            entity.setCpf(dto.cpf());
+        }
+        // Somente atualiza telefone se enviado no payload
+        if (dto.telefone() != null) {
+            entity.setTelefone(dto.telefone());
+        }
+        if (dto.salario() != null) {
+            entity.setSalario(dto.salario());
+        }
+        if (dto.endereco() != null) {
+            entity.setEndereco(dto.endereco());
+        }
+        if (dto.CEP() != null) {
+            entity.setCEP(dto.CEP());
+        }
+        if (dto.cidade() != null) {
+            entity.setCidade(dto.cidade());
+        }
+        if (dto.estado() != null) {
+            entity.setEstado(dto.estado());
+        }
     }
 
 }

@@ -69,6 +69,8 @@ export class AutocadastroComponent implements OnInit {
       cidade: formValue.cidade.trim(),
       estado: formValue.estado?.toUpperCase() || ""
     };
+    
+    console.log("Dados a enviar:", JSON.stringify(data));
 
     this.clientesService
       .autocadastro(data)
@@ -79,6 +81,7 @@ export class AutocadastroComponent implements OnInit {
           this.clienteForm.reset();
         }),
         catchError((err) => {
+          console.error("Erro ao cadastrar:", err);
           this.mensagem = err.error?.message || "Erro ao cadastrar cliente. Verifique os dados e tente novamente.";
           this.erro = true;
           return of(null);

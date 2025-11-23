@@ -56,6 +56,19 @@ public class ClienteListener {
         }
     }
 
+    @RabbitListener(queues = CLIENTE_COMPENSATE_CREATE_QUEUE)
+    public void listenCompensateCreate(SagaMessage<ClienteDto> message) {
+        log.info("Mensagem recebida para tópico: {}. Payload: {}", CLIENTE_COMPENSATE_CREATE_QUEUE, message);
+
+        try {
+            service.deletar(message.getData().cpf());
+
+            log.info("Compensação da criação do cliente realizada com sucesso para o cliente: {}", message.getData());
+        } catch (Exception e) {
+            log.error("Erro ao processar mensagem para tópico: {}. Erro: ", CLIENTE_COMPENSATE_CREATE_QUEUE, e);
+        }
+    }
+
     @RabbitListener(queues = CLIENTE_APPROVAL_QUEUE)
     public void listenApproval(SagaMessage<String> message) {
         log.info("Mensagem recebida para tópico: {}. Payload: {}", CLIENTE_APPROVAL_QUEUE, message);
@@ -88,11 +101,11 @@ public class ClienteListener {
     }
 
     @RabbitListener(queues = CLIENTE_COMPENSATE_APPROVAL_QUEUE)
-    public void listenCompensateApproval(SagaMessage<String> message) {
+    public void listenCompensateApproval(SagaMessage<ClienteDto> message) {
         log.info("Mensagem recebida para tópico: {}. Payload: {}", CLIENTE_COMPENSATE_APPROVAL_QUEUE, message);
 
         try {
-            service.atualizarStatusParaPendente(message.getData());
+            service.atualizarStatusParaPendente(message.getData().cpf());
 
             log.info("Compensação da aprovação do cliente realizada com sucesso para o cliente: {}", message.getData());
         } catch (Exception e) {

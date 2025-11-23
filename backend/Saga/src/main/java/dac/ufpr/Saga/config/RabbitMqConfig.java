@@ -18,7 +18,6 @@ public class RabbitMqConfig {
     public static final String AUTH_CREATE_QUEUE = "auth.create.queue";
 
     //Topicos Compensação
-    public static final String CONTA_COMPENSATE_GERENTE_ASSIGN_QUEUE = "conta.compensate.gerente.assign.queue";
     public static final String CLIENTE_COMPENSATE_CREATE_QUEUE = "cliente.compensate.create.queue";
 
     // -- // -- //
@@ -36,8 +35,13 @@ public class RabbitMqConfig {
     //Topicos Compensação
     public static final String CLIENTE_COMPENSATE_APPROVAL_QUEUE = "cliente.compensate.approval.queue";
     public static final String CONTA_COMPENSATE_CREATE_QUEUE = "conta.compensate.create.queue";
+    public static final String AUTH_COMPENSATE_UPDATE_QUEUE = "auth.compensate.update.queue";
 
+    // -- // -- //
+
+    //Saga
     public static final String SAGA_GERENTE_CREATION_QUEUE = "saga.gerente.creation.queue";
+
     public static final String GERENTE_CREATE_QUEUE = "gerente.create.queue";
     public static final String CONTA_REASSIGN_QUEUE = "conta.reassign.queue";
     public static final String CLIENTE_REASSIGN_QUEUE = "cliente.reassign.queue";

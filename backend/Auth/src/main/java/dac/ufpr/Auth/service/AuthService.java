@@ -134,6 +134,14 @@ public class AuthService {
         return novaSenha;
     }
 
+    public void apagarSenha(String email) {
+        Autenticacao autenticacao = repository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário"));
+
+        autenticacao.setSenha(null);
+        repository.save(autenticacao);
+    }
+
     private String gerarSenhaAleatoria() {
         return UUID.randomUUID().toString().substring(0, 8);
     }

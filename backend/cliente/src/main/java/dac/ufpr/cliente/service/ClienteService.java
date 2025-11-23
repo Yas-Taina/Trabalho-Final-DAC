@@ -1,5 +1,6 @@
 package dac.ufpr.cliente.service;
 
+import dac.ufpr.cliente.config.EmailService;
 import dac.ufpr.cliente.dto.ClienteDto;
 import dac.ufpr.cliente.entity.Cliente;
 import dac.ufpr.cliente.enums.EnFiltroCliente;
@@ -20,6 +21,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.core.io.ClassPathResource;
 
+import javax.print.DocFlavor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ public class ClienteService {
 	private final ClienteRepository repository;
 	private final JwtExtractor jwtExtractor;
 	private final JdbcTemplate jdbcTemplate;
+	private final EmailService emailService;
 
 	public List<ClienteDto> listar(String filtro) {
 
@@ -120,6 +123,16 @@ public class ClienteService {
 		return ClienteMapper.toDto(clienteAtualizado);
 	}
 
+	public void deletar(String cpf) {
+		log.info("Deletando cliente com CPF: {}", cpf);
+
+		Cliente cliente = repository.findByCpf(cpf)
+				.orElseThrow(() -> new ResourceNotFoundException("Usuário"));
+
+		repository.delete(cliente);
+		log.info("Cliente deletado com sucesso: {}", cliente);
+	}
+
 	public ClienteDto atualizarStatusParaPendente(String cpf) {
 		log.info("Atualizando status do cliente para PENDENTE, CPF: {}", cpf);
 
@@ -140,6 +153,10 @@ public class ClienteService {
 		Cliente cliente = repository.findByCpf(cpf)
 				.orElseThrow(() -> new ResourceNotFoundException("Usuário"));
 
+		if (EnStatusCliente.APROVADO.equals(cliente.getStatus())) {
+			return ClienteMapper.toDto(cliente);
+		}
+
 		cliente.setStatus(EnStatusCliente.APROVADO);
 		cliente.setData_alteracao(LocalDateTime.now());
 
@@ -159,38 +176,66 @@ public class ClienteService {
 		cliente.setData_alteracao(LocalDateTime.now());
 
 		repository.save(cliente);
+		try {
+			var vars = new java.util.HashMap<String, Object>();
+			vars.put("nome", cliente.getNome());
+			vars.put("motivo", motivo);
+			emailService.enviarEmailComTemplate(
+					cliente.getEmail(),
+					"Rejeição do seu cadastro no BANTADS",
+					"email-rejeicao-cliente",
+					vars);
+		} catch (Exception e) {
+			log.error("Erro ao enviar email de rejeição para {}: {}", cliente.getEmail(), e.getMessage());
+		}
 		log.info("Cliente rejeitado com sucesso: {}", cliente);
 		return "Cliente rejeitado com sucesso";
 	}
 
 	private void validarCliente(ClienteDto clienteDto, long id) {
-		List<String> erros = validarDados(clienteDto);
+		List<String> erros = validarDados(clienteDto, id);
 		if (CollectionUtils.isNotEmpty(erros)) {
 			throw new BadRequestException("Dados inválidos: " + String.join("; ", erros));
 		}
 
-		if (repository.existsByCpfAndIdNot(clienteDto.cpf(), id)) {
+		// Só valida duplicidade de CPF quando CPF foi enviado no DTO (ex.: criação ou quando cliente deseja alterar CPF)
+		if (StringUtils.hasText(clienteDto.cpf()) && repository.existsByCpfAndIdNot(clienteDto.cpf(), id)) {
 			throw new ResourceAlreadyExistsException("Cliente já cadastrado ou aguardando aprovação, CPF duplicado.");
 		}
 	}
 
-	public static List<String> validarDados(ClienteDto clienteDto) {
+	public static List<String> validarDados(ClienteDto clienteDto, long id) {
 		List<String> erros = new ArrayList<>();
 
 		if (!StringUtils.hasText(clienteDto.nome())) {
 			erros.add("Nome é obrigatório");
 		}
 
-		if (!StringUtils.hasText(clienteDto.cpf()) || !CPF_PATTERN.matcher(clienteDto.cpf()).matches()) {
-			erros.add("CPF inválido. Deve conter 11 números");
+		// Para criação (id == -1) CPF é obrigatório. Para atualização, CPF no corpo é opcional
+		if (id == -1L) {
+			if (!StringUtils.hasText(clienteDto.cpf()) || !CPF_PATTERN.matcher(clienteDto.cpf()).matches()) {
+				erros.add("CPF inválido. Deve conter 11 números");
+			}
+		} else {
+			// Se o CPF for enviado no update, valida seu formato; caso contrário, ignora
+			if (StringUtils.hasText(clienteDto.cpf()) && !CPF_PATTERN.matcher(clienteDto.cpf()).matches()) {
+				erros.add("CPF inválido. Deve conter 11 números");
+			}
 		}
 
 		if (!StringUtils.hasText(clienteDto.email()) || !EMAIL_PATTERN.matcher(clienteDto.email()).matches()) {
 			erros.add("Email inválido. Ex: exemplo@email.com");
 		}
 
-		if (!StringUtils.hasText(clienteDto.telefone()) || !TELEFONE_PATTERN.matcher(clienteDto.telefone()).matches()) {
-			erros.add("Telefone inválido. Deve conter 10 ou 11 números");
+		// Telefone é obrigatório apenas na criação. No update é opcional — se enviado, valida o formato.
+		if (id == -1L) {
+			if (!StringUtils.hasText(clienteDto.telefone()) || !TELEFONE_PATTERN.matcher(clienteDto.telefone()).matches()) {
+				erros.add("Telefone inválido. Deve conter 10 ou 11 números");
+			}
+		} else {
+			if (StringUtils.hasText(clienteDto.telefone()) && !TELEFONE_PATTERN.matcher(clienteDto.telefone()).matches()) {
+				erros.add("Telefone inválido. Deve conter 10 ou 11 números");
+			}
 		}
 
 		if (clienteDto.salario() == null || clienteDto.salario().compareTo(BigDecimal.ZERO) < 0) {

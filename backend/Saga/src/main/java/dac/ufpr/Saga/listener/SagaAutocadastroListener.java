@@ -47,8 +47,7 @@ public class SagaAutocadastroListener {
       log.error("Falha no autocadastro. Erro no step: {}", message.getStep());
 
       switch (message.getStep()) {
-        case CLIENTE_CREATE_QUEUE -> compensarCliente(message);
-        case AUTH_CREATE_QUEUE -> compensarAuth(message);
+        case AUTH_CREATE_QUEUE ->   compensarAuth(message);
       }
 
       String email = message.getData().email();
@@ -100,15 +99,9 @@ public class SagaAutocadastroListener {
     rabbitTemplate.convertAndSend(CONTA_GERENTE_ASSIGN_QUEUE, next);
   }
 
-  private void compensarCliente(SagaMessage<?> message) {
-    log.info("[sagaId={}] Compensando CLIENTE...", message.getSagaId());
-    rabbitTemplate.convertAndSend(CONTA_COMPENSATE_GERENTE_ASSIGN_QUEUE, message);
-  }
-
   private void compensarAuth(SagaMessage<?> message) {
     log.info("[sagaId={}] Compensando AUTH...", message.getSagaId());
     rabbitTemplate.convertAndSend(CLIENTE_COMPENSATE_CREATE_QUEUE, message);
-    rabbitTemplate.convertAndSend(CONTA_COMPENSATE_GERENTE_ASSIGN_QUEUE, message);
   }
 
 }

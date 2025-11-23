@@ -171,19 +171,30 @@ export class ClientesService extends BaseService {
   }
 
   private validateAutocadastroData(data: AutocadastroInfo): boolean {
-    const requiredFields = ["cpf", "email", "nome", "telefone", "salario", "endereco", "CEP", "cidade", "estado"];
-    
-    for (const field of requiredFields) {
+    const stringFields = ["nome", "email", "endereco", "cidade", "estado"];
+    for (const field of stringFields) {
       if (!this.validateString(data[field as keyof AutocadastroInfo], field)) {
+        console.error(`Campo ${field} inválido:`, data[field as keyof AutocadastroInfo]);
+        return false;
+      }
+    }
+
+    const fieldsToCheck = ["cpf", "telefone", "CEP"];
+    for (const field of fieldsToCheck) {
+      const value = data[field as keyof AutocadastroInfo];
+      if (!value || String(value).trim() === "") {
+        console.error(`Campo ${field} vazio:`, value);
         return false;
       }
     }
 
     if (!this.validateEmail(data.email)) {
+      console.error("Email inválido:", data.email);
       return false;
     }
 
-    if (!this.validateNumber(data.salario, "Salário", false)) {
+    if (!this.validateNumber(data.salario as any, "Salário", false)) {
+      console.error("Salário inválido:", data.salario);
       return false;
     }
 
