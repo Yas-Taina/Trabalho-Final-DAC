@@ -107,6 +107,7 @@ export class EditarGerentesComponent implements OnInit {
         nome: dadosForm.nome,
         email: dadosForm.email,
         senha,
+        tipo: dadosForm.tipo
       };
 
       this.gerentesService.atualizarGerente(cpf, dadosAtualizacao).subscribe({
