@@ -52,7 +52,7 @@ public class ContaService {
     }
 
     public String recuperaCpfGerenteComMenosConta() {
-        return contaRepo.findGerenteCpfWithLeastAccounts();
+        return contaRepo.findGerenteCpfWithLeastAccounts("");
     }
 
     @Transactional
@@ -443,9 +443,9 @@ public class ContaService {
             return Map.of("contaIds", List.of(), "clienteIds", List.of(), "newGerenteCpf", "");
         }
 
-        String newGerenteCpf = contaRepo.findGerenteCpfWithLeastAccounts();
+        String newGerenteCpf = contaRepo.findGerenteCpfWithLeastAccounts(deletedGerenteCpf);
         
-        if (newGerenteCpf == null || newGerenteCpf.equals(deletedGerenteCpf)) {
+        if (newGerenteCpf == null) {
             throw new RuntimeException("Nenhum gerente disponível para reassociação");
         }
 

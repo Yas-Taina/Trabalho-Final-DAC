@@ -16,12 +16,13 @@ public interface ContaRepository extends JpaRepository<Conta, Long> {
     @Query(
             value = "SELECT cpf_gerente " +
                     "FROM conta.conta " +
+                    "WHERE cpf_gerente != :excludeCpf " +
                     "GROUP BY cpf_gerente " +
                     "ORDER BY COUNT(cpf_gerente) ASC " +
                     "LIMIT 1",
             nativeQuery = true
     )
-    String findGerenteCpfWithLeastAccounts();
+    String findGerenteCpfWithLeastAccounts(String excludeCpf);
 
     @Query(
             value = "SELECT COUNT(*) FROM conta.conta",
