@@ -50,6 +50,8 @@ services:
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
       SPRING_RABBITMQ_HOST: rabbitmq
     ports:
       - 8081:8080
@@ -137,6 +139,8 @@ services:
         condition: service_started
     environment:
       JWT_SECRET: ${JWT_SECRET}
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
       SPRING_RABBITMQ_HOST: rabbitmq
     ports:
       - 8084:8085

@@ -62,4 +62,19 @@ public class SagaService {
         log.info("Mensagem enviada com sucesso para fila: {}. SagaId: {}", GERENTE_CREATE_QUEUE, sagaId);
         return sagaId;
     }
+
+    public void iniciarSagaAlteracaoPerfilCliente(String cpf, ClienteDto dto) {
+
+        dto.setCpf(cpf);
+
+        SagaMessage<ClienteDto> message = new SagaMessage<>(
+                java.util.UUID.randomUUID().toString(),
+                CLIENTE_ALTERACAO_PERFIL_QUEUE,
+                EnStatusIntegracao.INICIADO,
+                null,
+                dto
+        );
+
+        rabbitTemplate.convertAndSend(CLIENTE_ALTERACAO_PERFIL_QUEUE, message);
+    }
 }
