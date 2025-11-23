@@ -89,29 +89,47 @@ export class PerfilComponent implements OnInit {
     });
   }
 
-  salvar(): void {
-    if (this.form.invalid) {
-      this.mensagem = "Preencha todos os campos corretamente.";
-      return;
-    }
-
-    const cpf = this.authService.getUserCpf();
-    if (!cpf) return;
-
-    const salario = parseFloat(this.form.value.salario);
-    if (salario <= 0) {
-      this.mensagem = "Salário deve ser maior que zero";
-      return;
-    }
-
-    const dados: PerfilInfo = { ...this.form.value, salario };
-    this.clientesService.atualizarCliente(cpf, dados).subscribe({
-      next: () => {
-        this.mensagem = "Dados atualizados com sucesso!";
-      },
-      error: (err) => {
-        this.mensagem = err?.error?.message || "Erro ao atualizar perfil.";
-      },
-    });
+ salvar(): void {
+  if (this.form.invalid) {
+    this.mensagem = "Preencha todos os campos corretamente.";
+    return;
   }
+
+  const cpf = this.authService.getUserCpf();
+  if (!cpf) return;
+
+  const formValue = this.form.getRawValue();
+  const salario = parseFloat(formValue.salario);
+  
+  if (isNaN(salario) || salario <= 0) {
+    this.mensagem = "Salário deve ser um número válido maior que zero";
+    return;
+  }
+
+  const dados = {
+    nome: formValue.nome.trim(),
+    email: formValue.email.trim(),
+    salario: salario,
+    endereco: formValue.endereco.trim(),
+    CEP: formValue.CEP.replace(/\D/g, ""),
+    cidade: formValue.cidade.trim(),
+    estado: formValue.estado.trim().toUpperCase(),
+  };
+
+  console.log("Dados enviados para atualizar cliente:", dados);
+
+  this.clientesService.atualizarCliente(cpf, dados).subscribe({
+    next: () => {
+      this.mensagem = "Dados atualizados com sucesso!";
+    },
+    error: (err) => {
+      console.error("Erro ao atualizar perfil:", err);
+      const errorMsg =
+        err?.error?.message ||
+        err?.message ||
+        "Erro ao atualizar perfil.";
+      this.mensagem = errorMsg;
+    },
+  });
+}
 }
