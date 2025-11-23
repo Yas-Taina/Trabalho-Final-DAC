@@ -53,6 +53,23 @@ class SagaController {
       return res.status(err.response?.status || 500).json(err.response?.data);
     }
   }
+
+  async deletarGerente(req, res) {
+    try {
+      const { cpf } = req.params;
+      const response = await axios.delete(
+          `${SERVICES.SAGA}/gerentes/${cpf}`,
+          { headers: {
+              ...req.headers
+            } }
+      );
+
+      return res.status(response.status).json(response.data);
+
+    } catch (err) {
+      return res.status(err.response?.status || 500).json(err.response?.data);
+    }
+  }
 }
 
 export default new SagaController();
