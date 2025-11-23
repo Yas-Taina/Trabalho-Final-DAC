@@ -52,7 +52,7 @@ public class ContaService {
     }
 
     public String recuperaCpfGerenteComMenosConta() {
-        return contaRepo.findGerenteCpfWithLeastAccounts();
+        return contaRepo.findGerenteCpfWithLeastAccounts("");
     }
 
     @Transactional
@@ -431,4 +431,43 @@ public class ContaService {
 
         return BigDecimal.ZERO;
     }
+    public java.util.List<Conta> findAllContasByGerente(String cpfGerente) {
+        return contaRepo.findAllByGerenteCpf(cpfGerente);
+    }
+
+    @Transactional
+    public Map<String, Object> reassignAllContasOnDelete(String deletedGerenteCpf) {
+        java.util.List<Conta> contasToReassign = findAllContasByGerente(deletedGerenteCpf);
+        
+        if (contasToReassign.isEmpty()) {
+            return Map.of("contaIds", List.of(), "clienteIds", List.of(), "newGerenteCpf", "");
+        }
+
+        String newGerenteCpf = contaRepo.findGerenteCpfWithLeastAccounts(deletedGerenteCpf);
+        
+        if (newGerenteCpf == null) {
+            throw new RuntimeException("Nenhum gerente disponível para reassociação");
+        }
+
+        java.util.List<Long> reassignedContaIds = new java.util.ArrayList<>();
+        java.util.List<Long> reassignedClienteIds = new java.util.ArrayList<>();
+
+        for (Conta conta : contasToReassign) {
+            conta.setCpfGerente(newGerenteCpf);
+            contaRepo.save(conta);
+            
+            reassignedContaIds.add(conta.getId());
+            if (conta.getClienteId() != null) {
+                reassignedClienteIds.add(conta.getClienteId());
+            }
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("contaIds", reassignedContaIds);
+        result.put("clienteIds", reassignedClienteIds);
+        result.put("newGerenteCpf", newGerenteCpf);
+        
+        return result;
+    }
+
 }
