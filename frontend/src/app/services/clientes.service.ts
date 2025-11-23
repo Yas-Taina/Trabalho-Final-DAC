@@ -116,12 +116,14 @@ export class ClientesService extends BaseService {
       return throwError(() => new Error("Dados de atualização inválidos"));
     }
 
+    console.log("Enviando atualização de cliente:", data);
     this.setLoading(true);
 
     return this.http.put<void>(`${this.apiUrl}/clientes/${cpf}`, data, {
       headers: this.getAuthHeaders(),
     }).pipe(
       catchError((error) => {
+        console.error("Erro na atualização:", error);
         return throwError(() => error);
       }),
       finalize(() => this.setLoading(false)),
