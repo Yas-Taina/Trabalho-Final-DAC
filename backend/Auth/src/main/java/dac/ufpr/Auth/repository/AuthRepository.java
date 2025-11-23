@@ -11,4 +11,8 @@ public interface AuthRepository extends MongoRepository<Autenticacao, String> {
 
     Optional<Autenticacao> findByEmail(String email);
 
+    Optional<Autenticacao> findByCpf(String cpf);
+
+    void deleteByCpf(String cpf);
+
 }

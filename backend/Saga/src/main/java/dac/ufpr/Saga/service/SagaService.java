@@ -2,6 +2,7 @@ package dac.ufpr.Saga.service;
 
 import dac.ufpr.Saga.dto.ClienteDto;
 import dac.ufpr.Saga.dto.GerenteDto;
+import dac.ufpr.Saga.dto.GerenteDeleteDto;
 import dac.ufpr.Saga.enums.EnStatusIntegracao;
 import dac.ufpr.Saga.listener.dto.SagaMessage;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +64,26 @@ public class SagaService {
         return sagaId;
     }
 
+    public String iniciarSagaGerenteDeletion(String cpf) {
+        log.info("Iniciando saga de deleção de gerente. CPF: {}", cpf);
+        String sagaId = java.util.UUID.randomUUID().toString();
+
+        GerenteDeleteDto deleteDto = new GerenteDeleteDto(cpf);
+        
+        SagaMessage<GerenteDeleteDto> message = new SagaMessage<>(
+                sagaId,
+                "DELETE_GERENTE",
+                EnStatusIntegracao.INICIADO,
+                null,
+                deleteDto
+        );
+
+        log.info("Enviando mensagem para fila: {}. SagaId: {}", GERENTE_DELETE_QUEUE, sagaId);
+        rabbitTemplate.convertAndSend(GERENTE_DELETE_QUEUE, message);
+        log.info("Mensagem enviada com sucesso para fila: {}. SagaId: {}", GERENTE_DELETE_QUEUE, sagaId);
+        return sagaId;
+    }
+  
     public void iniciarSagaAlteracaoPerfilCliente(String cpf, ClienteDto dto) {
 
         dto.setCpf(cpf);

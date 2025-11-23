@@ -26,6 +26,8 @@ public class RabbitMqConfig {
     // Fila Saga Gerente
     public static final String CLIENTE_REASSIGN_QUEUE = "cliente.reassign.queue";
     public static final String SAGA_GERENTE_CREATION_QUEUE = "saga.gerente.creation.queue";
+    public static final String CLIENTE_REASSIGN_ON_DELETE_QUEUE = "cliente.reassign.on.delete.queue";
+    public static final String SAGA_GERENTE_DELETION_QUEUE = "saga.gerente.deletion.queue";
 
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {
@@ -50,6 +52,11 @@ public class RabbitMqConfig {
     @Bean
     public Declarable clienteCompensateApprovalQueue() {
         return new Queue(CLIENTE_COMPENSATE_APPROVAL_QUEUE);
+    }
+
+    @Bean
+    public Declarable clienteReassignOnDeleteQueue() {
+        return new Queue(CLIENTE_REASSIGN_ON_DELETE_QUEUE);
     }
 
     @Bean

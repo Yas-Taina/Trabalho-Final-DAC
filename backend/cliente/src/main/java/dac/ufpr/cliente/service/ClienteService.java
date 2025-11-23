@@ -337,4 +337,27 @@ public class ClienteService {
 				clienteId, antigoGerenteCpf, novoGerenteCpf);
 	}
 
-}
+    @Transactional
+    public void reassignMultipleClientesToGerente(String oldGerenteCpf, String newGerenteCpf) {
+        log.info("Bulk reassigning all clientes from gerente {} to gerente {}", oldGerenteCpf, newGerenteCpf);
+        
+        List<Cliente> clientes = repository.findByCpfGerente(oldGerenteCpf);
+        
+        if (clientes.isEmpty()) {
+            log.info("No clientes found for gerente {}", oldGerenteCpf);
+            return;
+        }
+        
+        int successCount = 0;
+        
+        for (Cliente cliente : clientes) {
+            cliente.setCpf_gerente(newGerenteCpf);
+            repository.save(cliente);
+            successCount++;
+            log.info("Cliente {} reassigned from gerente {} to gerente {}", 
+                    cliente.getId(), oldGerenteCpf, newGerenteCpf);
+        }
+        
+        log.info("Bulk reassignment completed: {} clientes moved from {} to {}", 
+                successCount, oldGerenteCpf, newGerenteCpf);
+    }}
