@@ -25,26 +25,15 @@ public class GerenteCreationSagaListener {
     private final Logger log = LoggerFactory.getLogger(GerenteCreationSagaListener.class);
     private final RabbitTemplate rabbitTemplate;
 
-    /**
-     * Listens to saga gerente creation queue.
-     * This is called after gerente is successfully created to initiate conta/cliente reassignment.
-     * 
-     * Expected flow:
-     * 1. Gerente is created via GerenteListener
-     * 2. This listener receives the created gerente data
-     * 3. Sends message to conta service to find conta to reassign
-     */
     @RabbitListener(queues = SAGA_GERENTE_CREATION_QUEUE)
     public void handleGerenteCreated(SagaMessage<GerenteDto> message) {
         log.info("Mensagem recebida para tópico: {}. Iniciando reassignment de conta/cliente. Payload: {}", 
                 SAGA_GERENTE_CREATION_QUEUE, message);
 
         try {
-            // Create reassignment request with new gerente's CPF
             ContaReassignDto reassignRequest = new ContaReassignDto();
             reassignRequest.setNovoGerenteCpf(message.getData().cpf());
 
-            // Send to conta service to find the conta to reassign
             SagaMessage<ContaReassignDto> contaMessage = new SagaMessage<>(
                     message.getSagaId(),
                     "GERENTE_CREATED",

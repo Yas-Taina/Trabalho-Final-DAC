@@ -17,7 +17,7 @@ public class RabbitMqConfig {
     public static final String SAGA_AUTOCADASTRO_QUEUE = "saga.autocadastro.queue";
     public static final String SAGA_CLIENTE_APPROVAL_QUEUE = "saga.cliente.approval.queue";
 
-    // Gerente Creation Saga Queues
+    // Fila Saga Gerente
     public static final String CLIENTE_REASSIGN_QUEUE = "cliente.reassign.queue";
     public static final String SAGA_GERENTE_CREATION_QUEUE = "saga.gerente.creation.queue";
 

@@ -32,7 +32,6 @@ public class GerenteListener {
 		log.info("Mensagem recebida para tópico: {}. Payload: {}", GERENTE_CREATE_QUEUE, message);
 
 		try {
-			// Convert LinkedHashMap to GerenteDto
 			GerenteDto gerenteDto = objectMapper.convertValue(message.getData(), GerenteDto.class);
 			GerenteDto dto = service.criar(gerenteDto);
 
@@ -45,7 +44,6 @@ public class GerenteListener {
 
 			rabbitTemplate.convertAndSend(SAGA_RESPONSE_QUEUE, response);
 
-			// After successfully creating gerente, initiate conta reassignment
 			log.info("Gerente criado com sucesso. Iniciando saga de reassignment. CPF: {}", dto.cpf());
 			ContaReassignDto reassignDto = new ContaReassignDto();
 			reassignDto.setNovoGerenteCpf(dto.cpf());

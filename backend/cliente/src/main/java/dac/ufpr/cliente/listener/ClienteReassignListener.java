@@ -28,23 +28,13 @@ public class ClienteReassignListener {
     private final RabbitTemplate rabbitTemplate;
     private final ObjectMapper objectMapper;
 
-    /**
-     * Listens to cliente reassignment queue.
-     * 
-     * Expected flow:
-     * 1. Receives clienteId and new gerente's CPF
-     * 2. Reassigns the cliente to the new gerente
-     * 3. Sends success/failure message back to saga
-     */
     @RabbitListener(queues = CLIENTE_REASSIGN_QUEUE)
     public void handleClienteReassign(SagaMessage<?> message) {
         log.info("Mensagem recebida para tópico: {}. Payload: {}", CLIENTE_REASSIGN_QUEUE, message);
 
         try {
-            // Convert LinkedHashMap to ClienteReassignDto
             ClienteReassignDto reassignData = objectMapper.convertValue(message.getData(), ClienteReassignDto.class);
             
-            // Reassign the cliente to the new gerente
             clienteService.reassignClienteToGerente(
                     reassignData.getClienteId(), 
                     reassignData.getNovoGerenteCpf()
@@ -55,7 +45,6 @@ public class ClienteReassignListener {
                     reassignData.getNovoGerenteCpf(), 
                     message.getSagaId());
 
-            // Send success message back to saga
             SagaMessage<ClienteReassignDto> successMessage = new SagaMessage<>(
                     message.getSagaId(),
                     "CLIENTE_REASSIGNED",
@@ -69,7 +58,6 @@ public class ClienteReassignListener {
         } catch (Exception e) {
             log.error("Erro ao reassign cliente. SagaId: {}. Erro:", message.getSagaId(), e);
             
-            // Send error back to saga
             SagaMessage<?> errorMessage = new SagaMessage<>(
                     message.getSagaId(),
                     "CLIENTE_REASSIGN",

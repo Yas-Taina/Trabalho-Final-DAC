@@ -45,14 +45,6 @@ public class SagaService {
         rabbitTemplate.convertAndSend(CLIENTE_APPROVAL_QUEUE, message);
     }
 
-    /**
-     * Initiates the Gerente Creation Saga.
-     * Sends the gerente data to the gerente service to create the gerente.
-     * After gerente is created, the GerenteListener will trigger the reassignment saga.
-     * 
-     * @param gerenteDto The gerente data to create (must include cpf, nome, email, tipo)
-     * @return The saga ID for tracking
-     */
     public String iniciarSagaGerenteCreation(GerenteDto gerenteDto) {
         log.info("Iniciando saga de criação de gerente. CPF: {}, Nome: {}", gerenteDto.cpf(), gerenteDto.nome());
         String sagaId = java.util.UUID.randomUUID().toString();
@@ -66,8 +58,6 @@ public class SagaService {
         );
 
         log.info("Enviando mensagem para fila: {}. SagaId: {}", GERENTE_CREATE_QUEUE, sagaId);
-        // Send to gerente service to create the gerente
-        // The GerenteListener will then trigger the reassignment saga
         rabbitTemplate.convertAndSend(GERENTE_CREATE_QUEUE, message);
         log.info("Mensagem enviada com sucesso para fila: {}. SagaId: {}", GERENTE_CREATE_QUEUE, sagaId);
         return sagaId;

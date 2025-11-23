@@ -30,33 +30,19 @@ public class ContaReassignListener {
     private final RabbitTemplate rabbitTemplate;
     private final ObjectMapper objectMapper;
 
-    /**
-     * Listens to conta reassignment queue.
-     * 
-     * Expected flow:
-     * 1. Receives request with new gerente's CPF
-     * 2. Finds a conta that needs to be reassigned
-     * 3. Reassigns the conta to the new gerente
-     * 4. Gets the clienteId from the conta
-     * 5. Sends message to cliente service to reassign the cliente
-     */
     @RabbitListener(queues = CONTA_REASSIGN_QUEUE)
     public void handleContaReassign(SagaMessage<?> message) {
         log.info("Mensagem recebida para tópico: {}. Payload: {}", CONTA_REASSIGN_QUEUE, message);
 
         try {
-            // Convert LinkedHashMap to ContaReassignDto
             ContaReassignDto reassignData = objectMapper.convertValue(message.getData(), ContaReassignDto.class);
             
-            // Find a conta to reassign
             var conta = contaService.findContaToReassign();
             
-            // If no conta should be reassigned (first gerente or only one gerente with one conta)
             if (conta == null) {
                 log.info("Nenhuma conta para reassign. Primeiro gerente ou único gerente com uma conta. SagaId: {}", 
                         message.getSagaId());
                 
-                // Send success message but with null clienteId to indicate no reassignment needed
                 ClienteReassignDto clienteReassignDto = new ClienteReassignDto();
                 clienteReassignDto.setClienteId(null);
                 clienteReassignDto.setNovoGerenteCpf(reassignData.getNovoGerenteCpf());
@@ -73,10 +59,8 @@ public class ContaReassignListener {
                 return;
             }
             
-            // Reassign the conta to the new gerente
             contaService.reassignConta(conta.getId(), reassignData.getNovoGerenteCpf());
             
-            // Get clienteId from the conta
             Long clienteId = conta.getClienteId();
             
             log.info("Conta {} reassigned to gerente {}. SagaId: {}", 
@@ -84,7 +68,6 @@ public class ContaReassignListener {
                     reassignData.getNovoGerenteCpf(), 
                     message.getSagaId());
             
-            // Create message for cliente service
             ClienteReassignDto clienteReassignDto = new ClienteReassignDto();
             clienteReassignDto.setClienteId(clienteId);
             clienteReassignDto.setNovoGerenteCpf(reassignData.getNovoGerenteCpf());
@@ -104,7 +87,6 @@ public class ContaReassignListener {
         } catch (Exception e) {
             log.error("Erro ao processar reassignment de conta. SagaId: {}. Erro:", message.getSagaId(), e);
             
-            // Send error back to saga
             SagaMessage<?> errorMessage = new SagaMessage<>(
                     message.getSagaId(),
                     "CONTA_REASSIGN",

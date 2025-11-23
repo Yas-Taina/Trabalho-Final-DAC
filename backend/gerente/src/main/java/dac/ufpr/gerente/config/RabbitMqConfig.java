@@ -38,7 +38,6 @@ public class RabbitMqConfig {
         
         DefaultClassMapper classMapper = new DefaultClassMapper();
         Map<String, Class<?>> idClassMapping = new HashMap<>();
-        // Map the Saga service's SagaMessage to gerente's SagaMessage
         idClassMapping.put("dac.ufpr.Saga.listener.dto.SagaMessage", dac.ufpr.gerente.listener.dto.SagaMessage.class);
         classMapper.setIdClassMapping(idClassMapping);
         classMapper.setTrustedPackages("dac.ufpr.*");

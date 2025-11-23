@@ -25,7 +25,6 @@ public class RabbitMqConfig {
     public static final String CONTA_CREATE_QUEUE = "conta.create.queue";
     public static final String CLIENTE_APPROVAL_QUEUE = "cliente.approval.queue";
 
-    // Gerente Creation Saga Queues
     public static final String SAGA_GERENTE_CREATION_QUEUE = "saga.gerente.creation.queue";
     public static final String GERENTE_CREATE_QUEUE = "gerente.create.queue";
     public static final String CONTA_REASSIGN_QUEUE = "conta.reassign.queue";
