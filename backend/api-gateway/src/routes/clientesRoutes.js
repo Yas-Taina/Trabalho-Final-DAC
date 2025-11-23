@@ -21,6 +21,8 @@ router.get("/:cpf", CompositionController.buscarClienteComContaPorCPF);
 
 router.post("/:cpf/aprovar", SagaController.aprovar);
 
+router.put("/:cpf", SagaController.atualizarPerfil);
+
 router.post("/", SagaController.autocadastrar);
 
 router.use("/", ClientesController.proxy);

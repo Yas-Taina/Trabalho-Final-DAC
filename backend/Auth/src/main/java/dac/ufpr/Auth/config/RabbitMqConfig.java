@@ -15,6 +15,7 @@ public class RabbitMqConfig {
     public static final String AUTH_GERENTE_CREATE_QUEUE = "auth.gerente.create.queue";
     public static final String AUTH_GERENTE_DELETE_QUEUE = "auth.gerente.delete.queue";
     public static final String AUTH_GERENTE_UPDATE_QUEUE = "auth.gerente.update.queue";
+    public static final String AUTH_ALTERACAO_PERFIL = "auth.alteracao.perfil.queue";
 
     // Filas Compensação
     public static final String AUTH_COMPENSATE_UPDATE_QUEUE = "auth.compensate.update.queue";
@@ -25,6 +26,8 @@ public class RabbitMqConfig {
     public static final String SAGA_RESPONSE_QUEUE = "saga.response.queue";
     public static final String SAGA_GERENTE_DELETION_QUEUE = "saga.gerente.deletion.queue";
     public static final String SAGA_GERENTE_UPDATE_QUEUE = "saga.gerente.update.queue";
+    public static final String SAGA_CLIENTE_ALTERACAO_PERFIL_QUEUE = "saga.cliente.alteracao.perfil.queue";
+
 
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {
@@ -59,5 +62,10 @@ public class RabbitMqConfig {
     @Bean
     public Declarable authGerenteUpdateQueue() {
         return new Queue(AUTH_GERENTE_UPDATE_QUEUE);
+    }
+  
+    @Bean
+    public Declarable authAlteracaoPerfilQueue() {
+        return new Queue(AUTH_ALTERACAO_PERFIL);
     }
 }

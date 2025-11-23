@@ -90,4 +90,24 @@ class SagaController {
   }
 }
 
+
+async atualizarPerfil(req, res) {
+    try {
+      const { cpf } = req.params;
+      const response = await axios.put(
+          `${SERVICES.SAGA}/clientes/${cpf}`,
+          req.body,
+          { headers: {
+              ...req.headers
+            } }
+      );
+
+      return res.status(response.status).json(response.data);
+
+    } catch (err) {
+      return res.status(err.response?.status || 500).json(err.response?.data);
+    }
+  }
+}
+
 export default new SagaController();

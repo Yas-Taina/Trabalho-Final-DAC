@@ -54,10 +54,6 @@ public class ClienteMapper {
         if (dto.email() != null) {
             entity.setEmail(dto.email());
         }
-        // Somente atualiza CPF se enviado no payload
-        if (dto.cpf() != null) {
-            entity.setCpf(dto.cpf());
-        }
         // Somente atualiza telefone se enviado no payload
         if (dto.telefone() != null) {
             entity.setTelefone(dto.telefone());

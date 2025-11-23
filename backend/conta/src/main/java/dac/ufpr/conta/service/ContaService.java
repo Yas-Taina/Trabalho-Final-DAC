@@ -414,6 +414,26 @@ public class ContaService {
         return ContaMapper.toDto(contaSalva);
     }
 
+    public ContaDto atualizar(ClienteDto clienteDto) {
+        Conta conta = contaRepo.findByClienteId(clienteDto.getId())
+                .orElseThrow(() -> new NotFoundException("Conta não encontrada para o cliente"));
+
+        conta.setLimite(calcularLimite(clienteDto.getSalario()));
+
+        if (conta.getSaldo().compareTo(BigDecimal.ZERO) < 0) {
+
+            BigDecimal saldo = conta.getSaldo().abs();
+
+            if (conta.getLimite().compareTo(saldo) < 0) {
+                conta.setLimite(saldo);
+            }
+
+        }
+
+        Conta contaAtualizada = contaRepo.save(conta);
+        return ContaMapper.toDto(contaAtualizada);
+    }
+
     public void deletar(ClienteDto clienteDto) {
         Conta conta = contaRepo.findByClienteId(clienteDto.getId())
                 .orElseThrow(() -> new NotFoundException("Conta não encontrada para o cliente"));
