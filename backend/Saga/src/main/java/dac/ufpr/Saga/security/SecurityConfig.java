@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/sagas/clientes").permitAll()
                         .requestMatchers(HttpMethod.POST, "/sagas/gerentes").hasRole("ADMINISTRADOR")
+                        .requestMatchers(HttpMethod.DELETE, "/sagas/gerentes/**").hasRole("ADMINISTRADOR")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

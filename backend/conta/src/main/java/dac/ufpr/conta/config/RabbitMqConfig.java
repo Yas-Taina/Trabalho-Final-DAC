@@ -33,6 +33,9 @@ public class RabbitMqConfig {
     // Topicos Compensação
     public static final String CONTA_COMPENSATE_CREATE_QUEUE = "conta.compensate.create.queue";
 
+    public static final String CONTA_REASSIGN_ON_DELETE_QUEUE = "conta.reassign.on.delete.queue";
+    public static final String CLIENTE_REASSIGN_ON_DELETE_QUEUE = "cliente.reassign.on.delete.queue";
+    public static final String SAGA_GERENTE_DELETION_QUEUE = "saga.gerente.deletion.queue";
 
 
     @Bean
@@ -53,6 +56,11 @@ public class RabbitMqConfig {
     @Bean
     public Declarable contaReassignQueue() {
         return new Queue(CONTA_REASSIGN_QUEUE);
+    }
+
+    @Bean
+    public Declarable contaReassignOnDeleteQueue() {
+        return new Queue(CONTA_REASSIGN_ON_DELETE_QUEUE);
     }
 
 

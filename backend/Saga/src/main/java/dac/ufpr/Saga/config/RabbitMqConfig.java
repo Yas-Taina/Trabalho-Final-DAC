@@ -42,6 +42,11 @@ public class RabbitMqConfig {
     public static final String CONTA_REASSIGN_QUEUE = "conta.reassign.queue";
     public static final String CLIENTE_REASSIGN_QUEUE = "cliente.reassign.queue";
 
+    public static final String SAGA_GERENTE_DELETION_QUEUE = "saga.gerente.deletion.queue";
+    public static final String GERENTE_DELETE_QUEUE = "gerente.delete.queue";
+    public static final String CONTA_REASSIGN_ON_DELETE_QUEUE = "conta.reassign.on.delete.queue";
+    public static final String CLIENTE_REASSIGN_ON_DELETE_QUEUE = "cliente.reassign.on.delete.queue";
+
 
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {

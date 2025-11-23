@@ -84,4 +84,10 @@ public interface ContaRepository extends JpaRepository<Conta, Long> {
     )
     java.util.List<Object[]> findAllGerentesWithMostAccounts();
 
+    @Query(
+            value = "SELECT * FROM conta.conta WHERE cpf_gerente = :cpfGerente",
+            nativeQuery = true
+    )
+    java.util.List<Conta> findAllByGerenteCpf(String cpfGerente);
+
 }

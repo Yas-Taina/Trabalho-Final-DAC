@@ -16,20 +16,33 @@ public class RabbitMqConfig {
     
     //Fila do Gerente
     public static final String GERENTE_CREATE_QUEUE = "gerente.create.queue";
+    public static final String GERENTE_DELETE_QUEUE = "gerente.delete.queue";
 
     //Fila Saga
     public static final String SAGA_RESPONSE_QUEUE = "saga.response.queue";
     public static final String SAGA_GERENTE_CREATION_QUEUE = "saga.gerente.creation.queue";
+    public static final String SAGA_GERENTE_DELETION_QUEUE = "saga.gerente.deletion.queue";
     public static final String CONTA_REASSIGN_QUEUE = "conta.reassign.queue";
+    public static final String CONTA_REASSIGN_ON_DELETE_QUEUE = "conta.reassign.on.delete.queue";
 
     @Bean
-    public Declarable gerenteQueue() {
+    public Declarable gerenteCreateQueue() {
         return new Queue(GERENTE_CREATE_QUEUE);
+    }
+
+    @Bean
+    public Declarable gerenteDeleteQueue() {
+        return new Queue(GERENTE_DELETE_QUEUE);
     }
 
     @Bean
     public Declarable contaReassignQueue() {
         return new Queue(CONTA_REASSIGN_QUEUE);
+    }
+
+    @Bean
+    public Declarable contaReassignOnDeleteQueue() {
+        return new Queue(CONTA_REASSIGN_ON_DELETE_QUEUE);
     }
     
     @Bean
