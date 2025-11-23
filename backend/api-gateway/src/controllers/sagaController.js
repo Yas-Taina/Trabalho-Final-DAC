@@ -36,6 +36,23 @@ class SagaController {
       return res.status(err.response?.status || 500).json(err.response?.data);
     }
   }
+
+  async criarGerente(req, res) {
+    try {
+      const response = await axios.post(
+          `${SERVICES.SAGA}/gerentes`,
+          req.body,
+          { headers: {
+              ...req.headers
+            } }
+      );
+
+      return res.status(response.status).json(response.data);
+
+    } catch (err) {
+      return res.status(err.response?.status || 500).json(err.response?.data);
+    }
+  }
 }
 
 export default new SagaController();

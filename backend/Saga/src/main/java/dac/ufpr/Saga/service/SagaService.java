@@ -5,6 +5,8 @@ import dac.ufpr.Saga.dto.GerenteDto;
 import dac.ufpr.Saga.enums.EnStatusIntegracao;
 import dac.ufpr.Saga.listener.dto.SagaMessage;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import static dac.ufpr.Saga.config.RabbitMqConfig.*;
 @RequiredArgsConstructor
 public class SagaService {
 
+    private static final Logger log = LoggerFactory.getLogger(SagaService.class);
     private final RabbitTemplate rabbitTemplate;
 
     public void iniciarSagaAutocadastro(ClienteDto dto) {
@@ -44,26 +47,29 @@ public class SagaService {
 
     /**
      * Initiates the Gerente Creation Saga.
-     * After gerente is created, this saga will:
-     * 1. Find a conta to reassign to the new gerente
-     * 2. Get the clienteId from that conta
-     * 3. Reassign the cliente to the new gerente
+     * Sends the gerente data to the gerente service to create the gerente.
+     * After gerente is created, the GerenteListener will trigger the reassignment saga.
      * 
-     * @param gerenteDto The created gerente data (must include cpf)
+     * @param gerenteDto The gerente data to create (must include cpf, nome, email, tipo)
      * @return The saga ID for tracking
      */
     public String iniciarSagaGerenteCreation(GerenteDto gerenteDto) {
+        log.info("Iniciando saga de criação de gerente. CPF: {}, Nome: {}", gerenteDto.cpf(), gerenteDto.nome());
         String sagaId = java.util.UUID.randomUUID().toString();
 
         SagaMessage<GerenteDto> message = new SagaMessage<>(
                 sagaId,
-                "GERENTE_CREATE_INITIATED",
+                "CREATE_GERENTE",
                 EnStatusIntegracao.INICIADO,
                 null,
                 gerenteDto
         );
 
-        rabbitTemplate.convertAndSend(SAGA_GERENTE_CREATION_QUEUE, message);
+        log.info("Enviando mensagem para fila: {}. SagaId: {}", GERENTE_CREATE_QUEUE, sagaId);
+        // Send to gerente service to create the gerente
+        // The GerenteListener will then trigger the reassignment saga
+        rabbitTemplate.convertAndSend(GERENTE_CREATE_QUEUE, message);
+        log.info("Mensagem enviada com sucesso para fila: {}. SagaId: {}", GERENTE_CREATE_QUEUE, sagaId);
         return sagaId;
     }
 }

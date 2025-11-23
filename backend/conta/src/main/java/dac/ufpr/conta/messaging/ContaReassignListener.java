@@ -1,5 +1,6 @@
 package dac.ufpr.conta.messaging;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dac.ufpr.conta.dto.ClienteReassignDto;
 import dac.ufpr.conta.dto.ContaReassignDto;
 import dac.ufpr.conta.enums.EnStatusIntegracao;
@@ -27,6 +28,7 @@ public class ContaReassignListener {
     private final Logger log = LoggerFactory.getLogger(ContaReassignListener.class);
     private final ContaService contaService;
     private final RabbitTemplate rabbitTemplate;
+    private final ObjectMapper objectMapper;
 
     /**
      * Listens to conta reassignment queue.
@@ -39,11 +41,12 @@ public class ContaReassignListener {
      * 5. Sends message to cliente service to reassign the cliente
      */
     @RabbitListener(queues = CONTA_REASSIGN_QUEUE)
-    public void handleContaReassign(SagaMessage<ContaReassignDto> message) {
+    public void handleContaReassign(SagaMessage<?> message) {
         log.info("Mensagem recebida para tópico: {}. Payload: {}", CONTA_REASSIGN_QUEUE, message);
 
         try {
-            ContaReassignDto reassignData = message.getData();
+            // Convert LinkedHashMap to ContaReassignDto
+            ContaReassignDto reassignData = objectMapper.convertValue(message.getData(), ContaReassignDto.class);
             
             // Find a conta to reassign
             var conta = contaService.findContaToReassign();

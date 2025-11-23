@@ -1,5 +1,6 @@
 package dac.ufpr.cliente.listener;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dac.ufpr.cliente.dto.ClienteReassignDto;
 import dac.ufpr.cliente.enums.EnStatusIntegracao;
 import dac.ufpr.cliente.listener.dto.SagaMessage;
@@ -25,6 +26,7 @@ public class ClienteReassignListener {
     private final Logger log = LoggerFactory.getLogger(ClienteReassignListener.class);
     private final ClienteService clienteService;
     private final RabbitTemplate rabbitTemplate;
+    private final ObjectMapper objectMapper;
 
     /**
      * Listens to cliente reassignment queue.
@@ -35,11 +37,12 @@ public class ClienteReassignListener {
      * 3. Sends success/failure message back to saga
      */
     @RabbitListener(queues = CLIENTE_REASSIGN_QUEUE)
-    public void handleClienteReassign(SagaMessage<ClienteReassignDto> message) {
+    public void handleClienteReassign(SagaMessage<?> message) {
         log.info("Mensagem recebida para tópico: {}. Payload: {}", CLIENTE_REASSIGN_QUEUE, message);
 
         try {
-            ClienteReassignDto reassignData = message.getData();
+            // Convert LinkedHashMap to ClienteReassignDto
+            ClienteReassignDto reassignData = objectMapper.convertValue(message.getData(), ClienteReassignDto.class);
             
             // Reassign the cliente to the new gerente
             clienteService.reassignClienteToGerente(

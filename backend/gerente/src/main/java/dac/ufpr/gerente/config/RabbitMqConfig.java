@@ -1,9 +1,15 @@
 package dac.ufpr.gerente.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.amqp.core.Declarable;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.DefaultClassMapper;
 import org.springframework.context.annotation.Bean;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 public class RabbitMqConfig {
@@ -24,6 +30,21 @@ public class RabbitMqConfig {
     @Bean
     public Declarable contaReassignQueue() {
         return new Queue(CONTA_REASSIGN_QUEUE);
+    }
+    
+    @Bean
+    public Jackson2JsonMessageConverter messageConverter(ObjectMapper objectMapper) {
+        Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter(objectMapper);
+        
+        DefaultClassMapper classMapper = new DefaultClassMapper();
+        Map<String, Class<?>> idClassMapping = new HashMap<>();
+        // Map the Saga service's SagaMessage to gerente's SagaMessage
+        idClassMapping.put("dac.ufpr.Saga.listener.dto.SagaMessage", dac.ufpr.gerente.listener.dto.SagaMessage.class);
+        classMapper.setIdClassMapping(idClassMapping);
+        classMapper.setTrustedPackages("dac.ufpr.*");
+        
+        converter.setClassMapper(classMapper);
+        return converter;
     }
     
 }
