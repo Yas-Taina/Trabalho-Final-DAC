@@ -1,9 +1,12 @@
 package dac.ufpr.Saga.service;
 
 import dac.ufpr.Saga.dto.ClienteDto;
+import dac.ufpr.Saga.dto.GerenteDto;
 import dac.ufpr.Saga.enums.EnStatusIntegracao;
 import dac.ufpr.Saga.listener.dto.SagaMessage;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,7 @@ import static dac.ufpr.Saga.config.RabbitMqConfig.*;
 @RequiredArgsConstructor
 public class SagaService {
 
+    private static final Logger log = LoggerFactory.getLogger(SagaService.class);
     private final RabbitTemplate rabbitTemplate;
 
     public void iniciarSagaAutocadastro(ClienteDto dto) {
@@ -39,5 +43,23 @@ public class SagaService {
         );
 
         rabbitTemplate.convertAndSend(CLIENTE_APPROVAL_QUEUE, message);
+    }
+
+    public String iniciarSagaGerenteCreation(GerenteDto gerenteDto) {
+        log.info("Iniciando saga de criação de gerente. CPF: {}, Nome: {}", gerenteDto.cpf(), gerenteDto.nome());
+        String sagaId = java.util.UUID.randomUUID().toString();
+
+        SagaMessage<GerenteDto> message = new SagaMessage<>(
+                sagaId,
+                "CREATE_GERENTE",
+                EnStatusIntegracao.INICIADO,
+                null,
+                gerenteDto
+        );
+
+        log.info("Enviando mensagem para fila: {}. SagaId: {}", GERENTE_CREATE_QUEUE, sagaId);
+        rabbitTemplate.convertAndSend(GERENTE_CREATE_QUEUE, message);
+        log.info("Mensagem enviada com sucesso para fila: {}. SagaId: {}", GERENTE_CREATE_QUEUE, sagaId);
+        return sagaId;
     }
 }

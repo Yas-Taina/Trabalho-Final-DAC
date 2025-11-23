@@ -277,4 +277,19 @@ public class ClienteService {
 		}
 	}
 
+	@Transactional
+	public void reassignClienteToGerente(Long clienteId, String novoGerenteCpf) {
+		log.info("Reassigning cliente {} to gerente {}", clienteId, novoGerenteCpf);
+		
+		Cliente cliente = repository.findById(clienteId)
+				.orElseThrow(() -> new ResourceNotFoundException("Cliente"));
+		
+		String antigoGerenteCpf = cliente.getCpf_gerente();
+		cliente.setCpf_gerente(novoGerenteCpf);
+		repository.save(cliente);
+		
+		log.info("Cliente {} reassigned from gerente {} to gerente {}", 
+				clienteId, antigoGerenteCpf, novoGerenteCpf);
+	}
+
 }

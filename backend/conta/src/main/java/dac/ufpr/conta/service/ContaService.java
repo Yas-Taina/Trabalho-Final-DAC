@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Optional;
 
 import dac.ufpr.conta.dto.ContaDto;
 import dac.ufpr.conta.dto.ExtratoDto;
@@ -336,6 +337,67 @@ public class ContaService {
         } catch (IOException e) {
             throw new BusinessException("Erro ao executar reboot: " + e.getMessage());
         }
+    }
+
+    public Conta findContaToReassign() {
+        Long totalContas = contaRepo.countAllContas();
+        Long totalGerentes = contaRepo.countDistinctGerentes();
+        
+        if (totalContas == 0 || totalGerentes == 0) {
+            return null;
+        }
+        
+        if (totalGerentes == 1 && totalContas == 1) {
+            return null;
+        }
+        
+        java.util.List<Object[]> gerentesComMaisContas = contaRepo.findAllGerentesWithMostAccounts();
+        if (gerentesComMaisContas == null || gerentesComMaisContas.isEmpty()) {
+            return null;
+        }
+        
+        Long maxContaCount = ((Number) gerentesComMaisContas.get(0)[1]).longValue();
+        
+        if (maxContaCount <= 1) {
+            return null;
+        }
+        
+        if (gerentesComMaisContas.size() == 1) {
+            String cpfGerente = (String) gerentesComMaisContas.get(0)[0];
+            return contaRepo.findAnyContaByGerente(cpfGerente).orElse(null);
+        }
+        
+        Conta contaEscolhida = null;
+        BigDecimal menorSaldo = null;
+        
+        for (Object[] row : gerentesComMaisContas) {
+            String cpfGerente = (String) row[0];
+            Optional<Conta> contaComMenorSaldo = contaRepo.findContaWithLowestPositiveBalance(cpfGerente);
+            
+            if (contaComMenorSaldo.isPresent()) {
+                BigDecimal saldo = contaComMenorSaldo.get().getSaldo();
+                if (menorSaldo == null || saldo.compareTo(menorSaldo) < 0) {
+                    menorSaldo = saldo;
+                    contaEscolhida = contaComMenorSaldo.get();
+                }
+            }
+        }
+        
+        if (contaEscolhida != null) {
+            return contaEscolhida;
+        }
+        
+        String cpfPrimeiroGerente = (String) gerentesComMaisContas.get(0)[0];
+        return contaRepo.findAnyContaByGerente(cpfPrimeiroGerente).orElse(null);
+    }
+
+    @Transactional
+    public void reassignConta(Long contaId, String novoGerenteCpf) {
+        Conta conta = contaRepo.findById(contaId)
+                .orElseThrow(() -> new NotFoundException("Conta não encontrada"));
+        
+        conta.setCpfGerente(novoGerenteCpf);
+        contaRepo.save(conta);
     }
 
     public ContaDto criar(ClienteDto clienteDto) {
