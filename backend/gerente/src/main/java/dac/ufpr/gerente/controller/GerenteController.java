@@ -41,7 +41,7 @@ public class GerenteController {
     @PutMapping("/{cpf}")
     public ResponseEntity<GerenteDto> atualizar(@PathVariable String cpf,
                                                      @RequestBody(required = true) GerenteDto dto) {
-        GerenteDto dtoComCpf = new GerenteDto(cpf, dto.nome(), dto.email(), null, dto.tipo());
+        GerenteDto dtoComCpf = new GerenteDto(cpf, dto.nome(), dto.email(), dto.senha(), dto.tipo());
         return ResponseEntity.ok(service.atualizar(cpf, dtoComCpf));
     }
 

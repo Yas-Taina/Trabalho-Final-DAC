@@ -15,6 +15,8 @@ router.get("/", (req, res, next) => {
 
 router.post("/", SagaController.criarGerente);
 
+router.put("/:cpf", SagaController.atualizarGerente);
+
 router.delete("/:cpf", SagaController.deletarGerente);
 
 router.use("/", GerentesController.proxy);

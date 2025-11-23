@@ -47,4 +47,11 @@ public class SagaController {
         return ResponseEntity.ok().build();
     }
 
+
+    @PutMapping("/gerentes/{cpf}")
+    public ResponseEntity<Void> iniciarSagaGerenteUpdate(@PathVariable String cpf, @RequestBody GerenteDto dto) {
+        GerenteDto dtoComCpf = new GerenteDto(cpf, dto.nome(), dto.email(), dto.senha(), dto.tipo());
+        service.iniciarSagaGerenteUpdate(dtoComCpf);
+        return ResponseEntity.ok().build();
+    }
 }
