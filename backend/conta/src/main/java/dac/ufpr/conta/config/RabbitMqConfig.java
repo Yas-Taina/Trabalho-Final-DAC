@@ -55,6 +55,11 @@ public class RabbitMqConfig {
         return new Queue(CONTA_REASSIGN_QUEUE);
     }
 
+    @Bean
+    public Declarable contaCompensateCreateQueue() {
+        return new Queue(CONTA_COMPENSATE_CREATE_QUEUE);
+    }
+
 
     @Bean
     public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {

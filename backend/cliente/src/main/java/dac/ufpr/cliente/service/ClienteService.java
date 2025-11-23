@@ -1,5 +1,6 @@
 package dac.ufpr.cliente.service;
 
+import dac.ufpr.cliente.config.EmailService;
 import dac.ufpr.cliente.dto.ClienteDto;
 import dac.ufpr.cliente.entity.Cliente;
 import dac.ufpr.cliente.enums.EnFiltroCliente;
@@ -20,6 +21,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.core.io.ClassPathResource;
 
+import javax.print.DocFlavor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ public class ClienteService {
 	private final ClienteRepository repository;
 	private final JwtExtractor jwtExtractor;
 	private final JdbcTemplate jdbcTemplate;
+	private final EmailService emailService;
 
 	public List<ClienteDto> listar(String filtro) {
 
@@ -120,6 +123,16 @@ public class ClienteService {
 		return ClienteMapper.toDto(clienteAtualizado);
 	}
 
+	public void deletar(String cpf) {
+		log.info("Deletando cliente com CPF: {}", cpf);
+
+		Cliente cliente = repository.findByCpf(cpf)
+				.orElseThrow(() -> new ResourceNotFoundException("Usuário"));
+
+		repository.delete(cliente);
+		log.info("Cliente deletado com sucesso: {}", cliente);
+	}
+
 	public ClienteDto atualizarStatusParaPendente(String cpf) {
 		log.info("Atualizando status do cliente para PENDENTE, CPF: {}", cpf);
 
@@ -140,6 +153,10 @@ public class ClienteService {
 		Cliente cliente = repository.findByCpf(cpf)
 				.orElseThrow(() -> new ResourceNotFoundException("Usuário"));
 
+		if (EnStatusCliente.APROVADO.equals(cliente.getStatus())) {
+			return ClienteMapper.toDto(cliente);
+		}
+
 		cliente.setStatus(EnStatusCliente.APROVADO);
 		cliente.setData_alteracao(LocalDateTime.now());
 
@@ -159,6 +176,18 @@ public class ClienteService {
 		cliente.setData_alteracao(LocalDateTime.now());
 
 		repository.save(cliente);
+		try {
+			var vars = new java.util.HashMap<String, Object>();
+			vars.put("nome", cliente.getNome());
+			vars.put("motivo", motivo);
+			emailService.enviarEmailComTemplate(
+					cliente.getEmail(),
+					"Rejeição do seu cadastro no BANTADS",
+					"email-rejeicao-cliente",
+					vars);
+		} catch (Exception e) {
+			log.error("Erro ao enviar email de rejeição para {}: {}", cliente.getEmail(), e.getMessage());
+		}
 		log.info("Cliente rejeitado com sucesso: {}", cliente);
 		return "Cliente rejeitado com sucesso";
 	}

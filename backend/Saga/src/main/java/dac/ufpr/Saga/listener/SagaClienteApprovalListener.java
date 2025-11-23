@@ -35,12 +35,14 @@ public class SagaClienteApprovalListener {
   public void onSagamessage(SagaMessage<ClienteDto> message) {
     log.info("Mensagem recebida para tópico: {}. Payload: {}", SAGA_CLIENTE_APPROVAL_QUEUE, message);
 
-    switch (message.getStep()) {
-      case CLIENTE_APPROVAL_QUEUE -> enviarConta(message);
-      case CONTA_CREATE_QUEUE -> enviarAuth(message);
-      case AUTH_UPDATE_QUEUE -> {
-        enviarSenha(message);
-        log.info("Saga finalizada!");
+    if (EnStatusIntegracao.SUCESSO.equals(message.getStatus())) {
+      switch (message.getStep()) {
+        case CLIENTE_APPROVAL_QUEUE -> enviarConta(message);
+        case CONTA_CREATE_QUEUE -> enviarAuth(message);
+        case AUTH_UPDATE_QUEUE -> {
+          enviarSenha(message);
+          log.info("Saga finalizada!");
+        }
       }
     }
 
@@ -89,10 +91,18 @@ public class SagaClienteApprovalListener {
         emailService.enviarEmailComTemplate(email, "Senha autenticação BANTADS", "email-aprovacao-cliente", vars);
       } catch (Exception e) {
         log.error("Erro ao enviar email de senha para {}: {}", email, e.getMessage());
+        compensarSaga(message);
       }
     }
 
   }
+
+    private void compensarSaga(SagaMessage<ClienteDto> message) {
+      log.info("[sagaId={}] Iniciando compensação da saga...", message.getSagaId());
+      rabbitTemplate.convertAndSend(AUTH_COMPENSATE_UPDATE_QUEUE, message);
+      rabbitTemplate.convertAndSend(CONTA_COMPENSATE_CREATE_QUEUE, message);
+      rabbitTemplate.convertAndSend(CLIENTE_COMPENSATE_APPROVAL_QUEUE, message);
+    }
 
   private void compensarAuth(SagaMessage<?> message) {
     log.info("[sagaId={}] Compensando AUTH...", message.getSagaId());

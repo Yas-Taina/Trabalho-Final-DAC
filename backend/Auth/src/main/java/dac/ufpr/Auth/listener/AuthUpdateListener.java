@@ -59,5 +59,18 @@ public class AuthUpdateListener {
         }
     }
 
+    @RabbitListener(queues = AUTH_COMPENSATE_UPDATE_QUEUE)
+    public void listenCompensateApproval(SagaMessage<ClienteDto> message) {
+        log.info("Mensagem recebida para tópico: {}. Payload: {}", AUTH_COMPENSATE_UPDATE_QUEUE, message);
+
+        try {
+            service.apagarSenha(message.getData().getEmail());
+
+            log.info("Compensação realizada com sucesso para usuário: {}", message.getData().getEmail());
+        } catch (Exception e) {
+            log.error("Erro ao processar mensagem para tópico: {}. Erro: ", AUTH_COMPENSATE_UPDATE_QUEUE, e);
+        }
+    }
+
 
 }

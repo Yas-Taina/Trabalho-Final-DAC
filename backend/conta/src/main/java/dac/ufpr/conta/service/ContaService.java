@@ -3,10 +3,7 @@ package dac.ufpr.conta.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 import dac.ufpr.conta.dto.ContaDto;
 import dac.ufpr.conta.dto.ExtratoDto;
@@ -401,6 +398,12 @@ public class ContaService {
     }
 
     public ContaDto criar(ClienteDto clienteDto) {
+        Conta contaExistente = contaRepo.findByClienteId(clienteDto.getId()).orElse(null);
+
+        if (Objects.nonNull(contaExistente)) {
+            return ContaMapper.toDto(contaExistente);
+        }
+
         Conta conta = new Conta();
         conta.setClienteId(clienteDto.getId());
         conta.setNumeroConta(gerarNumeroConta());
