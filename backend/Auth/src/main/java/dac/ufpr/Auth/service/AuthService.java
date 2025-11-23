@@ -11,6 +11,7 @@ import dac.ufpr.Auth.exception.custom.BadRequestException;
 import dac.ufpr.Auth.exception.custom.InvalidCredentialsException;
 import dac.ufpr.Auth.exception.custom.ResourceAlreadyExistsException;
 import dac.ufpr.Auth.exception.custom.ResourceNotFoundException;
+import dac.ufpr.Auth.listener.dto.ClienteDto;
 import dac.ufpr.Auth.repository.AuthRepository;
 import dac.ufpr.Auth.security.TokenService;
 import dac.ufpr.Auth.security.utils.JwtUtils;
@@ -140,6 +141,15 @@ public class AuthService {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário"));
 
         autenticacao.setSenha(null);
+        repository.save(autenticacao);
+    }
+
+    public void atualizarEmail(ClienteDto clienteDto) {
+        Autenticacao autenticacao = repository.findByCpf(clienteDto.getCpf())
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário"));
+
+        autenticacao.setEmail(clienteDto.getEmail());
+
         repository.save(autenticacao);
     }
 
