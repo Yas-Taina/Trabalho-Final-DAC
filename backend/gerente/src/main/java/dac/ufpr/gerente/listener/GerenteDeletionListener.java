@@ -51,7 +51,19 @@ public class GerenteDeletionListener {
 
             rabbitTemplate.convertAndSend(SAGA_GERENTE_DELETION_QUEUE, response);
 
-            log.info("Iniciando saga de redistribuição de contas/clientes após deleção. CPF: {}", cpf);
+            log.info("Deletando credenciais no Auth. CPF: {}", cpf);
+            java.util.Map<String, Object> authData = new java.util.HashMap<>();
+            authData.put("cpf", cpf);
+            
+            SagaMessage<java.util.Map<String, Object>> authMessage = new SagaMessage<>(
+                    message.getSagaId(),
+                    "GERENTE_AUTH_DELETE",
+                    EnStatusIntegracao.SUCESSO,
+                    null,
+                    authData);
+            rabbitTemplate.convertAndSend(AUTH_DELETE_QUEUE, authMessage);
+
+            log.info("Credenciais enviadas para deleção. Iniciando saga de redistribuição de contas/clientes após deleção. CPF: {}", cpf);
             BulkReassignDto reassignDto = new BulkReassignDto();
             reassignDto.setOldGerenteCpf(cpf);
             
