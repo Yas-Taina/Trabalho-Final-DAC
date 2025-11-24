@@ -19,4 +19,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     @Query("SELECT c FROM Cliente c WHERE c.cpf_gerente = :cpfGerente")
     List<Cliente> findByCpfGerente(@Param("cpfGerente") String cpfGerente);
 
+    boolean existsByCpf(String cpf);
+
 }

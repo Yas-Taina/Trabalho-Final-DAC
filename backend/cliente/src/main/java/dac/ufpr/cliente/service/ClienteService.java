@@ -94,6 +94,10 @@ public class ClienteService {
 				.orElseThrow(() -> new ResourceNotFoundException("Usuário"));
 	}
 
+	public boolean existsByCpf(String cpf) {
+		return repository.existsByCpf(cpf);
+	}
+
 	public ClienteDto criar(ClienteDto dto) {
 		log.info("Criando cliente: {}", dto);
 		ClienteDto clienteDto = normalizarDados(dto);

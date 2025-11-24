@@ -62,4 +62,10 @@ public class ClienteController {
                 Map.of("message", "Banco de dados reiniciado com sucesso"));
     }
 
+    @GetMapping("/{cpf}/exists")
+    public ResponseEntity<Boolean> checkIfClienteExists(@PathVariable String cpf) {
+        boolean exists = service.existsByCpf(cpf);
+        return ResponseEntity.ok(exists);
+    }
+
 }

@@ -1,11 +1,21 @@
 import axios from "axios";
 import "../config/axios-logger.js";
 
-import { SERVICES}  from "../config/services.js";
+import { SERVICES } from "../config/services.js";
 
 class SagaController {
   async autocadastrar(req, res) {
     try {
+
+     const clienteExistente = await axios.get(
+        `${SERVICES.CLIENTE}/${req.body.cpf}/exists`,
+         {}
+     );
+
+        if (clienteExistente.data === true) {
+            return res.status(409).json({ message: "Cliente já cadastrado ou aguardando aprovação, CPF duplicado" });
+        }
+
       const response = await axios.post(
           `${SERVICES.SAGA}/clientes`,
           req.body,
@@ -89,8 +99,6 @@ class SagaController {
     }
   }
 
-
-
 async atualizarPerfil(req, res) {
     try {
       const { cpf } = req.params;
@@ -108,6 +116,7 @@ async atualizarPerfil(req, res) {
       return res.status(err.response?.status || 500).json(err.response?.data);
     }
   }
+
 }
 
 export default new SagaController();
