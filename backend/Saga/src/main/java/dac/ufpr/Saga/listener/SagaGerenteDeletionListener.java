@@ -66,12 +66,6 @@ public class SagaGerenteDeletionListener {
                 message.getSagaId(), 
                 message.getStep());
         
-        // Note: For deletion saga, compensation is complex because the gerente is already deleted
-        // In a production system, you might want to:
-        // 1. Recreate the gerente if deletion was successful but reassignment failed
-        // 2. Log the failure and alert administrators
-        // 3. Mark affected contas/clientes for manual review
-        
         switch (message.getStep()) {
             case "GERENTE_DELETE_QUEUE":
                 log.error("Falha na deleção do gerente. Gerente pode não existir ou já estar deletado.");

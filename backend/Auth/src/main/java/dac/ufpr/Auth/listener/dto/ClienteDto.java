@@ -12,18 +12,18 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClienteDto {
-    private Long id; // #
+    private Long id;
     private String cpf;
     private String email;
     private String senha;
     private String nome;
-    private String telefone; //?
+    private String telefone;
     private BigDecimal salario;
     private String endereco;
     private String CEP;
     private String cidade;
     private String estado;
-    private String status; // #
+    private String status;
     private String motivoRejeicao;
-    private String cpf_gerente; // #
+    private String cpf_gerente;
 }

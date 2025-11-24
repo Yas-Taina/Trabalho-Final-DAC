@@ -13,7 +13,7 @@ public class ClienteDto{
   String cpf;
   String email;
   String nome; 
-  String telefone; //?
+  String telefone;
   BigDecimal salario;
   String endereco;
   @JsonProperty("CEP")

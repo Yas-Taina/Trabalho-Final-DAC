@@ -1,4 +1,3 @@
-// package dac.ufpr.conta.dto;
 package dac.ufpr.conta.dto;
 
 import java.math.BigDecimal;

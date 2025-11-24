@@ -30,12 +30,6 @@ public class SagaGerenteCreationListener {
                     message.getStep(), 
                     message.getError());
             
-            // TODO: Implement compensation logic
-            // Depending on which step failed, you may need to:
-            // 1. Rollback conta reassignment
-            // 2. Rollback cliente reassignment
-            // 3. Possibly delete the created gerente
-            
             handleSagaFailure(message);
             return;
         }
@@ -73,18 +67,13 @@ public class SagaGerenteCreationListener {
                 message.getSagaId(), 
                 message.getStep());
         
-        // TODO: Implement compensation based on the step that failed
         switch (message.getStep()) {
             case "CONTA_REASSIGN":
-                // Failed to find conta or get clienteId
                 log.error("Falha no reassignment de conta. Não há ações de compensação necessárias.");
                 break;
                 
             case "CLIENTE_REASSIGN":
-                // Failed to reassign cliente
-                // May need to rollback conta reassignment if it was done
                 log.error("Falha no reassignment de cliente. Considerar rollback de conta.");
-                // TODO: Implement rollback logic
                 break;
                 
             default:
