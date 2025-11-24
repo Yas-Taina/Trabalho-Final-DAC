@@ -19,7 +19,6 @@ HEADERS = {
 ### Carga dos parâmetros no arquivo .env
 load_dotenv()
 URL = os.getenv("URL")
-URL_C = os.getenv("URL_C")
 ARQUIVO_TOKEN = os.getenv("ARQUIVO_TOKEN")
 ARQUIVO_CACHE = os.getenv("ARQUIVO_CACHE")
 EMAIL_AUTOCADASTRO1 = os.getenv("EMAIL_AUTOCADASTRO1")
@@ -222,14 +221,29 @@ def gerar_valor_moeda(inf=100, sup=500):
 # Agora começam as funções de teste ao back-end
 ####################################################
 
+
+def get_retentativa(url, headers, status_esperado):
+    # espera até dar o tempo
+    resp = requests.get(url, headers=headers)
+
+    if resp.status_code != status_esperado:
+        time.sleep(2)
+        if resp.status_code != status_esperado:
+            time.sleep(5)
+            resp = requests.get(url, headers=headers)
+            if resp.status_code != status_esperado:
+                time.sleep(10)
+                resp = requests.get(url, headers=headers)
+
+    return resp
+
 ####################################################
 # FUNÇÕES GENÉRICAS
 
 def login(email, senha, cpf, tipo, correto=True):
-    LOGIN["email"] = email
+    LOGIN["login"] = email
     LOGIN["senha"] = senha
 
-    # print(f'Login: {email} / Senha: {senha} / CPF: {cpf} / Tipo: {tipo} / Correto: {correto}')
     resp = requests.post(URL + "/login", 
                          headers=HEADERS, 
                          json=LOGIN)
@@ -255,7 +269,6 @@ def login(email, senha, cpf, tipo, correto=True):
 def logout(email, token):
     HEADERS["Authorization"] = token
 
-    print(f'{URL}/logout  Logout: {email} / Token: {token}, HEADERS: {HEADERS}')
     r = requests.post(URL + "/logout", 
                          headers=HEADERS)
 
@@ -270,7 +283,6 @@ def logout(email, token):
 # R00 - Reboot - apagar base
 def test_r00_reboot():
 
-    print(f'Reboot na URL: {URL}/reboot', HEADERS)
     # Passo 1 - invoca reboot
     resp = requests.get(URL + f"/reboot", 
                          headers=HEADERS)
@@ -308,7 +320,7 @@ def test_r00_verificacao_base():
     # Passo 3 - Busca os clientes
     params = {
         "filtro": "adm_relatorio_clientes"
-    } 
+    }
     resp = requests.get(URL + "/clientes", 
                          headers=HEADERS, 
                          params=params)
@@ -335,14 +347,11 @@ def test_r01_autocadastro1():
         print()
         email = input(f"    >>>> Digite um e-mail para o 1o autocadastro: ")
 
-    # print(HEADERS)
-    # print(USUARIO1)
-    # print(URL + "/clientes")
     USUARIO1["cpf"] = cpf
     USUARIO1["email"] = email
     USUARIO1["nome"] = "Usuário 1"
     USUARIO1["salario"] = 5000.0 # para gerar limite
-    resp = requests.post(URL_C + "/clientes", 
+    resp = requests.post(URL + "/clientes", 
                          headers=HEADERS, 
                          json=USUARIO1)
     
@@ -373,8 +382,7 @@ def test_r01_autocadastro2():
     USUARIO1["email"] = email
     USUARIO1["nome"] = "Usuário 2"
     USUARIO1["salario"] = 450.0  # para não gerar limite
-    resp = requests.post(URL_C + "/clientes", 
-    # resp = requests.post(URL + "/clientes", 
+    resp = requests.post(URL + "/clientes", 
                          headers=HEADERS, 
                          json=USUARIO1)
     
@@ -399,8 +407,7 @@ def test_r01_autocadastro_duplicado():
     USUARIO1["email"] = cache["autocad1_email"]
     USUARIO1["nome"] = cache["autocad1_nome"]
     USUARIO1["salario"] = cache["autocad1_salario"]
-    # resp = requests.post(URL + "/clientes", 
-    resp = requests.post(URL_C + "/clientes", 
+    resp = requests.post(URL + "/clientes", 
                          headers=HEADERS, 
                          json=USUARIO1)
     
@@ -433,11 +440,11 @@ def test_r02_login_gerente():
 def test_r02_gerente_testar_acesso():
     token = recuperar_token()
     HEADERS["Authorization"] = token
+
     params = {
         "filtro": "adm_relatorio_clientes"
     }
-    # resp = requests.get(URL + "/clientes",
-    resp = requests.get(URL_C + "/clientes", 
+    resp = requests.get(URL + "/clientes", 
                          headers=HEADERS, 
                          params=params)
     assert resp.status_code==403
@@ -568,7 +575,7 @@ def test_r11_rejeitar_cliente():
     USUARIO1["email"] = cache["autocad2_email"]
     USUARIO1["nome"] = "Usuário 2"
     payload = {
-        "usuario": USUARIO1,
+        #"usuario": USUARIO1,
         "motivo" : "Cliente não é interessante para o banco"
     }
     resp = requests.post(URL + "/clientes/" + cache["autocad2_cpf"] + "/rejeitar", 
@@ -679,7 +686,6 @@ def test_r02_logout_gerente():
 def test_r02_login_cliente_aprovado_novamente():
 
     cache = recuperar_cache()
-    print(f'{cache["autocad1_email"]} {cache["autocad1_senha"]} {cache["autocad1_cpf"]} CLIENTE True')
     login(cache["autocad1_email"], cache["autocad1_senha"], cache["autocad1_cpf"], "CLIENTE", True)
 
 
@@ -1180,8 +1186,10 @@ def test_r18_crud_gerente_remocao():
     assert resp.status_code==200
     lista = resp.json()
 
-    resp = requests.get(URL + "/gerentes/" + GODOPHREDO["cpf"], 
-                         headers=HEADERS)
+    resp = get_retentativa(URL + "/gerentes/" + GODOPHREDO["cpf"], HEADERS, 404)
+
+    # resp = requests.get(URL + "/gerentes/" + GODOPHREDO["cpf"], 
+    #                      headers=HEADERS)
     assert resp.status_code==404
     r = resp.json()
 
